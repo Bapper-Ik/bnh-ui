@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: bnh-ui
+    branch: dev
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: BACKEND_URL
+        sync: false

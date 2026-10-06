@@ -6,6 +6,10 @@ Minimal SvelteKit/TypeScript interface for BNH. The release scope is the fourtee
 
 Screen 10, Vendors: company-scoped search and pagination; add/detail/edit drawers; contact and bank capture; server-controlled sensitive access; explicit unknown/restricted states; version conflict protection. The shared shell and sign-in are included so this journey is usable. Other screens, including password-recovery pages and the dashboard, remain unfinished. The root route currently opens Vendors. The existing requisition work is kept outside this feature release until its checks pass.
 
+## Render deployment
+
+Dockerfile and render.yaml are included. Follow [the Render setup](docs/render.md), deploy branch `dev`, and configure the backend URL.
+
 ## Local development
 
 Use Node 24.21.0 (`nvm use`) and `npm ci`. Start the delivered backend with `.venv/bin/uvicorn app.vendor_app:create_app --factory --host 127.0.0.1 --port 8000` in `bnh-backend`, then run `npm run dev -- --host localhost` here. Use the configured individual operator/staff account. There are no default production credentials.

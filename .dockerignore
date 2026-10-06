@@ -1,0 +1,12 @@
+.git
+node_modules
+.svelte-kit
+build
+.env
+.env.*
+.vscode
+test-results
+playwright-report
+docs
+AGENTS.md
+README.md
