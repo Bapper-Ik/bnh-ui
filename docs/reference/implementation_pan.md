@@ -1,3 +1,5 @@
+> **2026-10-06 scope update:** The owner limits this release to the 14 reusable screens in [ui_scrrens.md](ui_scrrens.md) and the backend functionality required by them. Older sections below supply supporting rules, not permission to add screens or unrelated modules. Backend implementation statuses are not screen-completion claims. Screens 1–3 map to IAM-001 and web access; 4–8 to requisition/authority and web journeys; 9 to Board/evidence; 10 to VEN-001; 11–12 to IAM/ORG; 13 to audit; 14 to identity/session controls. Notifications are a header drawer and evidence/documents a viewer. Each connected journey retains the test, commit and push gate on dev.
+
 # Custodian by Brendan — Platform Feature Specification
 
 > **Engineering-convention update — 2026-10-06:** The project owner has replaced
@@ -400,11 +402,11 @@ Make mandatory business events durable and non-editable by application users fro
 
 ### Implementation Status
 
-**Status:** Not Assessed
+**Status:** Implemented
 
-**Implementation Evidence:** Not yet recorded.
+**Implementation Evidence:** Append-only audit_events, durable outbox_items, migration 0002, strict event registry and safe typed metadata, and audited_transaction failure path implemented. Added database concurrency, failure rollback, and separate archive delivery-state tests. Full backend suite: 97 passed; isolated staged checkout: 24 passed (foundation and audit), with Ruff, formatting, and mypy passing in both.
 
-**Blocker:** None assessed. This does not mean external dependencies are available.
+**Blocker:** No implementation blocker. External protected archive delivery remains OPS-001.
 
 ### Requirement Basis
 
@@ -461,11 +463,11 @@ Business features can produce consistent, attributable append-only histories. Th
 
 ### Acceptance Criteria
 
-- [ ] Forced audit-insert failure rolls back the associated test transition.
-- [ ] UPDATE, DELETE, and TRUNCATE attempts through the runtime database role fail.
-- [ ] Generic administrative endpoints cannot mutate events or linked signed evidence.
-- [ ] A duplicate business action does not produce duplicate successful decision events.
-- [ ] Event registry duplicates are rejected and sensitive values are absent from routine event payloads.
+- [x] Forced audit-insert failure rolls back the associated test transition.
+- [x] UPDATE, DELETE, and TRUNCATE attempts through the runtime database role fail.
+- [x] Generic administrative endpoints cannot mutate events or linked signed evidence.
+- [x] A duplicate business action does not produce duplicate successful decision events.
+- [x] Event registry duplicates are rejected and sensitive values are absent from routine event payloads.
 
 ---
 
@@ -496,11 +498,11 @@ Allow provisioned BNH users to authenticate, end sessions, and recover access th
 
 ### Implementation Status
 
-**Status:** Not Assessed
+**Status:** Implemented
 
-**Implementation Evidence:** Not yet recorded.
+**Implementation Evidence:** Individual Argon2 accounts, protected provisioning, opaque hashed sessions/CSRF, trusted origins, persisted login/reauthentication throttling, expiry/logout/revocation, and operator-assisted single-use recovery implemented. Full backend checks pass, including 109 tests. Isolated staged checkout also passed 40 tests plus Ruff, formatting, and mypy.
 
-**Blocker:** None assessed. This does not mean external dependencies are available.
+**Blocker:** No implementation blocker. Email delivery and MFA are not configured or claimed; controlled recovery handoff is the implemented method. Browser screens are WEB-001.
 
 ### Requirement Basis
 
@@ -558,11 +560,11 @@ Each staff action has an authenticated, independently identifiable actor and a m
 
 ### Acceptance Criteria
 
-- [ ] Different users obtain different identities and cannot inherit another user's session.
-- [ ] Invalid credentials, inactive accounts, expired sessions, and revoked sessions fail.
-- [ ] Logout terminates the applicable session according to the existing authentication contract.
-- [ ] Recovery replay/expiry tests run when recovery is enabled; unconfigured providers are not mocked into production success.
-- [ ] Sensitive actions receive the current actor and authentication context server-side.
+- [x] Different users obtain different identities and cannot inherit another user's session.
+- [x] Invalid credentials, inactive accounts, expired sessions, and revoked sessions fail.
+- [x] Logout terminates the applicable session according to the existing authentication contract.
+- [x] Recovery replay/expiry tests run when recovery is enabled; unconfigured providers are not mocked into production success.
+- [x] Sensitive actions receive the current actor and authentication context server-side.
 
 ---
 
@@ -593,11 +595,11 @@ Provide the smallest complete organisational directory needed to identify the re
 
 ### Implementation Status
 
-**Status:** Not Assessed
+**Status:** Implemented
 
-**Implementation Evidence:** Not yet recorded.
+**Implementation Evidence:** Directory metadata and active state, controlled memberships/transfers, account deactivation with session revocation, effective-dated offices, same-person Board separation, exclusive assignment scope locks, and retained historical references implemented. Sixteen organisation tests and the full backend suite (125 tests) pass. Isolated staged checkout also passed all 56 tests plus Ruff, formatting, and mypy.
 
-**Blocker:** None assessed. This does not mean external dependencies are available.
+**Blocker:** No implementation blocker. Actual BNH entities, memberships and officeholders must be supplied by authorised operators; no production fixtures are seeded.
 
 ### Requirement Basis
 
@@ -657,11 +659,11 @@ Every eligible request can be resolved to a unique authorised person or an expli
 
 ### Acceptance Criteria
 
-- [ ] Two departments with different HODs resolve correctly.
-- [ ] Overlapping appointments, invalid entity/department links, and same-person Board-role conflicts are detected.
-- [ ] A staff profile PATCH cannot change its own office, role, or routing authority.
-- [ ] A deactivated officeholder cannot use an old session to sign a pending request.
-- [ ] Historical requests continue to show the appointments and department present at submission.
+- [x] Two departments with different HODs resolve correctly.
+- [x] Overlapping appointments, invalid entity/department links, and same-person Board-role conflicts are detected.
+- [x] A staff profile PATCH cannot change its own office, role, or routing authority.
+- [x] A deactivated officeholder cannot use an old session to sign a pending request.
+- [x] Historical requests continue to show the appointments and department present at submission.
 
 ---
 
@@ -692,11 +694,11 @@ Implement a consistent server-side access policy for requests, decisions, attach
 
 ### Implementation Status
 
-**Status:** Not Assessed
+**Status:** Implemented
 
-**Implementation Evidence:** Not yet recorded.
+**Implementation Evidence:** Shared scoped SQL predicates and action/evidence guards, fixed capability registry, current-authority checks, safe capability APIs, explicit entity review grants, read-only account mode, bank redaction, and denial audits implemented. Full backend suite passes 131 tests; isolated staged checkout passes all 62 tests, Ruff, formatting, and mypy. Requisition/evidence model contracts are included as required scope inputs; uploads and business transitions retain their separate feature gates.
 
-**Blocker:** None assessed. This does not mean external dependencies are available.
+**Blocker:** No implementation blocker. Later file-transfer/export/business-action APIs must reuse these guards and pass their own integrated feature criteria.
 
 ### Requirement Basis
 
@@ -752,11 +754,11 @@ Every later feature can enforce both capability permissions and correct record-l
 
 ### Acceptance Criteria
 
-- [ ] Direct API attempts against another staff member's request and another entity's attachment are denied.
-- [ ] A read-only reviewer cannot decide, record, or amend any request.
-- [ ] A more senior role cannot arbitrarily approve a lower-tier-assigned request.
-- [ ] Changing a client-visible role or permission array does not change server authority.
-- [ ] Sensitive-data projection and authorised lists use consistent scope.
+- [x] Direct API attempts against another staff member's request and another entity's attachment are denied.
+- [x] A read-only reviewer cannot decide, record, or amend any request.
+- [x] A more senior role cannot arbitrarily approve a lower-tier-assigned request.
+- [x] Changing a client-visible role or permission array does not change server authority.
+- [x] Sensitive-data projection and authorised lists use consistent scope.
 
 ---
 
@@ -787,11 +789,11 @@ Let an authorised requester select an existing vendor or capture the details nee
 
 ### Implementation Status
 
-**Status:** Not Assessed
+**Status:** Implemented
 
-**Implementation Evidence:** Not yet recorded.
+**Implementation Evidence:** Reusable entity-scoped vendors, paginated safe summaries, contact/beneficiary history, all-or-none bank validation, immutable version storage, current-version concurrency and unchanged submitted snapshots implemented. Screen 10 adds scoped search and add/detail/edit drawers with server capabilities, redaction and conflict handling. Full backend 144 tests, isolated staged backend 75 tests, staged frontend 3 unit tests and 1 real-backend browser journey pass; lint, formatting, types and production build pass. Desktop/mobile screenshots inspected. No Render deployment or staff acceptance is claimed.
 
-**Blocker:** None assessed. This does not mean external dependencies are available.
+**Blocker:** No implementation blocker. Request-form lookup integration is WEB-002; creation of a vendor is not beneficiary verification.
 
 ### Requirement Basis
 
@@ -833,7 +835,7 @@ Proposed resources: GET/POST /vendors, GET/PATCH /vendors/{uuid}, restricted ben
 
 ### Delivery Surface
 
-Vendor APIs and snapshot contract with tests; requester-facing lookup/edit components are integrated under WEB-002.
+Screen 10 Vendors and its supporting APIs, including search, add/detail/edit drawers, scoped bank access and version conflict handling. Request-form lookup is integrated separately within screen 6 (WEB-002).
 
 ### Success Outcome
 
@@ -848,11 +850,11 @@ Staff can capture or reuse vendor information without sacrificing the historical
 
 ### Acceptance Criteria
 
-- [ ] Lookup results omit unauthorised bank details.
-- [ ] Partial bank triples fail or remain explicitly absent according to the agreed schema; no fabricated values.
-- [ ] Leading zeroes survive save/reload.
-- [ ] Changing a vendor record does not change an already stored test submission snapshot.
-- [ ] Duplicate-name vendors are not automatically treated as one counterparty.
+- [x] Lookup results omit unauthorised bank details.
+- [x] Partial bank triples fail or remain explicitly absent according to the agreed schema; no fabricated values.
+- [x] Leading zeroes survive save/reload.
+- [x] Changing a vendor record does not change an already stored test submission snapshot.
+- [x] Duplicate-name vendors are not automatically treated as one counterparty.
 
 ---
 

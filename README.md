@@ -1,0 +1,23 @@
+# Custodian frontend
+
+Minimal SvelteKit/TypeScript interface for BNH. The release scope is the fourteen reusable screens in [the screen inventory](docs/reference/ui_scrrens.md).
+
+## Delivered journey
+
+Screen 10, Vendors: company-scoped search and pagination; add/detail/edit drawers; contact and bank capture; server-controlled sensitive access; explicit unknown/restricted states; version conflict protection. The shared shell and sign-in are included so this journey is usable. Other screens, including password-recovery pages and the dashboard, remain unfinished. The root route currently opens Vendors. The existing requisition work is kept outside this feature release until its checks pass.
+
+## Local development
+
+Use Node 24.21.0 (`nvm use`) and `npm ci`. Start the delivered backend with `.venv/bin/uvicorn app.vendor_app:create_app --factory --host 127.0.0.1 --port 8000` in `bnh-backend`, then run `npm run dev -- --host localhost` here. Use the configured individual operator/staff account. There are no default production credentials.
+
+`BACKEND_URL` selects the trusted backend origin (default `http://127.0.0.1:8000`). Both development and production forward `/api/v1` through the same server proxy with HttpOnly session cookies and CSRF. Configure the backend's allowed origin to match the frontend.
+
+## Verification
+
+Run `npm run lint`, `npm run format:check`, `npm run typecheck`, `npm run test -- --run`, and `npm run build`.
+
+For real browser verification, keep both repositories as siblings. In the backend, provision the isolated local PostgreSQL database with `.venv/bin/python -m scripts.dev_database` and run `.venv/bin/pytest` to apply and verify migrations. Then run `npm run build` and `npm run test:e2e` here. Install Playwright Chromium or set `CHROME_PATH` to your installed Chrome executable. The runner starts its own backend on 8017 and preview on 4173; those ports must be free. Fixture creation refuses non-loopback/non-test database URLs and uses synthetic accounts only. Results/screenshots and fixture credentials stay ignored in `test-results/`.
+
+Generate the delivered API types with `.venv/bin/python -m scripts.export_openapi` in the backend. The optional `--app app.main` exports the broader unfinished workspace assembly; do not substitute that contract for the delivered feature in a release.
+
+These checks do not establish a Render deployment or real staff acceptance.

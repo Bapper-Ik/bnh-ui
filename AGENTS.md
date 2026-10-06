@@ -8,11 +8,34 @@ Read `../docs/implementation_pan.md` for detailed requirements and feature IDs, 
 
 The user's latest decisions take precedence. This file establishes frontend engineering conventions in place of obsolete scaffold/Git assumptions in the specification. The detailed specification remains the canonical tracker. Do not create another status table or infer new financial policy.
 
+## Release scope: fourteen screens
+
+The latest user scope is `../docs/ui_scrrens.md` (the supplied filename has a typo). It is authoritative for release surfaces and supported functionality. In standalone clones use `docs/reference/ui_scrrens.md`. Build exactly these reusable screen templates:
+
+1. Sign In
+2. Forgot Password
+3. Set Password / Activate Account
+4. Dashboard
+5. Requisitions
+6. Create / Edit Requisition
+7. Requisition Details & Review
+8. My Tasks / Approval Inbox
+9. Board Resolution Workspace
+10. Vendors
+11. Staff & Access Management
+12. Organisation & Authority
+13. Audit Log
+14. My Account & Security
+
+Use drawers/dialogs for vendor details and edits, invitations, appointments, department edits, and signing; a header drawer for notifications; and a viewer for attachments/generated documents. Reuse screens across roles and request states. No extra applications, screens, workflow builder, contracts, scoring, payments, or unrelated backend modules.
+
+Implement backend capabilities only where they support these screens, their dialogs/viewers, or necessary security, persistence and deployment. Older requirements explain fields and business rules within this boundary; they do not expand it. Preserve the fixed authority rules and Secretary/Chairman separation. Map work to these screen numbers in the existing tracker. Existing backend completion does not imply screen completion. Continue the one-feature test → commit → push gate on `dev`; finish each connected screen journey before moving on.
+
 ## Mandatory feature delivery gate
 
 The project owner's latest instruction is authoritative: implement **one feature at a time**, finish it fully, pass all required tests, then **commit and push before starting the next feature**. This replaces earlier guidance that treated publishing as optional. Routine commits and pushes to the configured project remotes are authorised; do not repeatedly ask permission to proceed.
 
-1. **Select and assess.** Use the stable feature IDs and dependency order in `../docs/implementation_pan.md`. Start with the earliest unfinished prerequisite. Read its complete deliverables and acceptance criteria, inspect existing code in both repositories, and record the actual gaps. Announce the current feature and what will establish completion.
+1. **Select and assess.** Use the stable feature IDs and dependency order in `../docs/implementation_pan.md`. Select the next incomplete journey within the fourteen-screen scope and its necessary prerequisites; do not advance unrelated legacy-spec features. Read its complete deliverables and acceptance criteria, inspect existing code in both repositories, and record the actual gaps. Announce the current feature and what will establish completion.
 2. **Implement the whole feature.** Complete its required backend, frontend, migrations, permissions, audit events, configuration, and error handling as applicable. Keep work within that feature and its necessary prerequisites. A feature is not complete merely because an endpoint, screen, or happy path exists.
 3. **Verify.** Run all configured repository checks and the feature's required unit, integration, security, concurrency, and browser checks as applicable. Exercise the connected frontend/backend when the feature has a user journey. Fix failures and rerun affected checks. Skipped tests, missing services, untested acceptance criteria, and screenshots alone do not satisfy the gate.
 4. **Document and review.** Update the existing feature block in the canonical tracker, `../docs/ui_todos.md`, and `../docs/task_done.md` with actual behaviour, commands/results, remaining limitations, and release implications. Inspect the exact changes to be committed; exclude secrets, local state, test artifacts, and unrelated unfinished work. Do not mark a feature Implemented while required deliverables or acceptance criteria remain incomplete.
@@ -41,15 +64,15 @@ The project owner's latest instruction is authoritative: implement **one feature
 
 Define named tokens centrally:
 
-| Purpose | Colour |
-| --- | --- |
-| Primary headings | `#000000` |
+| Purpose                                  | Colour    |
+| ---------------------------------------- | --------- |
+| Primary headings                         | `#000000` |
 | Main interface text / secondary headings | `#1A1A1A` |
-| Body text | `#595959` |
-| Light / secondary metadata | `#8C8C8C` |
-| Borders and dividers | `#D9D9D9` |
-| Subtle surfaces | `#F2F2F2` |
-| Background | `#FFFFFF` |
+| Body text                                | `#595959` |
+| Light / secondary metadata               | `#8C8C8C` |
+| Borders and dividers                     | `#D9D9D9` |
+| Subtle surfaces                          | `#F2F2F2` |
+| Background                               | `#FFFFFF` |
 
 - Use one clean sans-serif family, initially a system sans-serif stack, with at most two normal-use weights (400 and 600). No decorative letter spacing.
 - Red/amber/green indicate functional status only and always have a label or icon. Navigation, action buttons, charts, and branding remain greyscale; Approve/Reject buttons are not exceptions.
