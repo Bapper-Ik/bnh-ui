@@ -24,6 +24,11 @@
 			<a href="/vendors" class:active={page.url.pathname === '/vendors'}
 				><span aria-hidden="true">▦</span> Vendors</a
 			>
+			{#if data.user.permissions.includes('staff:manage') && !data.user.read_only}
+				<a href="/staff" class:active={page.url.pathname === '/staff'}
+					><span aria-hidden="true">♙</span> Staff & Access</a
+				>
+			{/if}
 		</nav>
 		<div class="sidebar-note">
 			Brendan Nicholas Holdings

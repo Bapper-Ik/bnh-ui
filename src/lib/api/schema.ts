@@ -171,6 +171,23 @@ export type ReviewInput = {
   "active"?: boolean;
 };
 
+export type StaffDetail = {
+  "id": string;
+  "name": string;
+  "email": string;
+  "status": "active" | "invited" | "disabled";
+  "read_only": boolean;
+  "version": string;
+  "memberships": Array<StaffMembership>;
+  "offices": Array<OfficeView>;
+  "actions": Array<string>;
+};
+
+export type StaffEdit = {
+  "expected_version": string;
+  "name": string;
+};
+
 export type StaffInput = {
   "name": string;
   "email": string;
@@ -182,6 +199,74 @@ export type StaffItem = {
   "name": string;
   "email": string;
   "active": boolean;
+};
+
+export type StaffMembership = {
+  "entity_id": string;
+  "entity_name": string;
+  "department_id": string;
+  "department_name": string;
+  "active": boolean;
+  "scope_active": boolean;
+};
+
+export type StaffMembershipSet = {
+  "expected_version": string;
+  "identity_id": string;
+  "entity_id": string;
+  "department_id": string;
+};
+
+export type StaffMembershipState = {
+  "expected_version": string;
+  "active": boolean;
+};
+
+export type StaffOfficeSet = {
+  "expected_version": string;
+  "identity_id": string;
+  "entity_id": string;
+  "department_id"?: string | null;
+  "role": "hod" | "chief_of_staff" | "md" | "secretary" | "chairman";
+  "authorisation_reference": string;
+  "valid_from"?: string;
+  "valid_until"?: string | null;
+};
+
+export type StaffOption = {
+  "id": string;
+  "name": string;
+  "entity_id"?: string | null;
+};
+
+export type StaffOptions = {
+  "entities": Array<StaffOption>;
+  "departments": Array<StaffOption>;
+  "email_enabled": boolean;
+};
+
+export type StaffPage = {
+  "items": Array<StaffSummary>;
+  "total": number;
+  "limit": number;
+  "offset": number;
+};
+
+export type StaffState = {
+  "expected_version": string;
+  "active": boolean;
+};
+
+export type StaffSummary = {
+  "id": string;
+  "name": string;
+  "email": string;
+  "status": "active" | "invited" | "disabled";
+  "read_only": boolean;
+};
+
+export type StaffVersion = {
+  "expected_version": string;
 };
 
 export type StaffView = {
