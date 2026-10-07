@@ -32,7 +32,7 @@ Reference: [Render Docker deployments](https://render.com/docs/docker), [SvelteK
 
 ## Account access
 
-Deploy the matching backend account-access release and let its startup script apply migration 0010. The backend requires `MIGRATION_DATABASE_URL` before starting. To send account links, configure backend `MAIL_FROM`, `RESEND_API_KEY`, `ACCOUNT_LINK_SECRET` and `FRONTEND_ORIGIN`, then set `MAIL_ENABLED=true`. See the backend deployment guide for sender verification and secret requirements. No email secrets belong on this frontend service.
+Deploy the matching backend account-access release and let its startup script apply migration 0010. The backend uses one `DATABASE_URL` for migrations and the running application; `MIGRATION_DATABASE_URL` is no longer needed. Development and production each use a different database and backend connection. To send account links, configure backend `MAIL_FROM`, `RESEND_API_KEY`, `ACCOUNT_LINK_SECRET` and `FRONTEND_ORIGIN`, then set `MAIL_ENABLED=true`. See the backend deployment guide for sender verification and secret requirements. No email secrets belong on this frontend service.
 
 Set `FRONTEND_ORIGIN` to this frontend's exact HTTPS origin and include it in backend `ALLOWED_ORIGINS`. With email disabled, the form reports unavailable delivery. Links use a fragment, which the page removes from visible/history state before validation. Passwords and tokens stay out of browser storage. Reset signs out existing sessions; activation grants no automatic authority. The invitation dialog is part of the later Staff & Access Management screen.
 
