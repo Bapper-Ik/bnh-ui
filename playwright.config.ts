@@ -5,6 +5,7 @@ export default defineConfig({
 	workers: 1,
 	use: {
 		baseURL: 'http://127.0.0.1:4173',
+		extraHTTPHeaders: { 'x-forwarded-proto': 'http' },
 		launchOptions: process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {},
 		trace: 'off'
 	},
@@ -16,9 +17,14 @@ export default defineConfig({
 			reuseExistingServer: false
 		},
 		{
-			command: 'npm run preview -- --host 127.0.0.1 --port 4173',
+			command: 'node build',
 			url: 'http://127.0.0.1:4173/health',
-			env: { BACKEND_URL: 'http://127.0.0.1:8017' },
+			env: {
+				BACKEND_URL: 'http://127.0.0.1:8017',
+				HOST: '127.0.0.1',
+				PORT: '4173',
+				PROTOCOL_HEADER: 'x-forwarded-proto'
+			},
 			reuseExistingServer: false
 		}
 	],

@@ -4,7 +4,7 @@ Minimal SvelteKit/TypeScript interface for BNH. The release scope is the fourtee
 
 ## Delivered journey
 
-Screen 10, Vendors: company-scoped search and pagination; add/detail/edit drawers; contact and bank capture; server-controlled sensitive access; explicit unknown/restricted states; version conflict protection. The shared shell and sign-in are included so this journey is usable. Other screens, including password-recovery pages and the dashboard, remain unfinished. The root route currently opens Vendors. The existing requisition work is kept outside this feature release until its checks pass.
+Screen 10, Vendors: company-scoped search and pagination; add/detail/edit drawers; contact and bank capture; server-controlled sensitive access; explicit unknown/restricted states; version conflict protection. Screens 1–3 also provide sign-in, forgot-password and a shared reset/activation form, including expired links, password matching and session revocation. Email requires backend Resend configuration. Dashboard and staff/organisation administration screens remain unfinished. The root route currently opens Vendors. The existing requisition work is kept outside this feature release until its checks pass.
 
 ## Render deployment
 
@@ -20,7 +20,7 @@ Use Node 24.21.0 (`nvm use`) and `npm ci`. Start the delivered backend with `.ve
 
 Run `npm run lint`, `npm run format:check`, `npm run typecheck`, `npm run test -- --run`, and `npm run build`.
 
-For real browser verification, keep both repositories as siblings. In the backend, provision the isolated local PostgreSQL database with `.venv/bin/python -m scripts.dev_database` and run `.venv/bin/pytest` to apply and verify migrations. Then run `npm run build` and `npm run test:e2e` here. Install Playwright Chromium or set `CHROME_PATH` to your installed Chrome executable. The runner starts its own backend on 8017 and preview on 4173; those ports must be free. Fixture creation refuses non-loopback/non-test database URLs and uses synthetic accounts only. Results/screenshots and fixture credentials stay ignored in `test-results/`.
+For real browser verification, keep both repositories as siblings. In the backend, provision the isolated local PostgreSQL database with `.venv/bin/python -m scripts.dev_database` and run `.venv/bin/pytest` to apply and verify migrations. Then run `npm run build` and `npm run test:e2e` here. Install Playwright Chromium or set `CHROME_PATH` to your installed Chrome executable. The runner starts its own backend on 8017 and the built Node application on 4173; those ports must be free. Fixture creation refuses non-loopback/non-test database URLs and uses synthetic accounts only. Results/screenshots and fixture credentials stay ignored in `test-results/`.
 
 Generate the delivered API types with `.venv/bin/python -m scripts.export_openapi` in the backend. The optional `--app app.main` exports the broader unfinished workspace assembly; do not substitute that contract for the delivered feature in a release.
 

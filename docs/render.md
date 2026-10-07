@@ -15,7 +15,7 @@ On the backend, set `ALLOWED_ORIGINS` to a JSON array containing this frontend's
 
 The browser talks to `/api/v1` on the frontend's own domain. The Svelte server forwards those requests to `BACKEND_URL` and returns session cookies unchanged. This keeps login/CSRF handling on one browser origin. Database credentials belong only to the backend.
 
-The sign-in screen is available at `/login`; successful sign-in opens `/vendors`. The current release includes vendor search and add/detail/edit drawers; the remaining fourteen-screen journeys are unfinished. To access the workspace, create a real configuration operator using the backend's one-time provisioning command. There are no seeded production passwords or pretend requisitions.
+The sign-in screen is available at `/login`; successful sign-in opens `/vendors`. Screens 1–3 include `/login`, `/forgot-password` and `/recover` (shared reset/activation). Vendor search and add/detail/edit drawers are also delivered; the other fourteen-screen journeys are unfinished. Configure account email on the backend as described below. To access the workspace, create a real configuration operator using the backend's one-time provisioning command. There are no seeded production passwords or pretend requisitions.
 
 ## Local container
 
@@ -29,3 +29,11 @@ For a complete local HTTP setup, set the backend's allowed origin to `http://loc
 Both build and runtime stages use Node 24. The final image runs as the non-root node user, contains the built application and production dependencies, and excludes local environment files.
 
 Reference: [Render Docker deployments](https://render.com/docs/docker), [SvelteKit Node deployment](https://svelte.dev/docs/kit/adapter-node).
+
+## Account access
+
+Deploy the matching backend account-access release and let its startup script apply migration 0010. The backend requires `MIGRATION_DATABASE_URL` before starting. To send account links, configure backend `MAIL_FROM`, `RESEND_API_KEY`, `ACCOUNT_LINK_SECRET` and `FRONTEND_ORIGIN`, then set `MAIL_ENABLED=true`. See the backend deployment guide for sender verification and secret requirements. No email secrets belong on this frontend service.
+
+Set `FRONTEND_ORIGIN` to this frontend's exact HTTPS origin and include it in backend `ALLOWED_ORIGINS`. With email disabled, the form reports unavailable delivery. Links use a fragment, which the page removes from visible/history state before validation. Passwords and tokens stay out of browser storage. Reset signs out existing sessions; activation grants no automatic authority. The invitation dialog is part of the later Staff & Access Management screen.
+
+Render uses HTTPS. The browser test harness explicitly supplies a trusted loopback proxy protocol header for its local HTTP Node server; do not copy that test-only header configuration into an untrusted public proxy setup.

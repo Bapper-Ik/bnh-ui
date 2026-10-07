@@ -6,6 +6,10 @@ export type AccountCreate = {
   "initial_password": string;
 };
 
+export type AccountLink = {
+  "token": string;
+};
+
 export type AttachmentAccess = {
   "id": string;
   "requisition_id": string;
@@ -70,6 +74,10 @@ export type EntityItem = {
   "kind": string;
 };
 
+export type ForgotPassword = {
+  "email": string;
+};
+
 export type HTTPValidationError = {
   "detail"?: Array<ValidationError>;
 };
@@ -78,11 +86,26 @@ export type Health = {
   "status": string;
 };
 
+export type InvitationView = {
+  "identity_id": string;
+  "email": string;
+  "status"?: "invited";
+};
+
+export type InviteAccount = {
+  "name": string;
+  "email": string;
+};
+
 export type Item = {
   "id": string;
   "name": string;
   "code": string;
   "active": boolean;
+};
+
+export type LinkStatus = {
+  "purpose": "reset" | "activate";
 };
 
 export type Login = {
