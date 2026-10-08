@@ -299,6 +299,29 @@ export type NextAction = {
   "blocked_reason"?: string | null;
 };
 
+export type NotificationPage = {
+  "items": Array<NotificationView>;
+  "total": number;
+  "unread_total": number;
+  "limit": number;
+  "offset": number;
+  "email_enabled": boolean;
+};
+
+export type NotificationView = {
+  "id": string;
+  "event_id": string;
+  "title": string;
+  "message": string;
+  "reference": string;
+  "href": string;
+  "created_at": string;
+  "read_at": string | null;
+  "email_status": string;
+  "attempts": number;
+  "last_error": string | null;
+};
+
 export type OfficeInput = {
   "identity_id": string;
   "entity_id": string;

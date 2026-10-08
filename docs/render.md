@@ -44,4 +44,8 @@ The image sets `BODY_SIZE_LIMIT=11M` for supporting-document uploads. Remove an 
 
 ## Individual approval release
 
-Deploy the backend through schema 0012 before this frontend. The existing startup script runs that migration automatically. No new environment variables are required. My Tasks opens the assigned individual approval inbox; returned requests use Start correction and the existing requisition form. Earlier signed revisions and documents remain available through Request history. Board actions and requisition notification email delivery remain later journeys.
+Deploy the backend through schema 0012 before this frontend. The existing startup script runs that migration automatically. No new environment variables are required. My Tasks opens the assigned individual approval inbox; returned requests use Start correction and the existing requisition form. Earlier signed revisions and documents remain available through Request history. The Board workspace and requisition notifications are delivered by the subsequent matching releases; the latest backend schema requirement is 0015.
+
+## Notification drawer release
+
+Deploy the matching backend through migration `0015` before this frontend. The existing Dockerfile includes the header drawer. There are no new frontend settings; notification email uses the backend's existing Resend configuration. The drawer remains usable when email is disabled, and provider acceptance is labelled separately from actual inbox delivery. Verify a request/approver handoff after deployment using your own accounts.

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
+	import NotificationDrawer from '#lib/features/notifications/NotificationDrawer.svelte';
 	import { api } from '#lib/api/client.js';
 	let { data, children } = $props();
 	let error = $state('');
@@ -62,6 +63,7 @@
 		<header>
 			<span class="context">BNH / Staff workspace</span>
 			<div class="identity">
+				{#key data.user.id}<NotificationDrawer />{/key}
 				<span>{data.user.name}<small>{data.user.email}</small></span><button
 					class="quiet"
 					onclick={signOut}>Sign out</button
@@ -170,6 +172,8 @@
 	}
 	.identity {
 		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
 		align-items: center;
 		gap: 18px;
 		font-size: 13px;
