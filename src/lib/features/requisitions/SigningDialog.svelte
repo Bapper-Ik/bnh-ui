@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { money } from '#lib/money.js';
 	import { api, ApiError } from '#lib/api/client.js';
 	import type { ChallengeView, Intent, Point, RequestView } from '#lib/api/schema.js';
@@ -14,7 +14,7 @@
 		request: RequestView;
 		action: Intent['action'];
 		name: string;
-		onComplete: (req: RequestView) => void;
+		onComplete: (req: RequestView) => void | Promise<void>;
 		onCancel: () => void;
 	} = $props();
 	let dialog: HTMLDialogElement;
@@ -30,10 +30,22 @@
 	let cursor = { x: 0.1, y: 0.5 };
 	let keyboardPen = false;
 	let challenge = $state<ChallengeView | null>(null);
+	let reviewRequired = $state(false);
 	let commandKey = crypto.randomUUID();
 	let pendingCommand = $state<string | null>(null);
 	async function failure(e: unknown) {
 		error = e instanceof Error ? e.message : 'Unable to record signature.';
+		if (
+			e instanceof ApiError &&
+			[
+				'REVISION_CONFLICT',
+				'SIGNATURE_INVALID',
+				'ACCESS_DENIED',
+				'RESOURCE_NOT_AVAILABLE',
+				'AUTHORITY_ASSIGNMENT_BLOCKED'
+			].includes(e.code)
+		)
+			reviewRequired = true;
 		if (e instanceof ApiError && e.status === 401 && e.code !== 'FRESH_AUTHENTICATION_REQUIRED') {
 			dialog.close();
 			onCancel();
@@ -150,7 +162,7 @@
 			});
 
 			dialog.close();
-			onComplete(result);
+			await onComplete(result);
 		} catch (e) {
 			if (e instanceof ApiError && e.status < 500) {
 				pendingCommand = null;
@@ -214,7 +226,9 @@
 				/></label
 			>
 			{#if error}<div class="error" role="alert">{error}</div>{/if}
-			<button disabled={busy}>{busy ? 'Verifying…' : 'Continue to signature'}</button>
+			<button disabled={busy || reviewRequired}
+				>{busy ? 'Verifying…' : 'Continue to signature'}</button
+			>
 		</form>
 	{:else}
 		<form
@@ -227,6 +241,7 @@
 			<p><strong>{money(challenge.total)}</strong> · {challenge.authority?.replaceAll('_', ' ')}</p>
 			<p>{challenge.routing_explanation}</p>
 			<p>{challenge.statement}</p>
+			{#if reason}<p><strong>Reason:</strong> {reason}</p>{/if}
 			<fieldset disabled={busy || !!pendingCommand}>
 				<label
 					>Confirm your full name<input
@@ -266,11 +281,25 @@
 			</fieldset>
 			{#if pendingCommand}<p role="status">Retry will send the same signed instruction.</p>{/if}
 			{#if error}<div class="error" role="alert">{error}</div>{/if}
-			<button disabled={busy || !consent || strokes.reduce((n, s) => n + s.length, 0) < 3}
+			<button
+				disabled={busy ||
+					reviewRequired ||
+					!consent ||
+					strokes.reduce((n, s) => n + s.length, 0) < 3}
 				>{busy ? 'Recording…' : labels[action]}</button
 			>
 		</form>
 	{/if}
+	{#if reviewRequired}<button
+			type="button"
+			class="secondary"
+			disabled={busy}
+			onclick={async () => {
+				dialog.close();
+				onCancel();
+				await invalidateAll();
+			}}>Reload request to review again</button
+		>{/if}
 </dialog>
 
 <style>

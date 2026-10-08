@@ -16,7 +16,7 @@ export const load: PageLoad = async ({ url, parent }) => {
 	});
 	try {
 		return {
-			requests: await api<Page>('/requisitions?' + query),
+			requests: await api<Page>((inbox ? '/approvals/inbox?' : '/requisitions?') + query),
 			inbox,
 			search,
 			state,

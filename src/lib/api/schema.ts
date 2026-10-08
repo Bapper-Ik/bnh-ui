@@ -300,6 +300,8 @@ export type RequestView = {
   "required_authority": string | null;
   "routing_explanation": string | null;
   "submission_blocker"?: string | null;
+  "decision_blocker"?: string | null;
+  "viewing_revision"?: number | null;
   "content": Content;
   "available_actions": Array<string>;
   "revision_number": number;
@@ -427,6 +429,11 @@ export type StaffView = {
   "name": string;
   "email": string;
   "active": boolean;
+};
+
+export type StartRevision = {
+  "expected_version": number;
+  "idempotency_key": string;
 };
 
 export type Summary = {

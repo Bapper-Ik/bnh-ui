@@ -23,7 +23,12 @@
 	}
 	async function load() {
 		try {
-			files = await api<AttachmentPage>('/requisitions/' + request.id + '/attachments');
+			files = await api<AttachmentPage>(
+				'/requisitions/' +
+					request.id +
+					'/attachments' +
+					(request.viewing_revision ? '?revision=' + request.viewing_revision : '')
+			);
 			version = files.request_version;
 		} catch (e) {
 			await failure(e);
@@ -64,7 +69,14 @@
 		}
 	}
 	async function remove(file: AttachmentView) {
-		if (!window.confirm('Remove this document from the draft?')) return;
+		if (
+			!window.confirm(
+				file.frozen
+					? 'Exclude this document from the correction? It remains available in earlier signed revisions.'
+					: 'Remove this document from the draft?'
+			)
+		)
+			return;
 		busy = true;
 		error = '';
 		try {
@@ -169,7 +181,7 @@
 						</svg>
 						View
 					</button>
-					{#if request.available_actions.includes('edit') && !file.frozen}
+					{#if request.available_actions.includes('edit')}
 						<button
 							type="button"
 							class="quiet"

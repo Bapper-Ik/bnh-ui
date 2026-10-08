@@ -41,3 +41,7 @@ Render uses HTTPS. The browser test harness explicitly supplies a trusted loopba
 ## Private requisition documents
 
 The image sets `BODY_SIZE_LIMIT=11M` for supporting-document uploads. Remove an older 2M Render override or set it to 11M. Cloudinary credentials belong only on the backend; see its `docs/render.md`. The frontend uses authenticated application upload/download APIs and receives no Cloudinary credentials or delivery URLs. PDF/PNG/JPEG files default to 5 MB each. Malware scanning is deferred by owner decision.
+
+## Individual approval release
+
+Deploy the backend through schema 0012 before this frontend. The existing startup script runs that migration automatically. No new environment variables are required. My Tasks opens the assigned individual approval inbox; returned requests use Start correction and the existing requisition form. Earlier signed revisions and documents remain available through Request history. Board actions and requisition notification email delivery remain later journeys.

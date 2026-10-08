@@ -21,9 +21,19 @@
 		>
 		<div class="group-label">WORKSPACE</div>
 		<nav aria-label="Main navigation">
-			<a href="/requisitions" class:active={page.url.pathname.startsWith('/requisitions')}
+			<a
+				href="/requisitions"
+				class:active={page.url.pathname.startsWith('/requisitions') &&
+					page.url.searchParams.get('inbox') !== 'true'}
 				><span aria-hidden="true">▤</span> Requisitions</a
 			>
+			{#if !data.user.read_only}
+				<a
+					href="/requisitions?inbox=true"
+					class:active={page.url.searchParams.get('inbox') === 'true'}
+					><span aria-hidden="true">☷</span> My Tasks</a
+				>
+			{/if}
 			<a href="/vendors" class:active={page.url.pathname === '/vendors'}
 				><span aria-hidden="true">▦</span> Vendors</a
 			>

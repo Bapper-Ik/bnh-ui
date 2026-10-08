@@ -20,13 +20,15 @@
 		<h1>{data.inbox ? 'Approval inbox' : 'Requisitions'}</h1>
 		<p>
 			{data.inbox
-				? 'Requests currently awaiting your attention.'
+				? 'Review and decide requisitions assigned to you as HOD, Chief of Staff or Managing Director.'
 				: 'Create requests and follow every decision.'}
 		</p>
 	</div>
-	{#if !data.readOnly}<a class="button" href="/requisitions/new">+ New requisition</a>{/if}
+	{#if !data.readOnly && !data.inbox}<a class="button" href="/requisitions/new">+ New requisition</a
+		>{/if}
 </div>
 <form class="filters" method="GET">
+	{#if data.inbox}<input type="hidden" name="inbox" value="true" />{/if}
 	<label
 		>Search requisitions<input
 			name="search"
@@ -35,15 +37,15 @@
 			maxlength="250"
 		/></label
 	>
-	<label
-		>Status<select name="state" value={data.state}
-			><option value="">All statuses</option
-			>{#each ['DRAFT', 'PENDING_AUTHORITY', 'AWAITING_BOARD_RESOLUTION', 'APPROVED', 'REJECTED', 'RETURNED_FOR_REVISION'] as state (state)}<option
-					value={state}>{stateLabel(state)}</option
-				>{/each}</select
-		></label
-	>
-	<button class="secondary">Apply filters</button>
+	{#if !data.inbox}<label
+			>Status<select name="state" value={data.state}
+				><option value="">All statuses</option
+				>{#each ['DRAFT', 'PENDING_AUTHORITY', 'AWAITING_BOARD_RESOLUTION', 'APPROVED', 'REJECTED', 'RETURNED_FOR_REVISION'] as state (state)}<option
+						value={state}>{stateLabel(state)}</option
+					>{/each}</select
+			></label
+		>
+	{/if}<button class="secondary">Apply filters</button>
 </form>
 <div class="section-heading">
 	<h2>
@@ -53,7 +55,13 @@
 </div>
 {#if data.requests.items.length === 0}
 	<div class="empty">
-		<h2>{data.inbox ? 'You’re all caught up' : 'No requisitions yet'}</h2>
+		<h2>
+			{data.search || data.state
+				? 'No matching requisitions'
+				: data.inbox
+					? 'You’re all caught up'
+					: 'No requisitions yet'}
+		</h2>
 		<p>
 			{data.inbox
 				? 'New requests assigned to your office will appear here.'

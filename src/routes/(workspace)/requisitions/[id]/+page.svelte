@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
+	import { api, ApiError } from '#lib/api/client.js';
 	import type { Intent } from '#lib/api/schema.js';
 	import { money, stateLabel, dateTime, lineKobo, formatKobo } from '#lib/money.js';
 	import RequisitionForm from '#lib/features/requisitions/RequisitionForm.svelte';
@@ -8,6 +9,34 @@
 	import SigningDialog from '#lib/features/requisitions/SigningDialog.svelte';
 	let { data } = $props();
 	let editing = $state(false);
+	let correctionBusy = $state(false),
+		correctionError = $state('');
+	let correctionCommand: string | null = null;
+	async function startCorrection() {
+		if (correctionBusy) return;
+		correctionBusy = true;
+		correctionError = '';
+		correctionCommand ??= JSON.stringify({
+			expected_version: req.version,
+			idempotency_key: crypto.randomUUID()
+		});
+		try {
+			await api('/requisitions/' + req.id + '/revisions', {
+				method: 'POST',
+				body: correctionCommand
+			});
+			correctionCommand = null;
+			await invalidateAll();
+			editing = true;
+		} catch (e) {
+			correctionError = e instanceof Error ? e.message : 'Unable to start correction.';
+			if (e instanceof ApiError && e.status < 500) correctionCommand = null;
+			if (e instanceof ApiError && e.status === 401) await goto('/login', { invalidateAll: true });
+		} finally {
+			correctionBusy = false;
+		}
+	}
+
 	let signing = $state<Intent['action'] | null>(null);
 	const req = $derived(data.request);
 	const vendor = $derived(req.content.vendor);
@@ -33,6 +62,22 @@
 	</div>
 	<span class="status">{stateLabel(req.state)}</span>
 </div>
+{#if req.viewing_revision}
+	<p role="status">
+		Viewing signed revision {req.viewing_revision}. This record is read-only.
+		<a href={'/requisitions/' + req.id}>Back to current request</a>
+	</p>
+{:else if req.state === 'RETURNED_FOR_REVISION'}
+	<p role="status">
+		Returned for correction. Start a correction to prepare a new draft; the earlier signed revision
+		stays unchanged.
+	</p>
+{:else if req.state === 'DRAFT' && req.revision_number > 0}
+	<p role="status">
+		Correction draft for revision {req.revision_number + 1}. Resubmission requires a new signature
+		and recalculates the approval route.
+	</p>
+{/if}
 {#if req.state === 'DRAFT' && !editing}
 	<p role="status">Draft saved. You can return to it before submitting.</p>
 {/if}
@@ -148,14 +193,22 @@
 				</div>
 				<div class="grand-total"><span>Grand total</span><strong>{money(req.total)}</strong></div>
 			</section>
-			{#key req.version}<Attachments request={req} onChanged={saved} />{/key}
+			{#key `${req.version}:${req.viewing_revision ?? 'current'}`}<Attachments
+					request={req}
+					onChanged={saved}
+				/>{/key}
 			<section class="card">
 				<h2>Request history</h2>
 				{#if req.history.length}<ol class="timeline">
 						{#each req.history as event, i (i)}<li>
 								<strong>{String(event.type).replaceAll('_', ' ')}</strong>
 								<p>{String(event.actor)} · Revision {String(event.revision)}</p>
-								<small>{dateTime(String(event.at))}</small>{#if event.reason}<p class="reason">
+								<small>{dateTime(String(event.at))}</small>
+								{#if event.type === 'submission'}<p>
+										<a href={'/requisitions/' + req.id + '?revision=' + event.revision}
+											>View signed revision {String(event.revision)}</a
+										>
+									</p>{/if}{#if event.reason}<p class="reason">
 										{String(event.reason)}
 									</p>{/if}
 							</li>{/each}
@@ -181,11 +234,20 @@
 			{#if req.submission_blocker}<p class="error" role="status">
 					Before submitting: {req.submission_blocker}
 				</p>{/if}
+			{#if req.decision_blocker}<p class="error" role="status">{req.decision_blocker}</p>{/if}
+			{#if correctionError}<p class="error" role="alert">
+					{correctionError}
+					<button class="quiet" onclick={() => invalidateAll()}>Reload request</button>
+				</p>{/if}
 			<div class="stack action-stack">
+				{#if req.available_actions.includes('revise')}<button
+						disabled={correctionBusy}
+						onclick={startCorrection}>{correctionBusy ? 'Starting…' : 'Start correction'}</button
+					>{/if}
 				{#if req.available_actions.includes('edit')}<button
 						class="secondary"
 						onclick={() => (editing = true)}>Edit draft</button
-					>{/if}{#each req.available_actions.filter((a: string) => a === 'submit') as action (action)}<button
+					>{/if}{#each req.available_actions.filter( (a: string) => ['submit', 'approve', 'reject', 'return'].includes(a) ) as action (action)}<button
 						disabled={!!req.submission_blocker}
 						onclick={() => (signing = action as Intent['action'])}
 						>{actionLabels[action] || action}</button
