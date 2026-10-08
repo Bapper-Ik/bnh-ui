@@ -37,3 +37,9 @@ Deploy backend schema `0014` before this frontend; no new UI environment variabl
 The workspace header has a notification drawer for requester updates and currently eligible assigned work, with unread filtering, paging, persisted read state, retries and honest email delivery status. Opening an alert marks it read and navigates to the authenticated requisition or private Board workspace; it never signs a decision. Alerts refresh on navigation, window focus and every 30 seconds while the page is visible. Failed refreshes clear displayed results; expired sessions return to sign-in.
 
 Deploy backend schema `0015` before this UI. Existing backend Resend settings enable email; no new frontend variable is needed. In-app alerts remain available while email is disabled or delivery fails. See the backend notification operations guide for retry limits and historical-email handling. `tests/notifications.e2e.ts` verifies the drawer, role handoffs, persisted reads, mobile layout and error recovery against the real test backend with private synthetic email capture.
+
+## Dashboard (screen 4)
+
+Sign-in and the workspace brand open `/`. The dashboard shows real scoped status counts, own-request totals, latest requisitions, recent permitted activity and currently assigned work. Status cards open the existing filtered list; request links open the existing detail/review screen. Creation, task and administrative shortcuts follow current server capabilities. Read-only reviewers cannot create or approve, and technical administrators do not gain financial visibility.
+
+Data refreshes on window focus or the explicit Refresh dashboard control. Failed refreshes clear the old results and provide retry; expired sessions return to sign-in. No extra environment variable or migration is needed. Deploy the backend dashboard API first. The real-backend dashboard tests cover persistence, scoped roles, links, mobile layout and failed/expired refreshes.

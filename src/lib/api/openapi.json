@@ -2268,6 +2268,27 @@
         }
       }
     },
+    "/api/v1/dashboard": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Dashboard",
+        "operationId": "dashboard_api_v1_dashboard_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/requisitions": {
       "get": {
         "tags": [
@@ -4576,6 +4597,118 @@
           "data"
         ],
         "title": "CreateVendor"
+      },
+      "DashboardActivity": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "request_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Request Id"
+          },
+          "reference": {
+            "type": "string",
+            "title": "Reference"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "request_id",
+          "reference",
+          "label",
+          "at"
+        ],
+        "title": "DashboardActivity"
+      },
+      "DashboardCount": {
+        "properties": {
+          "state": {
+            "type": "string",
+            "title": "State"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "state",
+          "count"
+        ],
+        "title": "DashboardCount"
+      },
+      "DashboardView": {
+        "properties": {
+          "counts": {
+            "items": {
+              "$ref": "#/components/schemas/DashboardCount"
+            },
+            "type": "array",
+            "title": "Counts"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "own_requests": {
+            "type": "integer",
+            "title": "Own Requests"
+          },
+          "can_create": {
+            "type": "boolean",
+            "title": "Can Create"
+          },
+          "can_access_approval_inbox": {
+            "type": "boolean",
+            "title": "Can Access Approval Inbox"
+          },
+          "tasks": {
+            "$ref": "#/components/schemas/Page"
+          },
+          "recent_requests": {
+            "$ref": "#/components/schemas/Page"
+          },
+          "activity": {
+            "items": {
+              "$ref": "#/components/schemas/DashboardActivity"
+            },
+            "type": "array",
+            "title": "Activity"
+          },
+          "refreshed_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Refreshed At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "counts",
+          "total",
+          "own_requests",
+          "can_create",
+          "can_access_approval_inbox",
+          "tasks",
+          "recent_requests",
+          "activity",
+          "refreshed_at"
+        ],
+        "title": "DashboardView"
       },
       "DepartmentInput": {
         "properties": {

@@ -14,7 +14,7 @@
 		try {
 			await api('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
 			password = '';
-			await goto('/vendors', { invalidateAll: true });
+			await goto('/', { invalidateAll: true });
 		} catch (e) {
 			error = e instanceof Error ? e.message : 'Unable to sign in.';
 		} finally {

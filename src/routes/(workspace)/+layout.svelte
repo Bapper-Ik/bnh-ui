@@ -17,11 +17,14 @@
 
 <div class="workspace">
 	<aside>
-		<a href="/vendors" class="brand"
+		<a href="/" class="brand"
 			><span class="mark">C</span><span>Custodian<small>BY BRENDAN</small></span></a
 		>
 		<div class="group-label">WORKSPACE</div>
 		<nav aria-label="Main navigation">
+			<a href="/" class:active={page.url.pathname === '/'}
+				><span aria-hidden="true">⌂</span> Dashboard</a
+			>
 			<a
 				href="/requisitions"
 				class:active={page.url.pathname.startsWith('/requisitions') &&

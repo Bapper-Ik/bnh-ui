@@ -18,7 +18,8 @@ async function login(page: Page, role: string) {
 	await page.getByLabel('Work email').fill(data.people.find((p) => p.role === role)!.email);
 	await page.getByLabel('Password', { exact: true }).fill(data.password);
 	await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-	await expect(page.getByRole('heading', { name: 'Vendors', exact: true })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
+	await page.goto('/vendors');
 }
 async function search(page: Page, value: string) {
 	await page.getByLabel('Search staff').fill(value);

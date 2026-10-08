@@ -1,5 +1,4 @@
-import { redirect } from '@sveltejs/kit';
-
+// The dashboard loads authenticated data in its component and handles recoverable errors inline.
 export function load() {
-	redirect(303, '/vendors');
+	return {};
 }

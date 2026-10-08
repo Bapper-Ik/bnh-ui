@@ -17,7 +17,8 @@ async function login(page: Page, role = 'admin') {
 	await page.getByLabel('Work email').fill(f.people.find((p) => p.role === role)!.email);
 	await page.getByLabel('Password', { exact: true }).fill(f.password);
 	await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-	await expect(page.getByRole('heading', { name: 'Vendors', exact: true })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
+	await page.goto('/vendors');
 }
 async function command(page: Page, path: string, body?: Record<string, unknown>) {
 	return page.evaluate(

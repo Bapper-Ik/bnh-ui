@@ -150,6 +150,31 @@ export type CreateVendor = {
   "data": VendorData;
 };
 
+export type DashboardActivity = {
+  "id": string;
+  "request_id": string;
+  "reference": string;
+  "label": string;
+  "at": string;
+};
+
+export type DashboardCount = {
+  "state": string;
+  "count": number;
+};
+
+export type DashboardView = {
+  "counts": Array<DashboardCount>;
+  "total": number;
+  "own_requests": number;
+  "can_create": boolean;
+  "can_access_approval_inbox": boolean;
+  "tasks": Page;
+  "recent_requests": Page;
+  "activity": Array<DashboardActivity>;
+  "refreshed_at": string;
+};
+
 export type DepartmentInput = {
   "name": string;
   "code"?: string;
