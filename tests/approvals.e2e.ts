@@ -58,6 +58,26 @@ async function create(page: Page, amount: string) {
 	return { title, url: page.url() };
 }
 
+test('ordinary staff have no approval navigation and inbox links return to requisitions', async ({
+	page
+}) => {
+	for (const role of ['requester', 'admin', 'readonly']) {
+		await login(page, role);
+		await expect(page.getByRole('link', { name: 'My Tasks', exact: true })).toHaveCount(0);
+		await page.goto('/requisitions?inbox=true');
+		await expect(page).toHaveURL(/\/requisitions$/);
+		await expect(page.getByRole('heading', { name: 'Requisitions', exact: true })).toBeVisible();
+		await expect(page.getByRole('heading', { name: 'Approval inbox', exact: true })).toHaveCount(0);
+	}
+	await login(page, 'hod');
+	await expect(page.getByRole('link', { name: 'My Tasks', exact: true })).toBeVisible();
+	await page.getByRole('link', { name: 'My Tasks', exact: true }).click();
+	await expect(page.getByRole('heading', { name: 'Approval inbox', exact: true })).toBeVisible();
+	await expect(
+		page.getByRole('heading', { name: 'You’re all caught up', exact: true })
+	).toBeVisible();
+});
+
 for (const [amount, role] of [
 	['5000000', 'hod'],
 	['5000000.01', 'chief_of_staff'],

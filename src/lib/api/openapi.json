@@ -5314,6 +5314,11 @@
             "type": "boolean",
             "title": "Read Only",
             "default": false
+          },
+          "can_access_approval_inbox": {
+            "type": "boolean",
+            "title": "Can Access Approval Inbox",
+            "default": false
           }
         },
         "type": "object",

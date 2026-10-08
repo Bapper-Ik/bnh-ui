@@ -27,7 +27,7 @@
 					page.url.searchParams.get('inbox') !== 'true'}
 				><span aria-hidden="true">▤</span> Requisitions</a
 			>
-			{#if !data.user.read_only}
+			{#if data.user.can_access_approval_inbox}
 				<a
 					href="/requisitions?inbox=true"
 					class:active={page.url.searchParams.get('inbox') === 'true'}

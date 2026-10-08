@@ -5,6 +5,7 @@ import type { PageLoad } from './$types';
 export const load: PageLoad = async ({ url, parent }) => {
 	const { user } = await parent();
 	const inbox = url.searchParams.get('inbox') === 'true';
+	if (inbox && !user.can_access_approval_inbox) redirect(303, '/requisitions');
 	const offset = Math.max(0, Math.floor(Number(url.searchParams.get('offset') ?? 0) || 0));
 	const search = url.searchParams.get('search') ?? '';
 	const state = url.searchParams.get('state') ?? '';

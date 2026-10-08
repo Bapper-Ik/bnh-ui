@@ -465,6 +465,7 @@ export type UserView = {
   "email": string;
   "permissions": Array<string>;
   "read_only"?: boolean;
+  "can_access_approval_inbox"?: boolean;
 };
 
 export type ValidationError = {
