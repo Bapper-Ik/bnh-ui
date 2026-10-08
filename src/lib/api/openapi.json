@@ -2267,6 +2267,536 @@
           }
         }
       }
+    },
+    "/api/v1/requisitions": {
+      "get": {
+        "tags": [
+          "Requisitions"
+        ],
+        "summary": "List Requests",
+        "operationId": "list_requests_api_v1_requisitions_get",
+        "parameters": [
+          {
+            "name": "inbox",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Inbox"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 250,
+              "default": "",
+              "title": "Search"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 40,
+              "default": "",
+              "title": "State"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 25,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Requisitions"
+        ],
+        "summary": "Create",
+        "operationId": "create_api_v1_requisitions_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/requisitions/{request_id}": {
+      "get": {
+        "tags": [
+          "Requisitions"
+        ],
+        "summary": "Detail",
+        "operationId": "detail_api_v1_requisitions__request_id__get",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/requisitions/{request_id}/draft": {
+      "put": {
+        "tags": [
+          "Requisitions"
+        ],
+        "summary": "Update",
+        "operationId": "update_api_v1_requisitions__request_id__draft_put",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/requisitions/{request_id}/signing-challenges": {
+      "post": {
+        "tags": [
+          "Requisitions"
+        ],
+        "summary": "Challenge",
+        "operationId": "challenge_api_v1_requisitions__request_id__signing_challenges_post",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Intent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChallengeView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/requisitions/{request_id}/actions": {
+      "post": {
+        "tags": [
+          "Requisitions"
+        ],
+        "summary": "Act",
+        "operationId": "act_api_v1_requisitions__request_id__actions_post",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignedAction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/requisitions/{request_id}/attachments": {
+      "get": {
+        "tags": [
+          "Private documents"
+        ],
+        "summary": "Listing",
+        "operationId": "listing_api_v1_requisitions__request_id__attachments_get",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttachmentPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Private documents"
+        ],
+        "summary": "Upload",
+        "operationId": "upload_api_v1_requisitions__request_id__attachments_post",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          },
+          {
+            "name": "filename",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 180,
+              "title": "Filename"
+            }
+          },
+          {
+            "name": "expected_version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "Expected Version"
+            }
+          },
+          {
+            "name": "upload_key",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Upload Key"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttachmentView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/attachments/{attachment_id}": {
+      "delete": {
+        "tags": [
+          "Private documents"
+        ],
+        "summary": "Detach",
+        "operationId": "detach_api_v1_attachments__attachment_id__delete",
+        "parameters": [
+          {
+            "name": "attachment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Attachment Id"
+            }
+          },
+          {
+            "name": "expected_version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "Expected Version"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/attachments/{attachment_id}/content": {
+      "get": {
+        "tags": [
+          "Private documents"
+        ],
+        "summary": "Download",
+        "operationId": "download_api_v1_attachments__attachment_id__content_get",
+        "parameters": [
+          {
+            "name": "attachment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Attachment Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2350,6 +2880,92 @@
           "validation_state"
         ],
         "title": "AttachmentAccess"
+      },
+      "AttachmentPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AttachmentView"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "request_version": {
+            "type": "integer",
+            "title": "Request Version"
+          },
+          "uploads_enabled": {
+            "type": "boolean",
+            "title": "Uploads Enabled"
+          },
+          "max_bytes": {
+            "type": "integer",
+            "title": "Max Bytes"
+          },
+          "max_count": {
+            "type": "integer",
+            "title": "Max Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "request_version",
+          "uploads_enabled",
+          "max_bytes",
+          "max_count"
+        ],
+        "title": "AttachmentPage"
+      },
+      "AttachmentView": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "media_type": {
+            "type": "string",
+            "title": "Media Type"
+          },
+          "byte_size": {
+            "type": "integer",
+            "title": "Byte Size"
+          },
+          "digest": {
+            "type": "string",
+            "title": "Digest"
+          },
+          "frozen": {
+            "type": "boolean",
+            "title": "Frozen"
+          },
+          "validation_state": {
+            "type": "string",
+            "title": "Validation State"
+          },
+          "malware_scan": {
+            "type": "string",
+            "const": "not_performed",
+            "title": "Malware Scan",
+            "default": "not_performed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "filename",
+          "media_type",
+          "byte_size",
+          "digest",
+          "frozen",
+          "validation_state"
+        ],
+        "title": "AttachmentView"
       },
       "AuthorityRow": {
         "properties": {
@@ -2459,6 +3075,197 @@
           "read_only"
         ],
         "title": "CapabilityView"
+      },
+      "ChallengeView": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "content_digest": {
+            "type": "string",
+            "title": "Content Digest"
+          },
+          "expires_at": {
+            "type": "string",
+            "title": "Expires At"
+          },
+          "statement": {
+            "type": "string",
+            "title": "Statement"
+          },
+          "total": {
+            "type": "string",
+            "title": "Total"
+          },
+          "authority": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Authority"
+          },
+          "routing_explanation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Routing Explanation"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "content_digest",
+          "expires_at",
+          "statement",
+          "total"
+        ],
+        "title": "ChallengeView"
+      },
+      "Content": {
+        "properties": {
+          "vendor": {
+            "$ref": "#/components/schemas/VendorInfo"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 5000,
+            "title": "Description",
+            "default": ""
+          },
+          "location": {
+            "type": "string",
+            "maxLength": 500,
+            "title": "Location",
+            "default": ""
+          },
+          "start_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Date"
+          },
+          "completion_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completion Date"
+          },
+          "payment_terms": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Payment Terms",
+            "default": ""
+          },
+          "warranty": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Warranty",
+            "default": ""
+          },
+          "currency": {
+            "type": "string",
+            "const": "NGN",
+            "title": "Currency",
+            "default": "NGN"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/CostLine"
+            },
+            "type": "array",
+            "maxItems": 200,
+            "title": "Lines"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "Content"
+      },
+      "CostLine": {
+        "properties": {
+          "description": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Description"
+          },
+          "quantity": {
+            "type": "string",
+            "maxLength": 40,
+            "title": "Quantity"
+          },
+          "unit_price": {
+            "type": "string",
+            "maxLength": 40,
+            "title": "Unit Price"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "description",
+          "quantity",
+          "unit_price"
+        ],
+        "title": "CostLine"
+      },
+      "CreateRequest": {
+        "properties": {
+          "entity_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Entity Id"
+          },
+          "creation_key": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Creation Key"
+          },
+          "content": {
+            "$ref": "#/components/schemas/Content"
+          },
+          "vendor_selection": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/VendorSelection"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "entity_id",
+          "creation_key",
+          "content"
+        ],
+        "title": "CreateRequest"
       },
       "CreateVendor": {
         "properties": {
@@ -2687,6 +3494,38 @@
           "status"
         ],
         "title": "Health"
+      },
+      "Intent": {
+        "properties": {
+          "expected_version": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expected Version"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "submit",
+              "approve",
+              "reject",
+              "return"
+            ],
+            "title": "Action"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Reason",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_version",
+          "action"
+        ],
+        "title": "Intent"
       },
       "InvitationView": {
         "properties": {
@@ -3310,6 +4149,60 @@
         ],
         "title": "OrganisationWorkspace"
       },
+      "Page": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Summary"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page"
+      },
+      "Point": {
+        "properties": {
+          "x": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "X"
+          },
+          "y": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Y"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "x",
+          "y"
+        ],
+        "title": "Point"
+      },
       "Reauthenticate": {
         "properties": {
           "password": {
@@ -3349,6 +4242,134 @@
         ],
         "title": "Recover"
       },
+      "RequestView": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "reference": {
+            "type": "string",
+            "title": "Reference"
+          },
+          "entity_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Entity Id"
+          },
+          "requester_name": {
+            "type": "string",
+            "title": "Requester Name"
+          },
+          "entity_name": {
+            "type": "string",
+            "title": "Entity Name"
+          },
+          "department_name": {
+            "type": "string",
+            "title": "Department Name"
+          },
+          "state": {
+            "type": "string",
+            "title": "State"
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version"
+          },
+          "total": {
+            "type": "string",
+            "title": "Total"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "required_authority": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Required Authority"
+          },
+          "routing_explanation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Routing Explanation"
+          },
+          "submission_blocker": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Submission Blocker"
+          },
+          "content": {
+            "$ref": "#/components/schemas/Content"
+          },
+          "available_actions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Available Actions"
+          },
+          "revision_number": {
+            "type": "integer",
+            "title": "Revision Number"
+          },
+          "redacted_fields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Redacted Fields"
+          },
+          "history": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "History"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "reference",
+          "entity_id",
+          "requester_name",
+          "entity_name",
+          "department_name",
+          "state",
+          "version",
+          "total",
+          "created_at",
+          "required_authority",
+          "routing_explanation",
+          "content",
+          "available_actions",
+          "revision_number",
+          "history"
+        ],
+        "title": "RequestView"
+      },
       "ReviewInput": {
         "properties": {
           "identity_id": {
@@ -3374,6 +4395,76 @@
           "entity_id"
         ],
         "title": "ReviewInput"
+      },
+      "SignedAction": {
+        "properties": {
+          "expected_version": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expected Version"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "submit",
+              "approve",
+              "reject",
+              "return"
+            ],
+            "title": "Action"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Reason",
+            "default": ""
+          },
+          "challenge_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Challenge Id"
+          },
+          "idempotency_key": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Idempotency Key"
+          },
+          "signer_name": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 2,
+            "title": "Signer Name"
+          },
+          "consent": {
+            "type": "boolean",
+            "const": true,
+            "title": "Consent"
+          },
+          "strokes": {
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/Point"
+              },
+              "type": "array"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Strokes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_version",
+          "action",
+          "challenge_id",
+          "idempotency_key",
+          "signer_name",
+          "consent",
+          "strokes"
+        ],
+        "title": "SignedAction"
       },
       "StaffDetail": {
         "properties": {
@@ -3891,6 +4982,91 @@
         ],
         "title": "StaffView"
       },
+      "Summary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "reference": {
+            "type": "string",
+            "title": "Reference"
+          },
+          "state": {
+            "type": "string",
+            "title": "State"
+          },
+          "total": {
+            "type": "string",
+            "title": "Total"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "requester_name": {
+            "type": "string",
+            "title": "Requester Name"
+          },
+          "required_authority": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Required Authority"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "reference",
+          "state",
+          "total",
+          "description",
+          "created_at",
+          "requester_name",
+          "required_authority"
+        ],
+        "title": "Summary"
+      },
+      "UpdateRequest": {
+        "properties": {
+          "expected_version": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expected Version"
+          },
+          "content": {
+            "$ref": "#/components/schemas/Content"
+          },
+          "vendor_selection": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/VendorSelection"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_version",
+          "content"
+        ],
+        "title": "UpdateRequest"
+      },
       "UpdateVendor": {
         "properties": {
           "expected_version": {
@@ -4057,6 +5233,67 @@
         ],
         "title": "VendorData"
       },
+      "VendorInfo": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 250,
+            "title": "Name",
+            "default": ""
+          },
+          "contact_person": {
+            "type": "string",
+            "maxLength": 180,
+            "title": "Contact Person",
+            "default": ""
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 1024,
+            "title": "Phone",
+            "default": ""
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 320,
+            "title": "Email",
+            "default": ""
+          },
+          "address": {
+            "type": "string",
+            "maxLength": 1000,
+            "title": "Address",
+            "default": ""
+          },
+          "registration_id": {
+            "type": "string",
+            "maxLength": 150,
+            "title": "Registration Id",
+            "default": ""
+          },
+          "bank_name": {
+            "type": "string",
+            "maxLength": 150,
+            "title": "Bank Name",
+            "default": ""
+          },
+          "account_number": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Account Number",
+            "default": ""
+          },
+          "account_name": {
+            "type": "string",
+            "maxLength": 250,
+            "title": "Account Name",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "VendorInfo"
+      },
       "VendorPage": {
         "properties": {
           "items": {
@@ -4087,6 +5324,27 @@
           "offset"
         ],
         "title": "VendorPage"
+      },
+      "VendorSelection": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "expected_version": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expected Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "expected_version"
+        ],
+        "title": "VendorSelection"
       },
       "VendorSummary": {
         "properties": {

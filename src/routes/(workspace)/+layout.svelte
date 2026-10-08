@@ -21,6 +21,9 @@
 		>
 		<div class="group-label">WORKSPACE</div>
 		<nav aria-label="Main navigation">
+			<a href="/requisitions" class:active={page.url.pathname.startsWith('/requisitions')}
+				><span aria-hidden="true">▤</span> Requisitions</a
+			>
 			<a href="/vendors" class:active={page.url.pathname === '/vendors'}
 				><span aria-hidden="true">▦</span> Vendors</a
 			>

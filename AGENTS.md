@@ -99,6 +99,8 @@ Deliver sign-in/recovery, restricted administration, a scoped dashboard, vendor 
 
 ## API integration, money, and signing
 
+The owner selected the existing Cloudinary account for supporting documents (2026-10-08). Use authenticated raw assets and application-authorised downloads; credentials stay on the backend. No R2, Backblaze or scanner provisioning is part of this release.
+
 - Server responses determine totals, lifecycle, permissions, and next actions. Monetary values are decimal strings; account numbers remain strings. Use decimal arithmetic for previews, never JS Number arithmetic for totals or authority boundaries. Preserve server precision when formatting NGN and show Africa/Lagos timestamp context.
 - Use same-origin `/api/v1` with an explicit dev proxy and production routing to FastAPI. Consume HttpOnly-cookie sessions; never store authentication/recovery secrets in localStorage. Follow backend CSRF and fresh-authentication contracts. If a SvelteKit server loader/action calls FastAPI, forward only the required session/CSRF context to the configured trusted backend and return only authorised data. Never expose server secrets or raw session tokens in page data.
 - Send expected versions and idempotency keys for relevant mutations. Reuse keys for retries of identical intent, not changed content. Disable duplicate clicks while relying on backend enforcement.

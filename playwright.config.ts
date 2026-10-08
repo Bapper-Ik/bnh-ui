@@ -23,6 +23,7 @@ export default defineConfig({
 				BACKEND_URL: 'http://127.0.0.1:8017',
 				HOST: '127.0.0.1',
 				PORT: '4173',
+				BODY_SIZE_LIMIT: '11M',
 				PROTOCOL_HEADER: 'x-forwarded-proto'
 			},
 			reuseExistingServer: false

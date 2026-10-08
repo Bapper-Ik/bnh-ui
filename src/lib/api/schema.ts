@@ -18,6 +18,25 @@ export type AttachmentAccess = {
   "validation_state": string;
 };
 
+export type AttachmentPage = {
+  "items": Array<AttachmentView>;
+  "request_version": number;
+  "uploads_enabled": boolean;
+  "max_bytes": number;
+  "max_count": number;
+};
+
+export type AttachmentView = {
+  "id": string;
+  "filename": string;
+  "media_type": string;
+  "byte_size": number;
+  "digest": string;
+  "frozen": boolean;
+  "validation_state": string;
+  "malware_scan"?: "not_performed";
+};
+
 export type AuthorityRow = {
   "requester": string;
   "authorities": Array<string>;
@@ -40,6 +59,41 @@ export type CapabilityView = {
   "requisition_id": string;
   "actions": Array<string>;
   "read_only": boolean;
+};
+
+export type ChallengeView = {
+  "id": string;
+  "content_digest": string;
+  "expires_at": string;
+  "statement": string;
+  "total": string;
+  "authority"?: string | null;
+  "routing_explanation"?: string | null;
+};
+
+export type Content = {
+  "vendor"?: VendorInfo;
+  "description"?: string;
+  "location"?: string;
+  "start_date"?: string | null;
+  "completion_date"?: string | null;
+  "payment_terms"?: string;
+  "warranty"?: string;
+  "currency"?: "NGN";
+  "lines"?: Array<CostLine>;
+};
+
+export type CostLine = {
+  "description": string;
+  "quantity": string;
+  "unit_price": string;
+};
+
+export type CreateRequest = {
+  "entity_id": string;
+  "creation_key": string;
+  "content": Content;
+  "vendor_selection"?: VendorSelection | null;
 };
 
 export type CreateVendor = {
@@ -90,6 +144,12 @@ export type HTTPValidationError = {
 
 export type Health = {
   "status": string;
+};
+
+export type Intent = {
+  "expected_version": number;
+  "action": "submit" | "approve" | "reject" | "return";
+  "reason"?: string;
 };
 
 export type InvitationView = {
@@ -205,6 +265,18 @@ export type OrganisationWorkspace = {
   "rules": Array<string>;
 };
 
+export type Page = {
+  "items": Array<Summary>;
+  "total": number;
+  "limit": number;
+  "offset": number;
+};
+
+export type Point = {
+  "x": number;
+  "y": number;
+};
+
 export type Reauthenticate = {
   "password": string;
 };
@@ -214,10 +286,42 @@ export type Recover = {
   "password": string;
 };
 
+export type RequestView = {
+  "id": string;
+  "reference": string;
+  "entity_id": string;
+  "requester_name": string;
+  "entity_name": string;
+  "department_name": string;
+  "state": string;
+  "version": number;
+  "total": string;
+  "created_at": string;
+  "required_authority": string | null;
+  "routing_explanation": string | null;
+  "submission_blocker"?: string | null;
+  "content": Content;
+  "available_actions": Array<string>;
+  "revision_number": number;
+  "redacted_fields"?: Array<string>;
+  "history": Array<Record<string, unknown>>;
+};
+
 export type ReviewInput = {
   "identity_id": string;
   "entity_id": string;
   "active"?: boolean;
+};
+
+export type SignedAction = {
+  "expected_version": number;
+  "action": "submit" | "approve" | "reject" | "return";
+  "reason"?: string;
+  "challenge_id": string;
+  "idempotency_key": string;
+  "signer_name": string;
+  "consent": true;
+  "strokes": Array<Array<Point>>;
 };
 
 export type StaffDetail = {
@@ -325,6 +429,23 @@ export type StaffView = {
   "active": boolean;
 };
 
+export type Summary = {
+  "id": string;
+  "reference": string;
+  "state": string;
+  "total": string;
+  "description": string;
+  "created_at": string;
+  "requester_name": string;
+  "required_authority": string | null;
+};
+
+export type UpdateRequest = {
+  "expected_version": number;
+  "content": Content;
+  "vendor_selection"?: VendorSelection | null;
+};
+
 export type UpdateVendor = {
   "expected_version": number;
   "data": VendorData;
@@ -357,11 +478,28 @@ export type VendorData = {
   "bank"?: BankDetails | null;
 };
 
+export type VendorInfo = {
+  "name"?: string;
+  "contact_person"?: string;
+  "phone"?: string;
+  "email"?: string;
+  "address"?: string;
+  "registration_id"?: string;
+  "bank_name"?: string;
+  "account_number"?: string;
+  "account_name"?: string;
+};
+
 export type VendorPage = {
   "items": Array<VendorSummary>;
   "total": number;
   "limit": number;
   "offset": number;
+};
+
+export type VendorSelection = {
+  "id": string;
+  "expected_version": number;
 };
 
 export type VendorSummary = {

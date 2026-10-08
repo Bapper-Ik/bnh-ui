@@ -37,3 +37,7 @@ Deploy the matching backend account-access release and let its startup script ap
 Set `FRONTEND_ORIGIN` to this frontend's exact HTTPS origin and include it in backend `ALLOWED_ORIGINS`. With email disabled, the form reports unavailable delivery. Links use a fragment, which the page removes from visible/history state before validation. Passwords and tokens stay out of browser storage. Reset signs out existing sessions; activation grants no automatic authority. The invitation dialog is available on Staff & Access (`/staff`) for users with staff:manage. Create companies and departments on Organisation & Authority (`/organisation`), then assign approved staff memberships and offices on Staff & Access. Both screens require their specific administrative capabilities. No new environment variables or schema migration are needed for screen 12.
 
 Render uses HTTPS. The browser test harness explicitly supplies a trusted loopback proxy protocol header for its local HTTP Node server; do not copy that test-only header configuration into an untrusted public proxy setup.
+
+## Private requisition documents
+
+The image sets `BODY_SIZE_LIMIT=11M` for supporting-document uploads. Remove an older 2M Render override or set it to 11M. Cloudinary credentials belong only on the backend; see its `docs/render.md`. The frontend uses authenticated application upload/download APIs and receives no Cloudinary credentials or delivery URLs. PDF/PNG/JPEG files default to 5 MB each. Malware scanning is deferred by owner decision.

@@ -34,6 +34,7 @@ export async function proxyApi(request: Request, url: URL, backend: string): Pro
 		for (const name of [
 			'content-type',
 			'content-disposition',
+			'content-security-policy',
 			'cache-control',
 			'x-request-id',
 			'retry-after'

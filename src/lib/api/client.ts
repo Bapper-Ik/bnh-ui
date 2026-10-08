@@ -15,7 +15,12 @@ function csrfToken(): string {
 
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
 	const headers = new Headers(init.headers);
-	if (init.body && !(init.body instanceof FormData))
+	if (
+		init.body &&
+		!(init.body instanceof FormData) &&
+		!(init.body instanceof Blob) &&
+		!headers.has('Content-Type')
+	)
 		headers.set('Content-Type', 'application/json');
 	if (init.method && !['GET', 'HEAD'].includes(init.method.toUpperCase()))
 		headers.set('X-CSRF-Token', csrfToken());
@@ -25,7 +30,14 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
 		throw new ApiError(
 			response.status,
 			body?.code ?? 'REQUEST_FAILED',
-			body?.message ?? 'The service could not complete this action. Please try again.'
+			body?.fields?.length
+				? body.fields
+						.map(
+							(f: { field: string; message: string }) =>
+								`${f.field.replace('body.', '')}: ${f.message}`
+						)
+						.join('; ')
+				: (body?.message ?? 'The service could not complete this action. Please try again.')
 		);
 	}
 	return body as T;
