@@ -29,6 +29,11 @@
 					><span aria-hidden="true">♙</span> Staff & Access</a
 				>
 			{/if}
+			{#if data.user.permissions.includes('organisation:manage') && !data.user.read_only}
+				<a href="/organisation" class:active={page.url.pathname === '/organisation'}
+					><span aria-hidden="true">▤</span> Organisation & Authority</a
+				>
+			{/if}
 		</nav>
 		<div class="sidebar-note">
 			Brendan Nicholas Holdings

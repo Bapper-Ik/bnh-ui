@@ -1667,6 +1667,162 @@
         }
       }
     },
+    "/api/v1/organisation/workspace": {
+      "get": {
+        "tags": [
+          "Organisation workspace"
+        ],
+        "summary": "Workspace",
+        "operationId": "workspace_api_v1_organisation_workspace_get",
+        "parameters": [
+          {
+            "name": "entity_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Entity Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganisationWorkspace"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organisation/workspace/entities/{entity_id}": {
+      "patch": {
+        "tags": [
+          "Organisation workspace"
+        ],
+        "summary": "Edit Company",
+        "operationId": "edit_company_api_v1_organisation_workspace_entities__entity_id__patch",
+        "parameters": [
+          {
+            "name": "entity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Entity Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganisationEdit"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganisationRecord"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organisation/workspace/departments/{department_id}": {
+      "patch": {
+        "tags": [
+          "Organisation workspace"
+        ],
+        "summary": "Edit Department",
+        "operationId": "edit_department_api_v1_organisation_workspace_departments__department_id__patch",
+        "parameters": [
+          {
+            "name": "department_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Department Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganisationEdit"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganisationRecord"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/access/requisitions": {
       "get": {
         "tags": [
@@ -2195,6 +2351,27 @@
         ],
         "title": "AttachmentAccess"
       },
+      "AuthorityRow": {
+        "properties": {
+          "requester": {
+            "type": "string",
+            "title": "Requester"
+          },
+          "authorities": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Authorities"
+          }
+        },
+        "type": "object",
+        "required": [
+          "requester",
+          "authorities"
+        ],
+        "title": "AuthorityRow"
+      },
       "BankDetails": {
         "properties": {
           "bank_name": {
@@ -2333,6 +2510,19 @@
       },
       "DirectoryUpdate": {
         "properties": {
+          "expected_version": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64,
+                "minLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Version"
+          },
           "name": {
             "anyOf": [
               {
@@ -2697,6 +2887,113 @@
         ],
         "title": "Message"
       },
+      "NamedOffice": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "identity_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Identity Id"
+          },
+          "entity_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Entity Id"
+          },
+          "department_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Department Id"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "valid_from": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Valid From"
+          },
+          "valid_until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid Until"
+          },
+          "authorisation_reference": {
+            "type": "string",
+            "title": "Authorisation Reference"
+          },
+          "holder_name": {
+            "type": "string",
+            "title": "Holder Name"
+          },
+          "department_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Department Name"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "revoked",
+              "expired",
+              "scheduled",
+              "blocked"
+            ],
+            "title": "Status"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "identity_id",
+          "entity_id",
+          "department_id",
+          "role",
+          "active",
+          "valid_from",
+          "valid_until",
+          "authorisation_reference",
+          "holder_name",
+          "department_name",
+          "status",
+          "reason"
+        ],
+        "title": "NamedOffice"
+      },
       "OfficeInput": {
         "properties": {
           "identity_id": {
@@ -2838,6 +3135,180 @@
           "authorisation_reference"
         ],
         "title": "OfficeView"
+      },
+      "OrganisationEdit": {
+        "properties": {
+          "expected_version": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 64,
+            "title": "Expected Version"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 180,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Active"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_version"
+        ],
+        "title": "OrganisationEdit"
+      },
+      "OrganisationRecord": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "kind": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kind"
+          },
+          "entity_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entity Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "code",
+          "active",
+          "version"
+        ],
+        "title": "OrganisationRecord"
+      },
+      "OrganisationWorkspace": {
+        "properties": {
+          "entities": {
+            "items": {
+              "$ref": "#/components/schemas/OrganisationRecord"
+            },
+            "type": "array",
+            "title": "Entities"
+          },
+          "selected_entity": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Selected Entity"
+          },
+          "departments": {
+            "items": {
+              "$ref": "#/components/schemas/OrganisationRecord"
+            },
+            "type": "array",
+            "title": "Departments"
+          },
+          "offices": {
+            "items": {
+              "$ref": "#/components/schemas/NamedOffice"
+            },
+            "type": "array",
+            "title": "Offices"
+          },
+          "authority_gaps": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Authority Gaps"
+          },
+          "bands": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Bands"
+          },
+          "matrix": {
+            "items": {
+              "$ref": "#/components/schemas/AuthorityRow"
+            },
+            "type": "array",
+            "title": "Matrix"
+          },
+          "rules": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Rules"
+          }
+        },
+        "type": "object",
+        "required": [
+          "entities",
+          "selected_entity",
+          "departments",
+          "offices",
+          "authority_gaps",
+          "bands",
+          "matrix",
+          "rules"
+        ],
+        "title": "OrganisationWorkspace"
       },
       "Reauthenticate": {
         "properties": {

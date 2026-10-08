@@ -18,6 +18,11 @@ export type AttachmentAccess = {
   "validation_state": string;
 };
 
+export type AuthorityRow = {
+  "requester": string;
+  "authorities": Array<string>;
+};
+
 export type BankDetails = {
   "bank_name": string;
   "account_number": string;
@@ -49,6 +54,7 @@ export type DepartmentInput = {
 };
 
 export type DirectoryUpdate = {
+  "expected_version"?: string | null;
   "name"?: string | null;
   "active"?: boolean | null;
 };
@@ -134,6 +140,22 @@ export type Message = {
   "message": string;
 };
 
+export type NamedOffice = {
+  "id": string;
+  "identity_id": string;
+  "entity_id": string;
+  "department_id": string | null;
+  "role": string;
+  "active": boolean;
+  "valid_from": string;
+  "valid_until": string | null;
+  "authorisation_reference": string;
+  "holder_name": string;
+  "department_name": string | null;
+  "status": "active" | "revoked" | "expired" | "scheduled" | "blocked";
+  "reason": string;
+};
+
 export type OfficeInput = {
   "identity_id": string;
   "entity_id": string;
@@ -154,6 +176,33 @@ export type OfficeView = {
   "valid_from": string;
   "valid_until": string | null;
   "authorisation_reference": string;
+};
+
+export type OrganisationEdit = {
+  "expected_version": string;
+  "name"?: string | null;
+  "active"?: boolean | null;
+};
+
+export type OrganisationRecord = {
+  "id": string;
+  "name": string;
+  "code": string;
+  "active": boolean;
+  "version": string;
+  "kind"?: string | null;
+  "entity_id"?: string | null;
+};
+
+export type OrganisationWorkspace = {
+  "entities": Array<OrganisationRecord>;
+  "selected_entity": string | null;
+  "departments": Array<OrganisationRecord>;
+  "offices": Array<NamedOffice>;
+  "authority_gaps": Array<string>;
+  "bands": Array<string>;
+  "matrix": Array<AuthorityRow>;
+  "rules": Array<string>;
 };
 
 export type Reauthenticate = {
