@@ -30,7 +30,8 @@ export function stateLabel(value: string): string {
 		AWAITING_BOARD_RESOLUTION: 'Awaiting Board resolution',
 		AWAITING_CHAIRMAN_SIGNOFF: 'Awaiting Chairman sign-off',
 		DEFERRED: 'Deferred',
-		CONDITIONALLY_APPROVED: 'Conditional approval'
+		CONDITIONALLY_APPROVED: 'Conditional approval — on hold',
+		RETURNED_TO_SECRETARY: 'Returned to Secretary'
 	};
 	return labels[value] ?? value;
 }

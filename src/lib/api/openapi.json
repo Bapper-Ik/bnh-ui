@@ -2951,6 +2951,281 @@
           }
         }
       }
+    },
+    "/api/v1/requisitions/{request_id}/board": {
+      "get": {
+        "tags": [
+          "Board resolutions"
+        ],
+        "summary": "Board Case",
+        "operationId": "board_case_api_v1_requisitions__request_id__board_get",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardCase"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/requisitions/{request_id}/board-resolutions": {
+      "post": {
+        "tags": [
+          "Board resolutions"
+        ],
+        "summary": "Save",
+        "operationId": "save_api_v1_requisitions__request_id__board_resolutions_post",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveResolution"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardCase"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/board-resolutions/{resolution_id}/attachments": {
+      "post": {
+        "tags": [
+          "Board resolutions"
+        ],
+        "summary": "Upload",
+        "operationId": "upload_api_v1_board_resolutions__resolution_id__attachments_post",
+        "parameters": [
+          {
+            "name": "resolution_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Resolution Id"
+            }
+          },
+          {
+            "name": "filename",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 180,
+              "title": "Filename"
+            }
+          },
+          {
+            "name": "expected_version",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "Expected Version"
+            }
+          },
+          {
+            "name": "upload_key",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Upload Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardCase"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/board-resolutions/{resolution_id}/signing-challenges": {
+      "post": {
+        "tags": [
+          "Board resolutions"
+        ],
+        "summary": "Challenge",
+        "operationId": "challenge_api_v1_board_resolutions__resolution_id__signing_challenges_post",
+        "parameters": [
+          {
+            "name": "resolution_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Resolution Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BoardIntent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChallengeView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/board-resolutions/{resolution_id}/actions": {
+      "post": {
+        "tags": [
+          "Board resolutions"
+        ],
+        "summary": "Act",
+        "operationId": "act_api_v1_board_resolutions__resolution_id__actions_post",
+        "parameters": [
+          {
+            "name": "resolution_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Resolution Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BoardSignedAction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3171,6 +3446,150 @@
           "account_name"
         ],
         "title": "BankDetails"
+      },
+      "BoardCase": {
+        "properties": {
+          "request": {
+            "$ref": "#/components/schemas/RequestView"
+          },
+          "records": {
+            "items": {
+              "$ref": "#/components/schemas/ResolutionView"
+            },
+            "type": "array",
+            "title": "Records"
+          },
+          "available_actions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Available Actions"
+          },
+          "blocker": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Blocker"
+          },
+          "uploads_enabled": {
+            "type": "boolean",
+            "title": "Uploads Enabled"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request",
+          "records",
+          "available_actions",
+          "uploads_enabled"
+        ],
+        "title": "BoardCase"
+      },
+      "BoardIntent": {
+        "properties": {
+          "expected_version": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expected Version"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "board_submit",
+              "board_confirm",
+              "board_return"
+            ],
+            "title": "Action"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Reason",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_version",
+          "action"
+        ],
+        "title": "BoardIntent"
+      },
+      "BoardSignedAction": {
+        "properties": {
+          "expected_version": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expected Version"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "board_submit",
+              "board_confirm",
+              "board_return"
+            ],
+            "title": "Action"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Reason",
+            "default": ""
+          },
+          "challenge_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Challenge Id"
+          },
+          "idempotency_key": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Idempotency Key"
+          },
+          "signer_name": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 2,
+            "title": "Signer Name"
+          },
+          "consent": {
+            "type": "boolean",
+            "const": true,
+            "title": "Consent"
+          },
+          "strokes": {
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/Point"
+              },
+              "type": "array"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Strokes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_version",
+          "action",
+          "challenge_id",
+          "idempotency_key",
+          "signer_name",
+          "consent",
+          "strokes"
+        ],
+        "title": "BoardSignedAction"
       },
       "CapabilityPage": {
         "properties": {
@@ -4546,6 +4965,232 @@
         ],
         "title": "RequestView"
       },
+      "ResolutionData": {
+        "properties": {
+          "meeting_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meeting Date"
+          },
+          "board_name": {
+            "type": "string",
+            "maxLength": 250,
+            "title": "Board Name",
+            "default": ""
+          },
+          "reference": {
+            "type": "string",
+            "maxLength": 200,
+            "title": "Reference",
+            "default": ""
+          },
+          "decision_text": {
+            "type": "string",
+            "maxLength": 10000,
+            "title": "Decision Text",
+            "default": ""
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "APPROVE",
+              "REJECT",
+              "DEFER",
+              "CONDITIONAL_APPROVE"
+            ],
+            "title": "Outcome",
+            "default": "APPROVE"
+          },
+          "authorised_amount": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Authorised Amount"
+          },
+          "currency": {
+            "type": "string",
+            "const": "NGN",
+            "title": "Currency",
+            "default": "NGN"
+          },
+          "correction_summary": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Correction Summary",
+            "default": ""
+          },
+          "conditions": {
+            "type": "string",
+            "maxLength": 5000,
+            "title": "Conditions",
+            "default": ""
+          },
+          "attendance": {
+            "type": "string",
+            "maxLength": 5000,
+            "title": "Attendance",
+            "default": ""
+          },
+          "quorum_attested": {
+            "type": "boolean",
+            "title": "Quorum Attested",
+            "default": false
+          },
+          "quorum_basis": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Quorum Basis",
+            "default": ""
+          },
+          "evidence_type": {
+            "type": "string",
+            "enum": [
+              "resolution",
+              "minutes_extract"
+            ],
+            "title": "Evidence Type",
+            "default": "resolution"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ResolutionData"
+      },
+      "ResolutionView": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "number": {
+            "type": "integer",
+            "title": "Number"
+          },
+          "predecessor_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Predecessor Id"
+          },
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ResolutionData"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "recorded_at": {
+            "type": "string",
+            "title": "Recorded At"
+          },
+          "submitted_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Submitted At"
+          },
+          "secretary_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Secretary Name"
+          },
+          "chairman_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Chairman Name"
+          },
+          "decided_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided At"
+          },
+          "return_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Return Reason"
+          },
+          "evidence": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AttachmentView"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "predecessor_id",
+          "kind",
+          "data",
+          "status",
+          "recorded_at",
+          "submitted_at",
+          "secretary_name",
+          "chairman_name",
+          "decided_at",
+          "return_reason",
+          "evidence"
+        ],
+        "title": "ResolutionView"
+      },
       "ReviewInput": {
         "properties": {
           "identity_id": {
@@ -4571,6 +5216,31 @@
           "entity_id"
         ],
         "title": "ReviewInput"
+      },
+      "SaveResolution": {
+        "properties": {
+          "expected_version": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expected Version"
+          },
+          "idempotency_key": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Idempotency Key"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ResolutionData"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_version",
+          "idempotency_key",
+          "data"
+        ],
+        "title": "SaveResolution"
       },
       "SignedAction": {
         "properties": {

@@ -20,7 +20,7 @@
 		<h1>{data.inbox ? 'Approval inbox' : 'Requisitions'}</h1>
 		<p>
 			{data.inbox
-				? 'Review and decide requisitions assigned to you as HOD, Chief of Staff or Managing Director.'
+				? 'Review requisitions and Board records assigned to your current office.'
 				: 'Create requests and follow every decision.'}
 		</p>
 	</div>
@@ -40,7 +40,7 @@
 	{#if !data.inbox}<label
 			>Status<select name="state" value={data.state}
 				><option value="">All statuses</option
-				>{#each ['DRAFT', 'PENDING_AUTHORITY', 'AWAITING_BOARD_RESOLUTION', 'APPROVED', 'REJECTED', 'RETURNED_FOR_REVISION'] as state (state)}<option
+				>{#each ['DRAFT', 'PENDING_AUTHORITY', 'AWAITING_BOARD_RESOLUTION', 'AWAITING_CHAIRMAN_SIGNOFF', 'DEFERRED', 'CONDITIONALLY_APPROVED', 'APPROVED', 'REJECTED', 'RETURNED_FOR_REVISION'] as state (state)}<option
 						value={state}>{stateLabel(state)}</option
 					>{/each}</select
 			></label
@@ -83,13 +83,23 @@
 			><tbody>
 				{#each data.requests.items as req (req.id)}<tr
 						><td
-							><a class="request-link" href={'/requisitions/' + req.id}>{req.reference}</a><small
-								class="description">{req.description || 'Untitled draft'}</small
-							><small>{dateTime(req.created_at)}</small></td
+							><a
+								class="request-link"
+								href={'/requisitions/' +
+									req.id +
+									(data.inbox && req.required_authority === 'board' ? '/board' : '')}
+								>{req.reference}</a
+							><small class="description">{req.description || 'Untitled draft'}</small><small
+								>{dateTime(req.created_at)}</small
+							></td
 						><td>{req.requester_name}</td><td
 							><span class="status">{stateLabel(req.state)}</span></td
 						><td class="numeric">{money(req.total)}</td><td
-							><a href={'/requisitions/' + req.id} aria-label={'Open ' + req.reference}>View →</a
+							><a
+								href={'/requisitions/' +
+									req.id +
+									(data.inbox && req.required_authority === 'board' ? '/board' : '')}
+								aria-label={'Open ' + req.reference}>View →</a
 							></td
 						></tr
 					>{/each}

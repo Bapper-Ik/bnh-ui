@@ -240,6 +240,10 @@
 					<button class="quiet" onclick={() => invalidateAll()}>Reload request</button>
 				</p>{/if}
 			<div class="stack action-stack">
+				{#if req.available_actions.includes('board_workspace')}<a
+						class="button"
+						href={'/requisitions/' + req.id + '/board'}>Open Board workspace</a
+					>{/if}
 				{#if req.available_actions.includes('revise')}<button
 						disabled={correctionBusy}
 						onclick={startCorrection}>{correctionBusy ? 'Starting…' : 'Start correction'}</button

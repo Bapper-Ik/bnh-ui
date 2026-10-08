@@ -3,16 +3,18 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import { money } from '#lib/money.js';
 	import { api, ApiError } from '#lib/api/client.js';
-	import type { ChallengeView, Intent, Point, RequestView } from '#lib/api/schema.js';
+	import type { BoardIntent, ChallengeView, Intent, Point, RequestView } from '#lib/api/schema.js';
 	let {
 		request,
 		action,
+		signingTarget,
 		name,
 		onComplete,
 		onCancel
 	}: {
 		request: RequestView;
-		action: Intent['action'];
+		action: Intent['action'] | BoardIntent['action'];
+		signingTarget?: string;
 		name: string;
 		onComplete: (req: RequestView) => void | Promise<void>;
 		onCancel: () => void;
@@ -42,7 +44,8 @@
 				'SIGNATURE_INVALID',
 				'ACCESS_DENIED',
 				'RESOURCE_NOT_AVAILABLE',
-				'AUTHORITY_ASSIGNMENT_BLOCKED'
+				'AUTHORITY_ASSIGNMENT_BLOCKED',
+				'BOARD_SEPARATION_REQUIRED'
 			].includes(e.code)
 		)
 			reviewRequired = true;
@@ -130,10 +133,13 @@
 		try {
 			await api('/auth/reauthenticate', { method: 'POST', body: JSON.stringify({ password }) });
 			password = '';
-			challenge = await api<ChallengeView>('/requisitions/' + request.id + '/signing-challenges', {
-				method: 'POST',
-				body: JSON.stringify({ expected_version: request.version, action, reason })
-			});
+			challenge = await api<ChallengeView>(
+				(signingTarget ?? '/requisitions/' + request.id) + '/signing-challenges',
+				{
+					method: 'POST',
+					body: JSON.stringify({ expected_version: request.version, action, reason })
+				}
+			);
 		} catch (e) {
 			await failure(e);
 		} finally {
@@ -156,10 +162,13 @@
 				consent,
 				strokes
 			});
-			const result = await api<RequestView>('/requisitions/' + request.id + '/actions', {
-				method: 'POST',
-				body: pendingCommand
-			});
+			const result = await api<RequestView>(
+				(signingTarget ?? '/requisitions/' + request.id) + '/actions',
+				{
+					method: 'POST',
+					body: pendingCommand
+				}
+			);
 
 			dialog.close();
 			await onComplete(result);
@@ -177,7 +186,10 @@
 		submit: 'Submit requisition',
 		approve: 'Approve requisition',
 		reject: 'Reject requisition',
-		return: 'Return for revision'
+		return: 'Return for revision',
+		board_submit: 'Submit Board record',
+		board_confirm: 'Confirm Board decision',
+		board_return: 'Return record to Secretary'
 	};
 </script>
 
@@ -187,7 +199,7 @@
 		if (busy) event.preventDefault();
 		else onCancel();
 	}}
-	aria-label="Sign requisition"
+	aria-label={signingTarget ? 'Sign Board record' : 'Sign requisition'}
 >
 	<div class="dialog-heading">
 		<div>
@@ -213,8 +225,8 @@
 				prepare();
 			}}
 		>
-			<p>Confirm your identity before signing this request.</p>
-			{#if action === 'reject' || action === 'return'}<label
+			<p>Confirm your identity before signing this record.</p>
+			{#if action === 'reject' || action === 'return' || action === 'board_return'}<label
 					>Reason<textarea bind:value={reason} required maxlength="2000"></textarea></label
 				>{/if}
 			<label
@@ -275,7 +287,7 @@
 				</div>
 				<label class="checkbox"
 					><input type="checkbox" bind:checked={consent} required /><span
-						>I have reviewed this exact request and agree to record my signature for this action.</span
+						>I have reviewed this exact record and agree to record my signature for this action.</span
 					></label
 				>
 			</fieldset>

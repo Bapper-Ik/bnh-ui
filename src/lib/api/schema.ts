@@ -48,6 +48,31 @@ export type BankDetails = {
   "account_name": string;
 };
 
+export type BoardCase = {
+  "request": RequestView;
+  "records": Array<ResolutionView>;
+  "available_actions": Array<string>;
+  "blocker"?: string | null;
+  "uploads_enabled": boolean;
+};
+
+export type BoardIntent = {
+  "expected_version": number;
+  "action": "board_submit" | "board_confirm" | "board_return";
+  "reason"?: string;
+};
+
+export type BoardSignedAction = {
+  "expected_version": number;
+  "action": "board_submit" | "board_confirm" | "board_return";
+  "reason"?: string;
+  "challenge_id": string;
+  "idempotency_key": string;
+  "signer_name": string;
+  "consent": true;
+  "strokes": Array<Array<Point>>;
+};
+
 export type CapabilityPage = {
   "items": Array<CapabilityView>;
   "total": number;
@@ -309,10 +334,48 @@ export type RequestView = {
   "history": Array<Record<string, unknown>>;
 };
 
+export type ResolutionData = {
+  "meeting_date"?: string | null;
+  "board_name"?: string;
+  "reference"?: string;
+  "decision_text"?: string;
+  "outcome"?: "APPROVE" | "REJECT" | "DEFER" | "CONDITIONAL_APPROVE";
+  "authorised_amount"?: string | null;
+  "currency"?: "NGN";
+  "correction_summary"?: string;
+  "conditions"?: string;
+  "attendance"?: string;
+  "quorum_attested"?: boolean;
+  "quorum_basis"?: string;
+  "evidence_type"?: "resolution" | "minutes_extract";
+};
+
+export type ResolutionView = {
+  "id": string;
+  "number": number;
+  "predecessor_id": string | null;
+  "kind": string;
+  "data": ResolutionData;
+  "status": string;
+  "recorded_at": string;
+  "submitted_at": string | null;
+  "secretary_name": string | null;
+  "chairman_name": string | null;
+  "decided_at": string | null;
+  "return_reason": string | null;
+  "evidence": AttachmentView | null;
+};
+
 export type ReviewInput = {
   "identity_id": string;
   "entity_id": string;
   "active"?: boolean;
+};
+
+export type SaveResolution = {
+  "expected_version": number;
+  "idempotency_key": string;
+  "data": ResolutionData;
 };
 
 export type SignedAction = {
