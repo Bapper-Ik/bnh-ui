@@ -41,6 +41,55 @@ async function sign(page: Page, name: string) {
 	await expect(dialog).not.toBeVisible();
 }
 
+test('saved draft survives list refresh, reopening and a new login', async ({ page, browser }) => {
+	await login(page);
+	await page.goto('/requisitions/new');
+	const title = 'Persistent draft ' + randomUUID();
+	await fill(page, title);
+	await page.getByRole('button', { name: 'Save draft', exact: true }).click();
+	await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
+	const draftUrl = page.url();
+	await page.getByRole('link', { name: '← Requisitions', exact: true }).click();
+	await expect(page.getByRole('heading', { name: 'Requisitions', exact: true })).toBeVisible();
+	await page.reload();
+	await page.getByLabel('Search requisitions').fill(title);
+	await page.getByRole('combobox', { name: 'Status', exact: true }).selectOption('DRAFT');
+	await page.getByRole('button', { name: 'Apply filters' }).click();
+	await expect(page).toHaveURL(/state=DRAFT/);
+	await expect(page.getByText(title, { exact: true })).toBeVisible();
+	await page.reload();
+	const row = page.getByRole('row').filter({ hasText: title });
+	await expect(row).toContainText('Draft');
+	await row.getByRole('link', { name: /^Open / }).click();
+	await expect(page).toHaveURL(draftUrl);
+	await page.getByRole('button', { name: 'Edit draft' }).click();
+	await expect(page.getByLabel('Description of work or purchase')).toHaveValue(title);
+	await expect(page.getByLabel('Vendor name', { exact: true })).toHaveValue(
+		'Synthetic request supplier'
+	);
+	await page.getByLabel('Location', { exact: true }).fill('Saved revised location');
+	await page.getByRole('button', { name: 'Save draft', exact: true }).click();
+	await expect(page.getByText('Saved revised location', { exact: true })).toBeVisible();
+	await page.reload();
+	await expect(page.getByText('Saved revised location', { exact: true })).toBeVisible();
+	const context = await browser.newContext({
+		baseURL: 'http://127.0.0.1:4173',
+		extraHTTPHeaders: { 'x-forwarded-proto': 'http' }
+	});
+	try {
+		const other = await context.newPage();
+		await login(other);
+		await other.goto('/requisitions');
+		await expect(other.getByText(title, { exact: true })).toBeVisible();
+		await other.goto(draftUrl);
+		await expect(other.getByRole('heading', { name: title, exact: true })).toBeVisible();
+		await expect(other.getByText('Saved revised location', { exact: true })).toBeVisible();
+		await expect(other.getByText('₦71,640.00').first()).toBeVisible();
+	} finally {
+		await context.close();
+	}
+});
+
 test('draft, private document viewer, signed submission and assigned office visibility', async ({
 	page,
 	browser
