@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import RequisitionForm from '#lib/features/requisitions/RequisitionForm.svelte';
 	let { data } = $props();
 </script>
@@ -13,7 +12,11 @@
 </div>
 {#if data.memberships.length}<RequisitionForm
 		memberships={data.memberships}
-		onSaved={(req) => goto('/requisitions/' + req.id)}
+		onSaved={(req) => {
+			// Navigate to the committed record before loading its detail data. A reload
+			// or browser history traversal must not reopen the empty creation form.
+			window.location.replace('/requisitions/' + req.id);
+		}}
 	/>{:else}<div class="empty">
 		<h2>Your department hasn’t been assigned</h2>
 		<p>

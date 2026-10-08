@@ -41,6 +41,84 @@ async function sign(page: Page, name: string) {
 	await expect(dialog).not.toBeVisible();
 }
 
+test('saved draft survives refresh during detail loading without an HOD', async ({ page }) => {
+	await login(page, 'draft_requester');
+	await page.goto('/requisitions');
+	await page.getByRole('link', { name: '+ New requisition' }).click();
+	const title = 'Draft before submission ' + randomUUID();
+	await fill(page, title);
+	for (const [name, price] of [
+		['Delivery', '5000'],
+		['Installation', '20000']
+	]) {
+		await page.getByRole('button', { name: '+ Add item', exact: true }).click();
+		await page
+			.getByLabel(/^Item [0-9]+$/)
+			.last()
+			.fill(name);
+		await page.getByLabel('Unit price (₦)', { exact: true }).last().fill(price);
+	}
+	// Hold only the first detail read after a successful database save. A refresh
+	// must already target the saved record, even while this read has not completed.
+	let releaseDetail!: () => void;
+	const detailGate = new Promise<void>((resolve) => {
+		releaseDetail = resolve;
+	});
+	let detailStarted!: (url: string) => void;
+	const detailRequest = new Promise<string>((resolve) => {
+		detailStarted = resolve;
+	});
+	let held = false;
+	await page.route(/\/api\/v1\/requisitions\/[0-9a-f-]+$/, async (route) => {
+		if (!held && route.request().method() === 'GET') {
+			held = true;
+			detailStarted(route.request().url());
+			await detailGate;
+			await route.continue().catch(() => {}); // The reload cancels this request.
+		} else await route.continue();
+	});
+	try {
+		const savedResponse = page.waitForResponse(
+			(response) =>
+				response.url().endsWith('/api/v1/requisitions') && response.request().method() === 'POST'
+		);
+		await page.getByRole('button', { name: 'Save draft', exact: true }).click();
+		const response = await savedResponse;
+		expect(response.status()).toBe(201);
+		const savedId = new URL(await detailRequest).pathname.split('/').pop()!;
+		await expect(page).toHaveURL(new RegExp('/requisitions/' + savedId + '$'));
+		await page.reload();
+		releaseDetail();
+		await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
+		await expect(page.getByText(/BNH-\d{4}-\d{6}/).first()).toBeVisible();
+		await expect(
+			page.getByText('Draft saved. You can return to it before submitting.')
+		).toBeVisible();
+		await expect(page.getByText('₦96,640.00').first()).toBeVisible();
+		await expect(page.getByRole('cell', { name: 'Delivery', exact: true })).toBeVisible();
+		await expect(page.getByRole('cell', { name: 'Installation', exact: true })).toBeVisible();
+		await expect(page.getByRole('button', { name: 'Review & submit', exact: true })).toBeDisabled();
+		await expect(page.getByText(/A unique active hod appointment is required/)).toBeVisible();
+		// Saving replaces the empty creation form in history with the permanent URL.
+		await page.goBack();
+		await expect(page).toHaveURL(/\/requisitions$/);
+		await expect(page.getByText(title, { exact: true })).toBeVisible();
+		await page.goForward();
+		await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
+		await page.getByRole('button', { name: 'Edit draft' }).click();
+		await expect(page.getByLabel('Description of work or purchase')).toHaveValue(title);
+		await page.getByLabel('Location', { exact: true }).fill('Updated saved location');
+		await page.getByRole('button', { name: 'Save draft', exact: true }).click();
+		await expect(page.getByText('Updated saved location', { exact: true })).toBeVisible();
+		await page.reload();
+		await expect(page.getByText('Updated saved location', { exact: true })).toBeVisible();
+		await expect(page.getByText('Draft', { exact: true })).toBeVisible();
+		await expect(page.getByText('₦96,640.00').first()).toBeVisible();
+	} finally {
+		releaseDetail();
+	}
+});
+
 test('saved draft survives list refresh, reopening and a new login', async ({ page, browser }) => {
 	await login(page);
 	await page.goto('/requisitions/new');

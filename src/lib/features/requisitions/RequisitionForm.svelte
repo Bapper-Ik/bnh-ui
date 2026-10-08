@@ -20,7 +20,7 @@
 	}: {
 		memberships?: MembershipView[];
 		request?: RequestView;
-		onSaved: (value: RequestView) => void;
+		onSaved: (value: RequestView) => void | Promise<void>;
 		onCancel?: () => void;
 	} = $props();
 	type FormContent = Required<Content> & { vendor: Required<VendorInfo> };
@@ -162,7 +162,7 @@
 			dirty = false;
 			pendingBody = null;
 
-			onSaved(result);
+			await onSaved(result);
 		} catch (e) {
 			if (e instanceof ApiError && e.status < 500) {
 				pendingBody = null;

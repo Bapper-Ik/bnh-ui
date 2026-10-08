@@ -33,6 +33,9 @@
 	</div>
 	<span class="status">{stateLabel(req.state)}</span>
 </div>
+{#if req.state === 'DRAFT' && !editing}
+	<p role="status">Draft saved. You can return to it before submitting.</p>
+{/if}
 {#if editing}<RequisitionForm
 		request={req}
 		onSaved={saved}
