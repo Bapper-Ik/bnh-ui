@@ -216,11 +216,19 @@
 					<h2>Vendor information</h2>
 					<span class="eyebrow">02</span>
 				</div>
-				<div class="stack">
-					<label>Find an existing vendor<input bind:value={vendorSearch} maxlength="250" /></label>
-					<button type="button" class="secondary" onclick={findVendors} disabled={!entityId}
-						>Search vendors</button
-					>
+				<div class="vendor-lookup">
+					<div class="vendor-search">
+						<label
+							>Find an existing vendor<input
+								bind:value={vendorSearch}
+								maxlength="250"
+								placeholder="Search by vendor name"
+							/></label
+						>
+						<button type="button" class="secondary" onclick={findVendors} disabled={!entityId}
+							>Search vendors</button
+						>
+					</div>
 					{#if vendorChoices}
 						{#each vendorChoices.items as v (v.id)}<button
 								type="button"
@@ -407,6 +415,53 @@
 		padding: 0;
 		min-width: 0;
 	}
+	.vendor-lookup {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 12px;
+		min-width: 0;
+		margin-bottom: 24px;
+		padding-bottom: 24px;
+		border-bottom: 1px solid var(--rule);
+	}
+	.vendor-search {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: end;
+		gap: 12px;
+	}
+	.vendor-search label {
+		min-width: 0;
+	}
+	.vendor-search button {
+		min-height: 45px;
+		font-size: 14px;
+		white-space: nowrap;
+	}
+	.vendor-lookup > p {
+		margin: 0;
+		font-size: 13px;
+	}
+	.vendor-lookup > button {
+		min-width: 0;
+		font-size: 14px;
+		overflow-wrap: anywhere;
+		justify-content: flex-start;
+		text-align: left;
+	}
+	.vendor-lookup > .quiet {
+		justify-self: start;
+		text-align: left;
+	}
+	@media (max-width: 600px) {
+		.vendor-search {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.vendor-search button {
+			justify-self: end;
+		}
+	}
+
 	details {
 		margin-top: 28px;
 		border-top: 1px solid var(--rule);
