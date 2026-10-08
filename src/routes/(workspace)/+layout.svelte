@@ -56,6 +56,9 @@
 					><span aria-hidden="true">≡</span> Audit Log</a
 				>
 			{/if}
+			<a href="/account" class:active={page.url.pathname === '/account'}
+				><span aria-hidden="true">♙</span> My Account &amp; Security</a
+			>
 		</nav>
 		<div class="sidebar-note">
 			Brendan Nicholas Holdings

@@ -43,3 +43,9 @@ Deploy backend schema `0015` before this UI. Existing backend Resend settings en
 Sign-in and the workspace brand open `/`. The dashboard shows real scoped status counts, own-request totals, latest requisitions, recent permitted activity and currently assigned work. Status cards open the existing filtered list; request links open the existing detail/review screen. Creation, task and administrative shortcuts follow current server capabilities. Read-only reviewers cannot create or approve, and technical administrators do not gain financial visibility.
 
 Data refreshes on window focus or the explicit Refresh dashboard control. Failed refreshes clear the old results and provide retry; expired sessions return to sign-in. No extra environment variable or migration is needed. Deploy the backend dashboard API first. The real-backend dashboard tests cover persistence, scoped roles, links, mobile layout and failed/expired refreshes.
+
+### My Account & Security
+
+Screen 14 is available to every signed-in user at `/account`, including read-only reviewers. It shows read-only personal/company/department details and current office appointments, a current-password-protected password-change form, and paginated active sessions. Individual, other-session and all-session sign-outs require confirmation; changing a password signs out all sessions and cancels outstanding reset links. Server times display in Lagos time. Refresh/focus reloads current access, API failures clear stale details, and expiry returns to sign-in. Passwords are never stored in browser storage. Profile/department/authority editing and MFA setup are not exposed.
+
+Deploy the matching backend security APIs before this frontend. Existing Dockerfiles and Render settings apply; no new configuration or migration is required. Connected browser tests use isolated synthetic accounts, not production staff.

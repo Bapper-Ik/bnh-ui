@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { api } from '#lib/api/client.js';
 	import AccessLayout from '#lib/features/account/AccessLayout.svelte';
@@ -27,6 +28,11 @@
 	title="Sign in to Custodian"
 	description="One place to raise requisitions, review requests and keep a clear record of every decision."
 >
+	{#if page.url.searchParams.get('reason') === 'password-changed'}<p role="status">
+			Your password was changed. Sign in with your new password.
+		</p>{:else if page.url.searchParams.get('reason') === 'signed-out'}<p role="status">
+			Your selected sessions have been signed out.
+		</p>{/if}
 	<form onsubmit={signIn} class="stack" aria-busy={busy}>
 		<label
 			>Work email<input

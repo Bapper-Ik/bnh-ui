@@ -10,6 +10,25 @@ export type AccountLink = {
   "token": string;
 };
 
+export type AccountMembership = {
+  "company": string;
+  "department": string;
+  "active": boolean;
+};
+
+export type AccountOffice = {
+  "company": string;
+  "role": string;
+};
+
+export type AccountProfile = {
+  "name": string;
+  "email": string;
+  "read_only": boolean;
+  "memberships": Array<AccountMembership>;
+  "offices": Array<AccountOffice>;
+};
+
 export type AttachmentAccess = {
   "id": string;
   "requisition_id": string;
@@ -118,6 +137,11 @@ export type ChallengeView = {
   "total": string;
   "authority"?: string | null;
   "routing_explanation"?: string | null;
+};
+
+export type ChangePassword = {
+  "current_password": string;
+  "new_password": string;
 };
 
 export type Content = {
@@ -483,6 +507,20 @@ export type SaveResolution = {
   "expected_version": number;
   "idempotency_key": string;
   "data": ResolutionData;
+};
+
+export type SessionPage = {
+  "items": Array<SessionView>;
+  "total": number;
+  "limit": number;
+  "offset": number;
+};
+
+export type SessionView = {
+  "id": string;
+  "created_at": string;
+  "expires_at": string;
+  "current": boolean;
 };
 
 export type SignedAction = {
