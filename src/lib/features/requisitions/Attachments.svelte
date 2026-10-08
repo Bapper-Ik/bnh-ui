@@ -120,21 +120,80 @@
 		{#if files.items.length === 0}<p>No supporting documents attached.</p>{/if}
 		{#each files.items as file (file.id)}
 			<div class="document">
-				<div>
-					<strong>{file.filename}</strong><small
-						>{Math.ceil(file.byte_size / 1024)} KB{file.frozen
-							? ' · Submitted evidence'
-							: ''}</small
-					>
+				<div class="document-info">
+					<span class="document-icon" aria-hidden="true">
+						<svg
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.5"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z" />
+							<path d="M14 3v6h6M8 13h8M8 17h5" />
+						</svg>
+					</span>
+					<div class="document-details">
+						<strong class="document-name" title={file.filename}>{file.filename}</strong>
+						<small
+							>{file.filename.split('.').pop()?.toUpperCase()} · {Math.ceil(file.byte_size / 1024)} KB{file.frozen
+								? ' · Submitted evidence'
+								: ''}</small
+						>
+					</div>
 				</div>
-				<button class="secondary" disabled={busy} onclick={() => open(file)}
-					>View {file.filename}</button
-				>
-				{#if request.available_actions.includes('edit') && !file.frozen}<button
-						class="quiet"
+				<div class="document-actions">
+					<button
+						type="button"
+						class="secondary"
+						aria-label={'View ' + file.filename}
 						disabled={busy}
-						onclick={() => remove(file)}>Remove {file.filename}</button
-					>{/if}
+						onclick={() => open(file)}
+					>
+						<svg
+							aria-hidden="true"
+							width="16"
+							height="16"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.5"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+							<circle cx="12" cy="12" r="3" />
+						</svg>
+						View
+					</button>
+					{#if request.available_actions.includes('edit') && !file.frozen}
+						<button
+							type="button"
+							class="quiet"
+							aria-label={'Remove ' + file.filename}
+							disabled={busy}
+							onclick={() => remove(file)}
+						>
+							<svg
+								aria-hidden="true"
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.5"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path d="M3 6h18M9 6V4h6v2M5 6l1 14h12l1-14M10 10v6M14 10v6" />
+							</svg>
+							Remove
+						</button>
+					{/if}
+				</div>
 			</div>
 		{/each}
 		{#if request.available_actions.includes('edit')}
@@ -194,22 +253,75 @@
 </dialog>
 
 <style>
+	section {
+		min-width: 0;
+		grid-template-columns: minmax(0, 1fr);
+	}
 	.document {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 16px;
+		align-items: center;
+		border: 1px solid var(--rule);
+		border-radius: 6px;
+		padding: 12px;
+	}
+	.document-info {
 		display: flex;
 		gap: 12px;
 		align-items: center;
-		flex-wrap: wrap;
-		border-bottom: 1px solid var(--rule);
-		padding-bottom: 12px;
+		min-width: 0;
 	}
-	.document div {
-		flex: 1;
-		min-width: 120px;
-		overflow-wrap: anywhere;
+	.document-icon {
+		display: grid;
+		place-items: center;
+		width: 36px;
+		height: 40px;
+		flex-shrink: 0;
+		border-radius: 5px;
+		background: var(--surface);
+		color: var(--body);
 	}
-	small {
+	.document-details {
+		min-width: 0;
+	}
+	.document-name {
 		display: block;
-		margin-top: 6px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		font-size: 13px;
+		font-weight: 600;
+	}
+	.document-details small {
+		display: block;
+		margin-top: 5px;
+		font-size: 11px;
+		line-height: 1.5;
+		color: var(--body);
+	}
+	.document-actions {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		justify-self: end;
+	}
+	.document-actions button {
+		flex: 0 0 auto;
+		width: auto;
+		padding: 8px 10px;
+		gap: 6px;
+		font-size: 12px;
+		white-space: nowrap;
+	}
+	.document-actions button:not(:disabled):hover {
+		background: var(--surface);
+	}
+	@media (max-width: 600px) {
+		.document {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 10px;
+		}
 	}
 	dialog {
 		width: min(800px, 95vw);

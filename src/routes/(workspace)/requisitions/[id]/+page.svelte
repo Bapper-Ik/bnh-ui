@@ -216,6 +216,10 @@
 		gap: 24px;
 		align-items: start;
 	}
+	.detail-grid > .stack {
+		min-width: 0;
+		grid-template-columns: minmax(0, 1fr);
+	}
 	dl {
 		margin: 0;
 	}
@@ -328,7 +332,7 @@
 	}
 	@media (max-width: 1150px) {
 		.detail-grid {
-			grid-template-columns: 1fr;
+			grid-template-columns: minmax(0, 1fr);
 		}
 		.summary {
 			position: static;
