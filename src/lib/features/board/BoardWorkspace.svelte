@@ -305,7 +305,7 @@
 	<p>Meeting dates and system recording times are separate. Times below are Africa/Lagos.</p>
 	{#if !board.records.length}<p>No meeting record yet.</p>{/if}
 	{#each [...board.records].reverse() as record (record.id)}
-		<details class="card" open={record.id === last?.id}>
+		<details id={'record-' + record.id} class="card" open={record.id === last?.id}>
 			<summary
 				>Record {record.number} · {record.kind.replaceAll('_', ' ')} · {stateLabel(
 					record.status

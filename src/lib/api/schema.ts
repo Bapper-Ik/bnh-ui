@@ -37,6 +37,30 @@ export type AttachmentView = {
   "malware_scan"?: "not_performed";
 };
 
+export type AuditPage = {
+  "items": Array<AuditRow>;
+  "total": number;
+  "limit": number;
+  "offset": number;
+  "before": string;
+};
+
+export type AuditRow = {
+  "id": string;
+  "action": string;
+  "at": string;
+  "actor_id": string | null;
+  "actor_name": string;
+  "company": string | null;
+  "outcome": string;
+  "request_id"?: string | null;
+  "reference"?: string | null;
+  "attachment_id"?: string | null;
+  "attachment_filename"?: string | null;
+  "revision_id"?: string | null;
+  "content_digest"?: string | null;
+};
+
 export type AuthorityRow = {
   "requester": string;
   "authorities": Array<string>;
@@ -171,6 +195,34 @@ export type Health = {
   "status": string;
 };
 
+export type HistoryEntry = {
+  "id": string;
+  "type": string;
+  "at": string;
+  "actor": string;
+  "actor_id"?: string | null;
+  "revision"?: number | null;
+  "reason"?: string | null;
+  "authority"?: string | null;
+  "routing_explanation"?: string | null;
+  "policy_version"?: string | null;
+  "signature_id"?: string | null;
+  "digest"?: string | null;
+  "resolution_id"?: string | null;
+  "resolution_number"?: number | null;
+  "resolution_reference"?: string | null;
+  "meeting_date"?: string | null;
+  "evidence_id"?: string | null;
+  "evidence_filename"?: string | null;
+};
+
+export type HistoryPage = {
+  "items": Array<HistoryEntry>;
+  "total": number;
+  "limit": number;
+  "offset": number;
+};
+
 export type Intent = {
   "expected_version": number;
   "action": "submit" | "approve" | "reject" | "return";
@@ -239,6 +291,12 @@ export type NamedOffice = {
   "department_name": string | null;
   "status": "active" | "revoked" | "expired" | "scheduled" | "blocked";
   "reason": string;
+};
+
+export type NextAction = {
+  "label": string;
+  "actor_name"?: string | null;
+  "blocked_reason"?: string | null;
 };
 
 export type OfficeInput = {
@@ -331,6 +389,7 @@ export type RequestView = {
   "available_actions": Array<string>;
   "revision_number": number;
   "redacted_fields"?: Array<string>;
+  "next_action"?: NextAction | null;
   "history": Array<Record<string, unknown>>;
 };
 
@@ -508,6 +567,9 @@ export type Summary = {
   "created_at": string;
   "requester_name": string;
   "required_authority": string | null;
+  "department_name"?: string;
+  "entity_name"?: string;
+  "vendor_name"?: string;
 };
 
 export type UpdateRequest = {

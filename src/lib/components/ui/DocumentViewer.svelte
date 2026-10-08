@@ -2,7 +2,11 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { goto } from '$app/navigation';
 	import type { AttachmentView } from '#lib/api/schema.js';
-	let { file, onClose }: { file: AttachmentView; onClose: () => void } = $props();
+	let {
+		file,
+		onClose
+	}: { file: Pick<AttachmentView, 'id' | 'filename' | 'media_type'>; onClose: () => void } =
+		$props();
 	let dialog: HTMLDialogElement;
 	let url = $state(''),
 		error = $state('');

@@ -5,6 +5,7 @@
 		return (
 			'/requisitions?' +
 			new URLSearchParams({
+				...Object.fromEntries(Object.entries(data.filters).filter(([, value]) => value)),
 				inbox: String(data.inbox),
 				search: data.search,
 				state: data.state,
@@ -46,6 +47,43 @@
 			></label
 		>
 	{/if}<button class="secondary">Apply filters</button>
+	<details class="more-filters" open={Object.values(data.filters).some(Boolean)}>
+		<summary>More filters</summary>
+		<div class="filter-grid">
+			{#each [['requester', 'Requester'], ['department', 'Department'], ['company', 'Company'], ['vendor', 'Vendor']] as [name, label] (name)}
+				<label
+					>{label}<input
+						{name}
+						value={data.filters[name]}
+						maxlength={name === 'requester' || name === 'department' ? 180 : 250}
+					/></label
+				>
+			{/each}
+			<label
+				>Created from (Lagos)<input
+					type="date"
+					name="date_from"
+					value={data.filters.date_from}
+				/></label
+			>
+			<label
+				>Created through (Lagos)<input
+					type="date"
+					name="date_to"
+					value={data.filters.date_to}
+				/></label
+			>
+		</div>
+		<label class="mine"
+			><input
+				type="checkbox"
+				name="my_requests"
+				value="true"
+				checked={data.filters.my_requests === 'true'}
+			/> Only my requests</label
+		>
+	</details>
+	<a href={data.inbox ? '/requisitions?inbox=true' : '/requisitions'}>Clear filters</a>
 </form>
 <div class="section-heading">
 	<h2>
@@ -56,7 +94,7 @@
 {#if data.requests.items.length === 0}
 	<div class="empty">
 		<h2>
-			{data.search || data.state
+			{data.search || data.state || Object.values(data.filters).some(Boolean)
 				? 'No matching requisitions'
 				: data.inbox
 					? 'You’re all caught up'
@@ -67,7 +105,7 @@
 				? 'New requests assigned to your office will appear here.'
 				: 'Start a requisition with the vendor, scope of work and cost breakdown. You can save it as a draft.'}
 		</p>
-		{#if !data.inbox && !data.readOnly && !data.search && !data.state}<a
+		{#if !data.inbox && !data.readOnly && !data.search && !data.state && !Object.values(data.filters).some(Boolean)}<a
 				class="button secondary"
 				href="/requisitions/new">Create your first requisition</a
 			>{/if}
@@ -92,9 +130,14 @@
 							><small class="description">{req.description || 'Untitled draft'}</small><small
 								>{dateTime(req.created_at)}</small
 							></td
-						><td>{req.requester_name}</td><td
-							><span class="status">{stateLabel(req.state)}</span></td
-						><td class="numeric">{money(req.total)}</td><td
+						><td
+							>{req.requester_name}<small class="context-line"
+								>{req.department_name} · {req.entity_name}</small
+							>{#if req.vendor_name}<small class="context-line">Vendor: {req.vendor_name}</small
+								>{/if}</td
+						><td><span class="status">{stateLabel(req.state)}</span></td><td class="numeric"
+							>{money(req.total)}</td
+						><td
 							><a
 								href={'/requisitions/' +
 									req.id +
@@ -126,6 +169,38 @@
 {/if}
 
 <style>
+	.table-wrap {
+		position: relative;
+	}
+	.more-filters {
+		flex-basis: 100%;
+		min-width: 0;
+		width: 100%;
+	}
+	summary {
+		cursor: pointer;
+		font-weight: 600;
+		padding: 8px 0;
+	}
+	.filter-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+		gap: 16px;
+		margin: 12px 0;
+	}
+	.mine {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+	.mine input {
+		width: auto;
+	}
+	.context-line {
+		display: block;
+		margin-top: 6px;
+	}
+
 	.filters {
 		display: flex;
 		gap: 16px;
@@ -136,6 +211,14 @@
 	.filters label {
 		flex: 1;
 		min-width: 180px;
+	}
+	.filter-grid label {
+		min-width: 0;
+	}
+	input,
+	select {
+		min-width: 0;
+		max-width: 100%;
 	}
 	.count {
 		display: inline-block;

@@ -9,16 +9,23 @@ export const load: PageLoad = async ({ url, parent }) => {
 	const offset = Math.max(0, Math.floor(Number(url.searchParams.get('offset') ?? 0) || 0));
 	const search = url.searchParams.get('search') ?? '';
 	const state = url.searchParams.get('state') ?? '';
+	const filters = Object.fromEntries(
+		['requester', 'department', 'company', 'vendor', 'date_from', 'date_to', 'my_requests'].map(
+			(key) => [key, url.searchParams.get(key) ?? '']
+		)
+	);
 	const query = new URLSearchParams({
 		inbox: String(inbox),
 		offset: String(offset),
 		search,
 		state
 	});
+	for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value);
 	try {
 		return {
 			requests: await api<Page>((inbox ? '/approvals/inbox?' : '/requisitions?') + query),
 			inbox,
+			filters,
 			search,
 			state,
 			readOnly: user.read_only

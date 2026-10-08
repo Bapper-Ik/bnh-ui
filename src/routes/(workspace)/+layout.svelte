@@ -47,6 +47,11 @@
 					><span aria-hidden="true">▤</span> Organisation & Authority</a
 				>
 			{/if}
+			{#if data.user.permissions.includes('audit:read')}
+				<a href="/audit" class:active={page.url.pathname === '/audit'}
+					><span aria-hidden="true">≡</span> Audit Log</a
+				>
+			{/if}
 		</nav>
 		<div class="sidebar-note">
 			Brendan Nicholas Holdings

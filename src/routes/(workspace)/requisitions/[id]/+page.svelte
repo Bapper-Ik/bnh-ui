@@ -6,6 +6,7 @@
 	import { money, stateLabel, dateTime, lineKobo, formatKobo } from '#lib/money.js';
 	import RequisitionForm from '#lib/features/requisitions/RequisitionForm.svelte';
 	import Attachments from '#lib/features/requisitions/Attachments.svelte';
+	import HistoryTimeline from '#lib/features/requisitions/HistoryTimeline.svelte';
 	import SigningDialog from '#lib/features/requisitions/SigningDialog.svelte';
 	let { data } = $props();
 	let editing = $state(false);
@@ -197,29 +198,29 @@
 					request={req}
 					onChanged={saved}
 				/>{/key}
-			<section class="card">
-				<h2>Request history</h2>
-				{#if req.history.length}<ol class="timeline">
-						{#each req.history as event, i (i)}<li>
-								<strong>{String(event.type).replaceAll('_', ' ')}</strong>
-								<p>{String(event.actor)} · Revision {String(event.revision)}</p>
-								<small>{dateTime(String(event.at))}</small>
-								{#if event.type === 'submission'}<p>
-										<a href={'/requisitions/' + req.id + '?revision=' + event.revision}
-											>View signed revision {String(event.revision)}</a
-										>
-									</p>{/if}{#if event.reason}<p class="reason">
-										{String(event.reason)}
-									</p>{/if}
-							</li>{/each}
-					</ol>{:else}<p>Your draft has not been submitted.</p>{/if}
-			</section>
+			{#key `${req.id}:${req.version}:${req.viewing_revision ?? 'current'}`}<HistoryTimeline
+					requestId={req.id}
+					revision={req.viewing_revision}
+				/>{/key}
 		</div>
 		<aside class="summary card">
 			<p class="eyebrow">REQUEST SUMMARY</p>
 			<div class="amount">{money(req.total)}</div>
 			<p class="approval-note">Approval authorises this request. It does not confirm payment.</p>
 			<hr />
+			{#if req.next_action && !req.viewing_revision}
+				<section class="next-action" aria-label="Next action">
+					<h2>Next action</h2>
+					<p>{req.next_action.label}</p>
+					{#if req.next_action.actor_name}<p>
+							With: <strong>{req.next_action.actor_name}</strong>
+						</p>{/if}
+					{#if req.next_action.blocked_reason}<p class="error" role="status">
+							{req.next_action.blocked_reason}
+						</p>{/if}
+				</section>
+				<hr />
+			{/if}
 			<dl>
 				<div>
 					<dt>Created</dt>
@@ -355,46 +356,6 @@
 	.action-stack {
 		gap: 10px;
 		margin-top: 25px;
-	}
-	.timeline {
-		list-style: none;
-		margin: 24px 0 0;
-		padding: 0 0 0 18px;
-		border-left: 1px solid var(--rule);
-	}
-	.timeline li {
-		position: relative;
-		padding: 0 0 26px 10px;
-	}
-	.timeline li:last-child {
-		padding-bottom: 0;
-	}
-	.timeline li::before {
-		content: '';
-		position: absolute;
-		width: 7px;
-		height: 7px;
-		background: var(--ink);
-		border-radius: 50%;
-		left: -22px;
-		top: 5px;
-	}
-	.timeline strong {
-		text-transform: capitalize;
-		font-size: 14px;
-		font-weight: 600;
-	}
-	.timeline p {
-		font-size: 12px;
-		margin: 6px 0;
-	}
-	.timeline small {
-		font-size: 11px;
-	}
-	.timeline .reason {
-		background: var(--surface);
-		padding: 12px;
-		margin-top: 12px;
 	}
 	@media (max-width: 1150px) {
 		.detail-grid {
