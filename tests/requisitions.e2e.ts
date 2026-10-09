@@ -96,8 +96,8 @@ test('saved draft survives refresh during detail loading without an HOD', async 
 			page.getByText('Draft saved. You can return to it before submitting.')
 		).toBeVisible();
 		await expect(page.getByText('₦96,640.00').first()).toBeVisible();
-		await expect(page.getByRole('cell', { name: 'Delivery', exact: true })).toBeVisible();
-		await expect(page.getByRole('cell', { name: 'Installation', exact: true })).toBeVisible();
+		await expect(page.getByRole('cell').filter({ hasText: /^Delivery$/ })).toBeVisible();
+		await expect(page.getByRole('cell').filter({ hasText: /^Installation$/ })).toBeVisible();
 		await expect(page.getByRole('button', { name: 'Review & submit', exact: true })).toBeDisabled();
 		await expect(page.getByText(/A unique active hod appointment is required/)).toBeVisible();
 		// Saving replaces the empty creation form in history with the permanent URL.

@@ -1,3 +1,4 @@
+import { inspectWidths } from './responsive.js';
 import { openNavigation } from './workspace.js';
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
@@ -31,6 +32,7 @@ async function prepare(page: Page, role: string, action: string, reason = '') {
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('Enter');
 	await dialog.getByRole('checkbox').check();
+	if (role === 'hod' && action === 'Approve') await inspectWidths(page, 'signing-dialog');
 	return dialog;
 }
 async function sign(page: Page, role: string, action: string, reason = '') {
@@ -98,6 +100,7 @@ for (const [amount, role] of [
 		await page.getByRole('button', { name: 'Apply filters' }).click();
 		await expect(page).toHaveURL(/inbox=true/);
 		const row = page.getByRole('row').filter({ hasText: req.title });
+		if (role === 'hod') await inspectWidths(page, 'approval-inbox');
 		if (role === 'hod')
 			await page.screenshot({ path: 'test-results/approval-inbox.png', fullPage: true });
 		await row.getByRole('link', { name: /^Open / }).click();

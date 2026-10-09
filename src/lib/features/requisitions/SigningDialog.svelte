@@ -382,4 +382,10 @@
 		font-size: 14px;
 		margin: 0;
 	}
+
+	@media (max-width: 420px) {
+		dialog {
+			padding: 20px;
+		}
+	}
 </style>

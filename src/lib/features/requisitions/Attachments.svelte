@@ -331,7 +331,7 @@
 	.document-actions button:not(:disabled):hover {
 		background: var(--surface);
 	}
-	@media (max-width: 600px) {
+	@container panel (max-width: 520px) {
 		.document {
 			grid-template-columns: minmax(0, 1fr);
 			gap: 10px;

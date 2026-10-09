@@ -1,3 +1,4 @@
+import { inspectWidths } from './responsive.js';
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
@@ -34,6 +35,7 @@ test('vendor capture, saved zeroes, updates, stale edits and restricted views', 
 	await dialog.getByLabel('Bank name', { exact: true }).fill('Synthetic bank');
 	await dialog.getByLabel('Account name', { exact: true }).fill('Synthetic beneficiary');
 	await dialog.getByLabel('Account number', { exact: true }).fill('0000000123');
+	await inspectWidths(page, 'vendor-form');
 	await dialog.getByRole('button', { name: 'Save vendor' }).click();
 	await expect(dialog.getByText('0000000123', { exact: true })).toBeVisible();
 	await dialog.getByRole('button', { name: 'Close vendor drawer' }).click();
@@ -69,6 +71,7 @@ test('vendor capture, saved zeroes, updates, stale edits and restricted views', 
 	await page.getByLabel('Search vendors').fill('revised');
 	await page.getByRole('button', { name: 'Search', exact: true }).click();
 	await expect(page.getByRole('button', { name: 'View Synthetic revised supplier' })).toBeVisible();
+	await inspectWidths(page, 'vendor-list');
 	await page.screenshot({ path: 'test-results/vendors-desktop.png', fullPage: true });
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.getByRole('button', { name: 'View Synthetic revised supplier' }).click();

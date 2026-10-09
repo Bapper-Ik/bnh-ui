@@ -1,3 +1,4 @@
+import { inspectWidths } from './responsive.js';
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
@@ -140,6 +141,7 @@ test('notification opens assigned work; read state survives refresh and email ha
 	await page.reload();
 	alerts = await openAlerts(page, 'Requisition needs your review', ref);
 	await expect(alerts.row.getByRole('button', { name: 'Mark as read' })).toHaveCount(0);
+	await inspectWidths(page, 'notifications-populated');
 	await page.screenshot({ path: 'test-results/notifications-desktop.png', fullPage: true });
 	await page.setViewportSize({ width: 390, height: 844 });
 	await expect

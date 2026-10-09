@@ -176,24 +176,29 @@
 	</form>
 	{#if data.vendors?.items.length}
 		<div class="table-wrap">
-			<table>
-				<thead
-					><tr
-						><th>Vendor</th><th>Registration / ID</th><th>Bank details</th><th
-							><span class="visually-hidden">View vendor</span></th
+			<!-- svelte-ignore a11y_no_redundant_roles (Explicit table roles preserve semantics when rows become cards.) -->
+			<table class="responsive-table" role="table">
+				<thead role="rowgroup"
+					><tr role="row"
+						><th scope="col" role="columnheader">Vendor</th><th scope="col" role="columnheader"
+							>Registration / ID</th
+						><th scope="col" role="columnheader">Bank details</th><th
+							scope="col"
+							role="columnheader"><span class="visually-hidden">View vendor</span></th
 						></tr
 					></thead
-				><tbody>
-					{#each data.vendors.items as vendor (vendor.id)}<tr
-							><td
+				><tbody role="rowgroup">
+					{#each data.vendors.items as vendor (vendor.id)}<tr role="row"
+							><td role="cell" data-label="Vendor"
 								><strong>{vendor.name}</strong><small class="version"
 									>Version {vendor.version}</small
 								></td
-							><td>{vendor.registration_id || '—'}</td><td
+							><td role="cell" data-label="Registration / ID">{vendor.registration_id || '—'}</td
+							><td role="cell" data-label="Bank details"
 								>{vendor.bank_details_state === 'unknown'
 									? 'Not supplied'
 									: 'Recorded · restricted access'}</td
-							><td
+							><td role="cell" data-label="Actions"
 								><button
 									class="secondary"
 									onclick={() => open(vendor.id)}
@@ -407,30 +412,6 @@
 		min-width: 0;
 	}
 	@media (max-width: 700px) {
-		table {
-			table-layout: fixed;
-		}
-		th,
-		td {
-			padding: 12px 6px;
-			overflow-wrap: anywhere;
-		}
-		th:nth-child(1) {
-			width: 34%;
-		}
-		th:nth-child(2) {
-			width: 26%;
-		}
-		th:nth-child(3) {
-			width: 20%;
-		}
-		th:nth-child(4) {
-			width: 20%;
-		}
-		td:last-child button {
-			padding: 10px 8px;
-		}
-
 		.filters {
 			grid-template-columns: 1fr;
 		}
@@ -439,6 +420,20 @@
 		}
 		dialog {
 			padding: 24px;
+		}
+	}
+	@container content (max-width: 650px) {
+		.filters {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.pagination {
+			gap: 16px;
+			flex-wrap: wrap;
+		}
+	}
+	@media (max-width: 420px) {
+		dialog {
+			padding: 20px;
 		}
 	}
 </style>

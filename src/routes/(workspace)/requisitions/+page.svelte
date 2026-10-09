@@ -114,15 +114,22 @@
 	</div>
 {:else}
 	<div class="table-wrap">
-		<table>
-			<thead
-				><tr
-					><th>Requisition</th><th>Requested by</th><th>Status</th><th class="numeric">Amount</th
-					><th><span class="visually-hidden">Open request</span></th></tr
+		<!-- svelte-ignore a11y_no_redundant_roles (Explicit table roles preserve semantics when rows become cards.) -->
+		<table class="responsive-table" role="table">
+			<thead role="rowgroup"
+				><tr role="row"
+					><th scope="col" role="columnheader">Requisition</th><th scope="col" role="columnheader"
+						>Requested by</th
+					><th scope="col" role="columnheader">Status</th><th
+						scope="col"
+						role="columnheader"
+						class="numeric">Amount</th
+					><th scope="col" role="columnheader"><span class="visually-hidden">Open request</span></th
+					></tr
 				></thead
-			><tbody>
-				{#each data.requests.items as req (req.id)}<tr
-						><td
+			><tbody role="rowgroup">
+				{#each data.requests.items as req (req.id)}<tr role="row"
+						><td role="cell" data-label="Requisition"
 							><a
 								class="request-link"
 								href={'/requisitions/' +
@@ -132,14 +139,16 @@
 							><small class="description">{req.description || 'Untitled draft'}</small><small
 								>{dateTime(req.created_at)}</small
 							></td
-						><td
+						><td role="cell" data-label="Requested by"
 							>{req.requester_name}<small class="context-line"
 								>{req.department_name} · {req.entity_name}</small
 							>{#if req.vendor_name}<small class="context-line">Vendor: {req.vendor_name}</small
 								>{/if}</td
-						><td><span class="status">{stateLabel(req.state)}</span></td><td class="numeric"
-							>{money(req.total)}</td
-						><td
+						><td role="cell" data-label="Status"
+							><span class="status">{stateLabel(req.state)}</span></td
+						><td role="cell" data-label="Amount" class="numeric">{money(req.total)}</td><td
+							role="cell"
+							data-label="Actions"
 							><a
 								href={'/requisitions/' +
 									req.id +
@@ -253,5 +262,26 @@
 		margin-top: 24px;
 		font-size: 12px;
 		color: var(--body);
+	}
+
+	.pagination {
+		gap: 16px;
+		flex-wrap: wrap;
+	}
+	@container records (max-width: 760px) {
+		.description {
+			max-width: none;
+			white-space: normal;
+			overflow: visible;
+		}
+	}
+	@container content (max-width: 600px) {
+		.filters {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.filters label {
+			min-width: 0;
+		}
 	}
 </style>

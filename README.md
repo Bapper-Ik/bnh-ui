@@ -56,6 +56,14 @@ At widths up to 900px, Open navigation reveals a modal drawer instead of wrappin
 
 Deploy only the frontend from dev using the existing Dockerfile. No API, database or Render setting changes are needed. Tests use isolated synthetic accounts; local verification does not establish live deployment.
 
+### Responsive page content (WEB-001–003)
+
+All fourteen screen templates adapt their content to phones, tablets and desktop columns. Requisition/inbox, vendor, staff, cost-breakdown and authority-matrix tables become labelled record cards when the available column is narrow; the same fields and actions remain available. Forms and drawers use single-column fields where needed, line-item totals stay readable, and action groups, dashboard panels and account sessions align within their cards. Attachments retain compact View/Remove controls.
+
+Content breakpoints use the available container width, including the reduced content area beside the desktop sidebar. Browser checks cover populated pages at 320, 390, 768, 1024 and 1440px, including large monetary values, persisted mobile editing, approval/signing and Board records. The checks inspect internal containers and controls as well as page overflow. Responsive screenshots remain ignored under `test-results/content-*.png`.
+
+Deploy the frontend from `dev` using the existing Dockerfile. No backend, migration or environment changes are required. Local browser verification is separate from Render deployment and staff acceptance.
+
 ### Administrator visibility
 
 Full system administrators can browse requisitions and vendors across BNH using the existing screens, even without a department membership. Requisitions, dashboard counts and public history show the expanded scope; oversight-only details clearly state that the request is read-only. Bank values and supporting/Board documents retain their separate restrictions. Approval actions and My Tasks still depend on office assignments.

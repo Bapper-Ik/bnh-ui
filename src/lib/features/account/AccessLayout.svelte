@@ -104,4 +104,16 @@
 			padding: 50px 0;
 		}
 	}
+
+	@media (max-width: 420px) {
+		.access {
+			padding: 24px 20px;
+		}
+		main {
+			padding: 36px 0 48px;
+		}
+		h1 {
+			font-size: 28px;
+		}
+	}
 </style>

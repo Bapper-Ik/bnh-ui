@@ -1,3 +1,4 @@
+import { inspectWidths } from './responsive.js';
 import { openNavigation } from './workspace.js';
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
@@ -102,10 +103,12 @@ test('persisted history and scoped audit paginate, filter and open private evide
 	const events = page.getByRole('list', { name: 'Audit events' });
 	await expect(events.locator(':scope > li')).toHaveCount(25);
 	await expect(page.getByText('1–25 of 28', { exact: true })).toBeVisible();
+	await inspectWidths(page, 'audit-log');
 	await page.getByRole('button', { name: 'View history-quote.png', exact: true }).click();
 	await expect(
 		page.getByRole('dialog', { name: 'Document viewer' }).getByRole('img')
 	).toBeVisible();
+	await inspectWidths(page, 'document-viewer');
 	await page.getByRole('button', { name: 'Close document' }).click();
 	await page.screenshot({ path: 'test-results/audit-mobile.png', fullPage: false });
 	await expect

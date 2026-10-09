@@ -493,7 +493,7 @@
 		display: grid;
 		grid-template-columns:
 			minmax(160px, 3fr) minmax(70px, 1fr) minmax(100px, 1.3fr) minmax(100px, 1.3fr)
-			35px;
+			44px;
 		align-items: end;
 		gap: 12px;
 	}
@@ -532,9 +532,9 @@
 	.cost-footer strong {
 		font-size: 23px;
 	}
-	@media (max-width: 750px) {
+	@container panel (max-width: 720px) {
 		.item {
-			grid-template-columns: 1fr 1fr;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 			border-bottom: 1px solid var(--rule);
 			padding-bottom: 20px;
 		}
@@ -549,6 +549,44 @@
 		}
 		.cost-footer strong {
 			font-size: 19px;
+		}
+	}
+
+	.line-total,
+	.cost-footer > div {
+		min-width: 0;
+		overflow-wrap: anywhere;
+	}
+	@container panel (max-width: 420px) {
+		.vendor-search {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.vendor-search button {
+			width: 100%;
+		}
+		.item {
+			gap: 16px 12px;
+		}
+		.item label {
+			grid-column: 1 / -1;
+		}
+		.line-total {
+			padding-bottom: 0;
+		}
+		.cost-footer {
+			flex-direction: column;
+			align-items: stretch;
+		}
+		.cost-footer div {
+			text-align: left;
+			padding-top: 8px;
+		}
+		.cost-footer strong {
+			font-size: 22px;
+		}
+		summary span {
+			display: block;
+			margin: 8px 0 0;
 		}
 	}
 </style>

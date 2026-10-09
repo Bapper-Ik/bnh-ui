@@ -242,4 +242,28 @@
 			grid-template-columns: minmax(0, 1fr);
 		}
 	}
+
+	@container content (max-width: 850px) {
+		.panels {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.counts {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+	@container content (max-width: 500px) {
+		.shortcuts {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.counts {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+	@container panel (max-width: 400px) {
+		.row {
+			display: grid;
+			gap: 8px;
+		}
+	}
 </style>

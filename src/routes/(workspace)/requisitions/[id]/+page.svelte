@@ -179,18 +179,30 @@
 			<section class="card">
 				<h2>Cost breakdown</h2>
 				<div class="table-wrap">
-					<table>
-						<thead
-							><tr
-								><th>Item</th><th class="numeric">Qty</th><th class="numeric">Unit price</th><th
+					<!-- svelte-ignore a11y_no_redundant_roles (Explicit table roles preserve semantics when rows become cards.) -->
+					<table class="responsive-table" role="table">
+						<thead role="rowgroup"
+							><tr role="row"
+								><th scope="col" role="columnheader">Item</th><th
+									scope="col"
+									role="columnheader"
+									class="numeric">Qty</th
+								><th scope="col" role="columnheader" class="numeric">Unit price</th><th
+									scope="col"
+									role="columnheader"
 									class="numeric">Total</th
 								></tr
 							></thead
-						><tbody
-							>{#each req.content.lines ?? [] as line, i (i)}<tr
-									><td>{line.description}</td><td class="numeric">{line.quantity}</td><td
-										class="numeric">{money(line.unit_price)}</td
-									><td class="numeric">{formatKobo(lineKobo(line.quantity, line.unit_price))}</td
+						><tbody role="rowgroup"
+							>{#each req.content.lines ?? [] as line, i (i)}<tr role="row"
+									><td role="cell" data-label="Item">{line.description}</td><td
+										role="cell"
+										data-label="Quantity"
+										class="numeric">{line.quantity}</td
+									><td role="cell" data-label="Unit price" class="numeric"
+										>{money(line.unit_price)}</td
+									><td role="cell" data-label="Total" class="numeric"
+										>{formatKobo(lineKobo(line.quantity, line.unit_price))}</td
 									></tr
 								>{/each}</tbody
 						>
@@ -307,7 +319,7 @@
 	}
 	details {
 		border-top: 1px solid var(--rule);
-		margin-top: 24px;
+		margin-top: 96px;
 		padding-top: 20px;
 	}
 	summary {
@@ -332,7 +344,7 @@
 	}
 	.summary {
 		position: sticky;
-		top: 24px;
+		top: 96px;
 		padding: 24px;
 	}
 	.amount {
@@ -372,6 +384,22 @@
 		.action-stack {
 			display: flex;
 			flex-wrap: wrap;
+		}
+	}
+
+	@container panel (max-width: 420px) {
+		.grand-total {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 8px;
+		}
+		.grand-total strong {
+			overflow-wrap: anywhere;
+			max-width: 100%;
+		}
+		.action-stack {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr);
 		}
 	}
 </style>

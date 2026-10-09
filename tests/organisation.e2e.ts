@@ -1,3 +1,4 @@
+import { inspectWidths } from './responsive.js';
 import { expect, test, type Page } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -50,12 +51,14 @@ test('organisation creates and updates companies and departments with explicit s
 	await drawer.getByLabel('Name', { exact: true }).fill(company);
 	await drawer.getByLabel('Code', { exact: true }).fill('ORG_' + randomUUID().slice(0, 8));
 	await drawer.getByLabel('Company type').selectOption('holding');
+	await inspectWidths(page, 'organisation-form');
 	await drawer.getByRole('button', { name: 'Create', exact: true }).click();
 	await expect(drawer).not.toBeVisible();
 	const card = page
 		.locator('article')
 		.filter({ has: page.getByRole('heading', { name: company, exact: true }) });
 	await expect(card).toContainText('Holding company');
+	await inspectWidths(page, 'organisation-companies');
 	await card.getByRole('link', { name: 'Departments', exact: true }).click();
 	await expect(page.getByText('No departments yet', { exact: true })).toBeVisible();
 	await page.getByRole('button', { name: 'Add department', exact: true }).click();
@@ -65,6 +68,7 @@ test('organisation creates and updates companies and departments with explicit s
 	await expect(drawer).not.toBeVisible();
 	await page.reload();
 	await expect(page.getByRole('heading', { name: 'Technology', exact: true })).toBeVisible();
+	await inspectWidths(page, 'organisation-departments');
 	await page.getByRole('button', { name: 'Edit department Technology', exact: true }).click();
 	await drawer.getByLabel('Name', { exact: true }).fill('Engineering');
 	await drawer.getByRole('button', { name: 'Save changes', exact: true }).click();
@@ -174,6 +178,7 @@ test('organisation office history, readonly matrix, restricted links and narrow 
 	await page.goto('/organisation?tab=offices&entity=' + f.entity);
 	const card = page.locator('article').filter({ hasText: 'Synthetic organisation officeholder' });
 	await expect(card).toContainText('Effective');
+	await inspectWidths(page, 'organisation-offices');
 	await expect(card).toContainText('Operations');
 	await expect(card).toContainText('Synthetic organisation approval');
 	expect((await command(page, '/organisation/offices/' + office.body.id + '/revoke')).status).toBe(
@@ -188,11 +193,14 @@ test('organisation office history, readonly matrix, restricted links and narrow 
 	await page.screenshot({ path: 'test-results/organisation-office-mobile.png', fullPage: true });
 	await page.getByRole('link', { name: 'Approval matrix', exact: true }).click();
 	await expect(page.getByText('Read-only · NGN', { exact: true })).toBeVisible();
+	await inspectWidths(page, 'approval-matrix');
 	await expect(page.getByRole('row', { name: /Ordinary staff/ })).toContainText(
 		'Own department HOD'
 	);
 	await expect(
-		page.getByRole('row', { name: /Managing Director Board Board Board Board/ })
+		page
+			.getByRole('row')
+			.filter({ has: page.getByRole('rowheader', { name: 'Managing Director', exact: true }) })
 	).toBeVisible();
 	await expect(page.getByRole('button', { name: /Edit|Save/ })).toHaveCount(0);
 	await expect

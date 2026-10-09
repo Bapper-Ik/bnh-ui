@@ -340,6 +340,7 @@
 		margin: 0;
 	}
 	li {
+		overflow-wrap: anywhere;
 		border-top: 1px solid var(--rule);
 		padding: 14px 0;
 	}
@@ -407,6 +408,28 @@
 		.session {
 			align-items: start;
 			flex-direction: column;
+		}
+	}
+
+	@container content (max-width: 750px) {
+		.account-grid {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+	@container panel (max-width: 480px) {
+		.session {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 12px;
+		}
+		.session-heading > .actions {
+			width: 100%;
+		}
+		.session-heading > .actions > button {
+			flex: 1 1 100%;
+		}
+		form button {
+			width: 100%;
 		}
 	}
 </style>

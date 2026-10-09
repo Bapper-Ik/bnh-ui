@@ -317,19 +317,22 @@
 			<span class="badge">Read-only · NGN</span>
 		</div>
 		<p>The agreed amount thresholds and requester escalation rules are fixed.</p>
-		<!-- svelte-ignore a11y_no_noninteractive_tabindex (Keyboard users need to scroll the wide matrix.) -->
-		<div class="matrix-scroll" role="region" aria-label="Approval matrix" tabindex="0">
-			<table>
+		<div class="matrix-scroll" role="region" aria-label="Approval matrix">
+			<!-- svelte-ignore a11y_no_redundant_roles (Explicit table roles preserve semantics when rows become cards.) -->
+			<table class="responsive-table" role="table">
 				<thead
-					><tr
+					><tr role="row"
 						><th scope="col">Requester</th>{#each data.workspace.bands as band (band)}<th
 								scope="col">{band}</th
 							>{/each}</tr
 					></thead
 				><tbody
-					>{#each data.workspace.matrix as row (row.requester)}<tr
-							><th scope="row">{row.requester}</th
-							>{#each row.authorities as authority, index (index)}<td>{authority}</td>{/each}</tr
+					>{#each data.workspace.matrix as row (row.requester)}<tr role="row"
+							><th role="rowheader" scope="row">{row.requester}</th
+							>{#each row.authorities as authority, index (index)}<td
+									role="cell"
+									data-label={data.workspace.bands[index]}>{authority}</td
+								>{/each}</tr
 						>{/each}</tbody
 				>
 			</table>
@@ -587,7 +590,7 @@
 	}
 	table {
 		width: 100%;
-		min-width: 740px;
+		min-width: 0;
 		border-collapse: collapse;
 	}
 	th,
@@ -653,6 +656,40 @@
 		}
 		.tabs a {
 			padding: 10px;
+		}
+	}
+
+	@container records (max-width: 760px) {
+		.responsive-table tbody tr {
+			border: 0;
+			border-bottom: 1px solid var(--rule);
+			border-radius: 0;
+		}
+		.responsive-table tbody {
+			gap: 0;
+		}
+	}
+	@container content (max-width: 600px) {
+		article {
+			display: block;
+		}
+		.section-header,
+		.office-title {
+			flex-wrap: wrap;
+		}
+		.actions {
+			margin-top: 16px;
+		}
+		dl {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.tabs {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+		.tabs a {
+			text-align: center;
 		}
 	}
 </style>

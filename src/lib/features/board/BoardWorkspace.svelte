@@ -516,4 +516,16 @@
 			flex-direction: column;
 		}
 	}
+
+	@container panel (max-width: 600px) {
+		.grid {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+	@container content (max-width: 500px) {
+		.overview {
+			flex-direction: column;
+			gap: 12px;
+		}
+	}
 </style>

@@ -1,3 +1,4 @@
+import { inspectWidths } from './responsive.js';
 import { expect, test, type Page } from '@playwright/test';
 import { createHash, randomUUID } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
@@ -49,9 +50,11 @@ test('staff invitation, resend and activation through the management drawer', as
 	await page.getByRole('link', { name: 'Staff & Access' }).click();
 	await expect(page.getByRole('heading', { name: 'Staff & Access', exact: true })).toBeVisible();
 	const email = 'staff-screen-' + randomUUID() + '@example.com';
+	await inspectWidths(page, 'staff-list');
 	await page.getByRole('button', { name: 'Invite staff', exact: true }).click();
 	await page.getByLabel('Full name').fill('Synthetic staff invitation');
 	await page.getByLabel('Work email').fill(email);
+	await inspectWidths(page, 'staff-invitation');
 	await page.getByRole('button', { name: 'Send invitation' }).click();
 	const drawer = page.getByRole('dialog');
 	await expect(drawer.getByRole('heading', { name: 'Synthetic staff invitation' })).toBeVisible();
@@ -97,6 +100,7 @@ test('staff invitation, resend and activation through the management drawer', as
 	await drawer.getByRole('button', { name: 'Assign office' }).click();
 	await drawer.getByRole('combobox', { name: 'Office', exact: true }).selectOption('secretary');
 	await drawer.getByLabel('Authorisation reference').fill('Synthetic appointment reference');
+	await inspectWidths(page, 'staff-appointment');
 	await drawer.getByRole('button', { name: 'Record appointment' }).click();
 	await expect(drawer.getByText('Company Secretary', { exact: true })).toBeVisible();
 	await drawer.getByRole('button', { name: 'Assign office' }).click();

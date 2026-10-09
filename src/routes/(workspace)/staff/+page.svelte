@@ -264,22 +264,29 @@
 		><button type="submit" class="secondary">Search</button>
 	</form>
 	{#if data.staff?.items.length}<div class="table-wrap">
-			<table>
-				<thead
-					><tr
-						><th>Staff member</th><th>Email</th><th>Account status</th><th
-							><span class="visually-hidden">Manage staff</span></th
+			<!-- svelte-ignore a11y_no_redundant_roles (Explicit table roles preserve semantics when rows become cards.) -->
+			<table class="responsive-table" role="table">
+				<thead role="rowgroup"
+					><tr role="row"
+						><th scope="col" role="columnheader">Staff member</th><th
+							scope="col"
+							role="columnheader">Email</th
+						><th scope="col" role="columnheader">Account status</th><th
+							scope="col"
+							role="columnheader"><span class="visually-hidden">Manage staff</span></th
 						></tr
 					></thead
-				><tbody
-					>{#each data.staff.items as person (person.id)}<tr
-							><td
+				><tbody role="rowgroup"
+					>{#each data.staff.items as person (person.id)}<tr role="row"
+							><td role="cell" data-label="Staff member"
 								><strong>{person.name}</strong>{#if person.id === data.user.id}<small class="sub"
 										>Your account</small
 									>{/if}{#if person.read_only}<small class="sub">Read-only access</small>{/if}</td
-							><td class="email-cell">{person.email}</td><td
+							><td role="cell" data-label="Email" class="email-cell">{person.email}</td><td
+								role="cell"
+								data-label="Account status"
 								><span class="status">{statusLabel(person.status)}</span></td
-							><td
+							><td role="cell" data-label="Actions"
 								><button
 									class="secondary"
 									aria-label={'Manage ' + person.name}
@@ -731,40 +738,6 @@
 		overflow-wrap: anywhere;
 	}
 	@media (max-width: 700px) {
-		.table-wrap {
-			overflow: visible;
-		}
-		table,
-		tbody {
-			display: block;
-		}
-		thead {
-			position: absolute;
-			width: 1px;
-			height: 1px;
-			overflow: hidden;
-			clip-path: inset(50%);
-		}
-		tbody tr {
-			display: grid;
-			grid-template-columns: minmax(0, 1fr) auto;
-			border: 1px solid var(--rule);
-			border-radius: 5px;
-			margin-bottom: 12px;
-		}
-		td {
-			display: block;
-			border: 0;
-			padding: 12px 14px;
-		}
-		td:first-child,
-		td:nth-child(2) {
-			grid-column: 1 / -1;
-		}
-		td:nth-child(3) {
-			align-self: center;
-		}
-
 		.filters {
 			grid-template-columns: 1fr;
 		}
@@ -773,6 +746,20 @@
 		}
 		.pagination {
 			flex-wrap: wrap;
+		}
+	}
+	@container content (max-width: 650px) {
+		.filters {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.pagination {
+			gap: 16px;
+			flex-wrap: wrap;
+		}
+	}
+	@media (max-width: 420px) {
+		dialog {
+			padding: 20px;
 		}
 	}
 </style>

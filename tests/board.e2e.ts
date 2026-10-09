@@ -1,3 +1,4 @@
+import { inspectWidths } from './responsive.js';
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
@@ -97,6 +98,7 @@ test('Board correction and later decision preserve a conditional hold with two s
 	await login(page, 'secretary');
 	await openTask(page, req.title);
 	await fillRecord(page, 'CONDITIONAL_APPROVE');
+	await inspectWidths(page, 'board-secretary');
 	await page.reload();
 	await expect(page.getByLabel('Resolution reference', { exact: true })).toHaveValue('SYN-001');
 	await expect(
@@ -121,6 +123,7 @@ test('Board correction and later decision preserve a conditional hold with two s
 	await login(page, 'chairman');
 	await openTask(page, req.title);
 	await expect(page.getByLabel('Decision text', { exact: true })).toHaveCount(0);
+	await inspectWidths(page, 'board-chairman');
 	await page.screenshot({ path: 'test-results/board-chairman-desktop.png', fullPage: true });
 	await sign(
 		page,

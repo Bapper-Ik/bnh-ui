@@ -1,3 +1,4 @@
+import { inspectWidths } from './responsive.js';
 import { expect, test, type Page } from '@playwright/test';
 import { createHash, randomUUID } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
@@ -70,6 +71,7 @@ test('forgot password through delivered link, password matching, revoked session
 	await page.getByRole('button', { name: 'Set password', exact: true }).click();
 	await expect(page.getByRole('alert')).toContainText('do not match');
 	await page.getByLabel('Confirm new password').fill('Synthetic-new-browser-password-2026');
+	await inspectWidths(page, 'set-password');
 	await page.screenshot({ path: 'test-results/account-reset-desktop.png', fullPage: true });
 	await page.getByRole('button', { name: 'Set password', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Your password is set' })).toBeVisible();
@@ -104,6 +106,7 @@ test('protected invitation activates on the shared screen without granting autho
 	await expect(page.getByRole('heading', { name: 'Sign in to Custodian' })).toBeVisible();
 	await page.goto(mail.url);
 	await expect(page.getByRole('heading', { name: 'Activate your account' })).toBeVisible();
+	await inspectWidths(page, 'activate-account');
 	await page.setViewportSize({ width: 390, height: 844 });
 	await expect(page.locator('body')).toHaveJSProperty('scrollWidth', 390);
 	await page.screenshot({ path: 'test-results/account-activate-mobile.png', fullPage: true });
