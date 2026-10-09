@@ -38,6 +38,7 @@ test('forgot password through delivered link, password matching, revoked session
 	const logoutResponse = page.waitForResponse((response) =>
 		response.url().endsWith('/api/v1/auth/logout')
 	);
+	await page.getByRole('button', { name: 'Account menu', exact: true }).click();
 	await page.getByRole('button', { name: 'Sign out', exact: true }).click();
 	const logout = await logoutResponse;
 	expect(logout.status(), await logout.text()).toBe(200);
@@ -98,6 +99,7 @@ test('protected invitation activates on the shared screen without granting autho
 	expect(response.status()).toBe(201);
 	const mail = await mailedLink(email);
 	expect(mail.purpose).toBe('activate');
+	await page.getByRole('button', { name: 'Account menu', exact: true }).click();
 	await page.getByRole('button', { name: 'Sign out', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Sign in to Custodian' })).toBeVisible();
 	await page.goto(mail.url);

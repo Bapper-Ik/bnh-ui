@@ -1,3 +1,4 @@
+import { openNavigation } from './workspace.js';
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
@@ -72,6 +73,7 @@ test('ordinary staff have no approval navigation and inbox links return to requi
 	}
 	await login(page, 'hod');
 	await expect(page.getByRole('link', { name: 'My Tasks', exact: true })).toBeVisible();
+	await openNavigation(page);
 	await page.getByRole('link', { name: 'My Tasks', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Approval inbox', exact: true })).toBeVisible();
 	await expect(
@@ -89,6 +91,7 @@ for (const [amount, role] of [
 		await sign(page, 'requester', 'Review & submit');
 		await expect(page.getByText('Awaiting approval', { exact: true })).toBeVisible();
 		await login(page, role);
+		await openNavigation(page);
 		await page.getByRole('link', { name: 'My Tasks', exact: true }).click();
 		await expect(page.getByRole('heading', { name: 'Approval inbox', exact: true })).toBeVisible();
 		await page.getByLabel('Search requisitions').fill(req.title);
@@ -112,6 +115,7 @@ for (const [amount, role] of [
 		await expect(page.getByText('Approved', { exact: true })).toBeVisible();
 		await page.reload();
 		await expect(page.getByText('Approved', { exact: true })).toBeVisible();
+		await openNavigation(page);
 		await page.getByRole('link', { name: 'My Tasks', exact: true }).click();
 		await expect(page.getByText(req.title, { exact: true })).toHaveCount(0);
 		await login(page, 'requester');

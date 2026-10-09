@@ -1,3 +1,4 @@
+import { openNavigation } from './workspace.js';
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
@@ -94,6 +95,7 @@ test('persisted history and scoped audit paginate, filter and open private evide
 	await page.getByRole('button', { name: 'Apply filters' }).click();
 	await expect(page.getByRole('heading', { name: 'No matching requisitions' })).toBeVisible();
 	await login(page, 'auditor');
+	await openNavigation(page);
 	await page.getByRole('link', { name: 'Audit Log', exact: true }).click();
 	await page.getByLabel('Search audit log').fill(saved.reference);
 	await page.getByRole('button', { name: 'Apply filters' }).click();

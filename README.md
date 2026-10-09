@@ -50,6 +50,12 @@ Screen 14 is available to every signed-in user at `/account`, including read-onl
 
 Deploy the matching backend security APIs before this frontend. Existing Dockerfiles and Render settings apply; no new configuration or migration is required. Connected browser tests use isolated synthetic accounts, not production staff.
 
+### Mobile workspace (WEB-001)
+
+At widths up to 900px, Open navigation reveals a modal drawer instead of wrapping sidebar links above the page. It closes on route selection, Escape, backdrop tap or a resize to desktop, with keyboard focus handling and background scroll locking. The sticky mobile header keeps navigation, branding, notifications and the account control on one row. Open Account menu for the full name/email, Account & Security and Sign out; long identities wrap inside the dropdown. Notifications retain unread badges and a private responsive drawer. Desktop retains its sidebar and labelled controls. Role visibility and all server permissions are unchanged.
+
+Deploy only the frontend from dev using the existing Dockerfile. No API, database or Render setting changes are needed. Tests use isolated synthetic accounts; local verification does not establish live deployment.
+
 ### Administrator visibility
 
 Full system administrators can browse requisitions and vendors across BNH using the existing screens, even without a department membership. Requisitions, dashboard counts and public history show the expanded scope; oversight-only details clearly state that the request is read-only. Bank values and supporting/Board documents retain their separate restrictions. Approval actions and My Tasks still depend on office assignments.

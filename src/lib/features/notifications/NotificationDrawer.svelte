@@ -64,6 +64,14 @@
 			}
 		}
 	}
+	$effect(() => {
+		if (!open) return;
+		const previous = document.body.style.overflow;
+		document.body.style.overflow = 'hidden';
+		return () => {
+			document.body.style.overflow = previous;
+		};
+	});
 	function show() {
 		open = true;
 		dialog.showModal();
@@ -136,12 +144,13 @@
 		stroke-width="1.7"
 		aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4" /></svg
 	>
-	Notifications {#if result && result.unread_total > 0}<span
+	<span class="trigger-label">Notifications</span>
+	{#if result && result.unread_total > 0}<span
 			class="badge"
 			aria-label={`${result.unread_total} unread`}
 			>{result.unread_total > 99 ? '99+' : result.unread_total}</span
 		>{/if}
-	{#if failure}<span aria-label="Notifications unavailable">!</span>{/if}
+	{#if failure}<span class="unavailable" aria-label="Notifications unavailable">!</span>{/if}
 </button>
 <dialog bind:this={dialog} onclose={() => (open = false)} aria-labelledby="notification-title">
 	<div class="heading">
@@ -233,6 +242,7 @@
 
 <style>
 	.trigger {
+		position: relative;
 		display: inline-flex;
 		align-items: center;
 		gap: 8px;
@@ -259,6 +269,7 @@
 		border-left: 1px solid var(--rule);
 		padding: 28px;
 		overflow-y: auto;
+		overscroll-behavior: contain;
 	}
 	dialog::backdrop {
 		background: rgb(0 0 0 / 0.35);
@@ -348,9 +359,33 @@
 	li small {
 		font-size: 11px;
 	}
+	@media (max-width: 900px) {
+		.trigger {
+			width: 44px;
+			height: 44px;
+			padding: 10px;
+		}
+		.trigger-label {
+			display: none;
+		}
+		.badge,
+		.unavailable {
+			position: absolute;
+			top: -2px;
+			right: -2px;
+			min-width: 18px;
+			padding: 2px 4px;
+			font-size: 9px;
+			line-height: 14px;
+		}
+		.unavailable {
+			background: var(--surface);
+			border-radius: 50%;
+		}
+	}
 	@media (max-width: 550px) {
 		dialog {
-			padding: 24px;
+			padding: max(20px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
 		}
 	}
 </style>

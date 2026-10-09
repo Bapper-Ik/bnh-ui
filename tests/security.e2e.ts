@@ -1,3 +1,4 @@
+import { openNavigation } from './workspace.js';
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 function credentials(role = 'security') {
@@ -13,6 +14,7 @@ async function login(page: Page, role = 'security', password = credentials(role)
 	await page.getByLabel('Password', { exact: true }).fill(password);
 	await page.getByRole('button', { name: 'Sign in', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
+	await openNavigation(page);
 	await page.getByRole('link', { name: 'My Account & Security', exact: true }).click();
 	await expect(page.getByRole('region', { name: 'Account details' })).toBeVisible();
 }

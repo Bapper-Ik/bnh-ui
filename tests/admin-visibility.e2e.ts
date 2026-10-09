@@ -1,3 +1,4 @@
+import { openNavigation } from './workspace.js';
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
@@ -85,6 +86,7 @@ test('administrator without membership can inspect requests and vendors across c
 		.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
 		.toBe(true);
 	await page.screenshot({ path: 'test-results/admin-requisition-mobile.png', fullPage: true });
+	await openNavigation(page);
 	await nav.getByRole('link', { name: 'Vendors', exact: true }).click();
 	for (const data of [first, second]) {
 		await page

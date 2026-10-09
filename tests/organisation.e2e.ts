@@ -130,9 +130,13 @@ test('organisation stale edits preserve input and expired sessions clear the dra
 	await expect(peer.getByRole('dialog')).not.toBeVisible();
 	await page.reload();
 	await page.getByRole('button', { name: 'Edit company ' + name, exact: true }).click();
-	expect((await command(page, '/auth/logout')).status).toBe(200);
 	await page.getByRole('dialog').getByLabel('Name', { exact: true }).fill('Must not save');
-	await page.getByRole('dialog').getByRole('button', { name: 'Save changes', exact: true }).click();
+	expect((await command(page, '/auth/logout')).status).toBe(200);
+	// Notification refresh may detect revocation before the attempted save does.
+	await Promise.race([
+		page.waitForURL(/\/login$/),
+		page.getByRole('dialog').getByRole('button', { name: 'Save changes', exact: true }).click()
+	]);
 	await expect(page).toHaveURL(/\/login$/);
 	await expect(page.getByRole('dialog')).toHaveCount(0);
 	await other.close();

@@ -173,6 +173,7 @@ test('staff deep links deny ordinary staff and own authority controls are absent
 	await page.goto('/staff');
 	await expect(page.getByRole('heading', { name: 'Access restricted' })).toBeVisible();
 	await expect(page.locator('table')).toHaveCount(0);
+	await page.getByRole('button', { name: 'Account menu', exact: true }).click();
 	await page.getByRole('button', { name: 'Sign out', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Sign in to Custodian' })).toBeVisible();
 	await login(page, 'admin');
