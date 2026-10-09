@@ -38,6 +38,7 @@ export type AttachmentAccess = {
 };
 
 export type AttachmentPage = {
+  "access_restricted"?: boolean;
   "items": Array<AttachmentView>;
   "request_version": number;
   "uploads_enabled": boolean;
@@ -442,6 +443,7 @@ export type Recover = {
 };
 
 export type RequestView = {
+  "oversight_only"?: boolean;
   "id": string;
   "reference": string;
   "entity_id": string;
@@ -670,6 +672,8 @@ export type UpdateVendor = {
 };
 
 export type UserView = {
+  "is_system_administrator"?: boolean;
+  "can_create_requisitions"?: boolean;
   "id": string;
   "account_id": string;
   "name": string;
@@ -685,6 +689,13 @@ export type ValidationError = {
   "type": string;
   "input"?: unknown;
   "ctx"?: Record<string, unknown>;
+};
+
+export type VendorCompany = {
+  "entity_id": string;
+  "entity_name": string;
+  "active": boolean;
+  "can_create": boolean;
 };
 
 export type VendorData = {

@@ -111,6 +111,12 @@ The owner selected the existing Cloudinary account for supporting documents (202
 - Clear user-scoped caches on logout/account change and respond to revocation. Do not log credentials, bank details, signatures, or signed download URLs.
 - Keep fixtures/mocks in tests or explicit isolated development mode. Never fall back to fake production success after an API failure.
 
+## Administrator visibility decision (2026-10-09)
+
+The owner authorises full system administrators to view requisitions and vendors across BNH, including drafts and historical records in inactive companies. This supersedes earlier blanket exclusions of administrators from request visibility. A full administrator is an active, activated, writable account holding all three existing capabilities: staff:manage, organisation:manage and office_assignment:manage. Partial administrative capabilities alone do not grant this view.
+
+Administrative oversight grants read access to request lists/details/status/history/dashboard counts and vendor lists/details/company selection. It grants no financial office, membership, edit/submit/approve action, vendor write access, Audit Log access, or supporting-document/PDF/Board evidence access. Structured bank details stay redacted unless independently authorised; requester/assigned-office access continues to use its existing rules. Vendor writes and requisition creation still require genuine active membership. Recheck the permission bundle on every request; do not create fake memberships or modify live account permissions to enable the view.
+
 ## Delivery and verification
 
 - Coordinate contract changes with backend schemas, generated types, and `../docs/ui_todos.md`. Record verification in `../docs/task_done.md` and the relevant existing feature block in `../docs/implementation_pan.md`. Create evidence files when there is work to record.

@@ -22,10 +22,12 @@
 		<p>
 			{data.inbox
 				? 'Review requisitions and Board records assigned to your current office.'
-				: 'Create requests and follow every decision.'}
+				: data.oversight
+					? 'View requisitions across BNH and follow their progress.'
+					: 'Create requests and follow every decision.'}
 		</p>
 	</div>
-	{#if !data.readOnly && !data.inbox}<a class="button" href="/requisitions/new">+ New requisition</a
+	{#if data.canCreate && !data.inbox}<a class="button" href="/requisitions/new">+ New requisition</a
 		>{/if}
 </div>
 <form class="filters" method="GET">
@@ -105,7 +107,7 @@
 				? 'New requests assigned to your office will appear here.'
 				: 'Start a requisition with the vendor, scope of work and cost breakdown. You can save it as a draft.'}
 		</p>
-		{#if !data.inbox && !data.readOnly && !data.search && !data.state && !Object.values(data.filters).some(Boolean)}<a
+		{#if !data.inbox && data.canCreate && !data.search && !data.state && !Object.values(data.filters).some(Boolean)}<a
 				class="button secondary"
 				href="/requisitions/new">Create your first requisition</a
 			>{/if}

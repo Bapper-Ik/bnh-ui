@@ -28,7 +28,9 @@ export const load: PageLoad = async ({ url, parent }) => {
 			filters,
 			search,
 			state,
-			readOnly: user.read_only
+			readOnly: user.read_only,
+			canCreate: user.can_create_requisitions,
+			oversight: user.is_system_administrator
 		};
 	} catch (e) {
 		if (e instanceof ApiError && e.status === 401) redirect(303, '/login');

@@ -63,12 +63,16 @@
 	</div>
 	<span class="status">{stateLabel(req.state)}</span>
 </div>
+{#if req.oversight_only}<p role="status">
+		Administrative oversight · This requisition is read-only. Supporting documents and confidential
+		Board records require separate access.
+	</p>{/if}
 {#if req.viewing_revision}
 	<p role="status">
 		Viewing signed revision {req.viewing_revision}. This record is read-only.
 		<a href={'/requisitions/' + req.id}>Back to current request</a>
 	</p>
-{:else if req.state === 'RETURNED_FOR_REVISION'}
+{:else if req.state === 'RETURNED_FOR_REVISION' && !req.oversight_only}
 	<p role="status">
 		Returned for correction. Start a correction to prepare a new draft; the earlier signed revision
 		stays unchanged.
@@ -79,7 +83,7 @@
 		and recalculates the approval route.
 	</p>
 {/if}
-{#if req.state === 'DRAFT' && !editing}
+{#if req.state === 'DRAFT' && !editing && !req.oversight_only}
 	<p role="status">Draft saved. You can return to it before submitting.</p>
 {/if}
 {#if editing}<RequisitionForm

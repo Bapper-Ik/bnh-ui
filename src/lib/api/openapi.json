@@ -2189,6 +2189,31 @@
         }
       }
     },
+    "/api/v1/vendors/companies": {
+      "get": {
+        "tags": [
+          "Vendors"
+        ],
+        "summary": "Vendor Companies",
+        "operationId": "vendor_companies_api_v1_vendors_companies_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VendorCompany"
+                  },
+                  "type": "array",
+                  "title": "Response Vendor Companies Api V1 Vendors Companies Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/vendors": {
       "get": {
         "tags": [
@@ -4148,6 +4173,11 @@
       },
       "AttachmentPage": {
         "properties": {
+          "access_restricted": {
+            "type": "boolean",
+            "title": "Access Restricted",
+            "default": false
+          },
           "items": {
             "items": {
               "$ref": "#/components/schemas/AttachmentView"
@@ -6329,6 +6359,11 @@
       },
       "RequestView": {
         "properties": {
+          "oversight_only": {
+            "type": "boolean",
+            "title": "Oversight Only",
+            "default": false
+          },
           "id": {
             "type": "string",
             "format": "uuid",
@@ -7554,6 +7589,16 @@
       },
       "UserView": {
         "properties": {
+          "is_system_administrator": {
+            "type": "boolean",
+            "title": "Is System Administrator",
+            "default": false
+          },
+          "can_create_requisitions": {
+            "type": "boolean",
+            "title": "Can Create Requisitions",
+            "default": false
+          },
           "id": {
             "type": "string",
             "format": "uuid",
@@ -7639,6 +7684,35 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "VendorCompany": {
+        "properties": {
+          "entity_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Entity Id"
+          },
+          "entity_name": {
+            "type": "string",
+            "title": "Entity Name"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "can_create": {
+            "type": "boolean",
+            "title": "Can Create"
+          }
+        },
+        "type": "object",
+        "required": [
+          "entity_id",
+          "entity_name",
+          "active",
+          "can_create"
+        ],
+        "title": "VendorCompany"
       },
       "VendorData": {
         "properties": {

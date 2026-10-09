@@ -131,27 +131,35 @@
 		<h1>Vendors</h1>
 		<p>Reusable contact and bank details for your requisitions.</p>
 	</div>
-	{#if data.entity && !data.user.read_only}<button onclick={create}>+ Add vendor</button>{/if}
+	{#if data.entity?.can_create}<button onclick={create}>+ Add vendor</button>{/if}
 </div>
 {#if notice}<p role="status">{notice}</p>{/if}
+{#if data.user.is_system_administrator}<p>
+		Administrative oversight: you can view vendor records across BNH. Editing and bank details
+		follow your separate permissions.
+	</p>{/if}
 {#if data.error}
 	<div class="error" role="alert">
 		{data.error} <button class="secondary" onclick={() => invalidateAll()}>Retry</button>
 	</div>
 {:else if !data.entity}
 	<div class="empty">
-		<h2>No active company membership</h2>
+		<h2>
+			{data.user.is_system_administrator
+				? 'No companies available'
+				: 'No active company membership'}
+		</h2>
 		<p>
-			Ask your administrator to assign your company and department before using the vendor
-			directory.
+			{#if data.user.is_system_administrator}No company is currently available to your account.{:else}Ask
+				your administrator to assign your company and department before using the vendor directory.{/if}
 		</p>
 	</div>
 {:else}
 	<form class="filters" action="/vendors" method="GET">
 		<label
 			>Company<select name="entity" value={data.entity.entity_id}
-				>{#each data.memberships as membership (membership.entity_id)}<option
-						value={membership.entity_id}>{membership.entity_name}</option
+				>{#each data.companies as company (company.entity_id)}<option value={company.entity_id}
+						>{company.entity_name}{company.active ? '' : ' (inactive)'}</option
 					>{/each}</select
 			></label
 		>
@@ -218,7 +226,9 @@
 			<p>
 				{data.search
 					? 'Try another name or company.'
-					: 'Add a vendor to keep reusable contact and bank details.'}
+					: data.entity.can_create
+						? 'Add a vendor to keep reusable contact and bank details.'
+						: 'There are no vendors in this company.'}
 			</p>
 		</div>{/if}
 {/if}
@@ -397,6 +407,30 @@
 		min-width: 0;
 	}
 	@media (max-width: 700px) {
+		table {
+			table-layout: fixed;
+		}
+		th,
+		td {
+			padding: 12px 6px;
+			overflow-wrap: anywhere;
+		}
+		th:nth-child(1) {
+			width: 34%;
+		}
+		th:nth-child(2) {
+			width: 26%;
+		}
+		th:nth-child(3) {
+			width: 20%;
+		}
+		th:nth-child(4) {
+			width: 20%;
+		}
+		td:last-child button {
+			padding: 10px 8px;
+		}
+
 		.filters {
 			grid-template-columns: 1fr;
 		}

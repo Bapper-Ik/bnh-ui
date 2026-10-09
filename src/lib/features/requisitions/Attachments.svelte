@@ -129,7 +129,9 @@
 			PDF, PNG or JPEG · Up to {files.max_bytes / 1024 / 1024} MB each · {files.max_count} documents per
 			request.
 		</p>
-		{#if files.items.length === 0}<p>No supporting documents attached.</p>{/if}
+		{#if files.access_restricted}<p>
+				Document access is restricted. Administrative visibility does not include supporting files.
+			</p>{:else if files.items.length === 0}<p>No supporting documents attached.</p>{/if}
 		{#each files.items as file (file.id)}
 			<div class="document">
 				<div class="document-info">
