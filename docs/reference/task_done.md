@@ -383,3 +383,8 @@ Deploy the backend update on `dev`; no frontend change, migration or new configu
 ## WEB-002 — Formatted cost entry (2026-10-11)
 
 Unit prices display comma grouping and two decimal places outside editing. Focusing starts a blank entry; leaving it untouched restores the previous value, while typed/pasted values persist as exact decimal strings. Eight connected requisition/responsive browser tests, six unit tests, lint/format/type checks and production build pass. No backend or API change.
+
+
+## WEB-002 — Login visibility and shared branding (2026-10-11)
+
+Login now has an accessible Show/Hide password button and omits the requested introductory sentence. The supplied LOGO.png is used in public, desktop and mobile branding; the shared footer reads exactly “© 2026 Brendan Nicholas Holdings. All rights reserved.” across public/workspace/error layouts. Ten connected authentication/mobile/responsive browser tests, six unit tests, lint/format/type checks, production build and frontend Docker build pass. Login and 320px workspace branding were visually checked. No backend or API change.

@@ -183,3 +183,36 @@ test('account dropdown handles long identity, keyboard dismissal and failed then
 		page.getByRole('heading', { name: 'Sign in to Custodian', exact: true })
 	).toBeVisible();
 });
+
+test('login password visibility and shared branding work on narrow screens', async ({ page }) => {
+	await page.setViewportSize({ width: 320, height: 740 });
+	const copyright = '© 2026 Brendan Nicholas Holdings. All rights reserved.';
+	await page.goto('/login');
+	const password = page.getByLabel('Password', { exact: true });
+	await password.fill('Synthetic visibility check');
+	await expect(password).toHaveAttribute('type', 'password');
+	await page.getByRole('button', { name: 'Show password', exact: true }).click();
+	await expect(password).toHaveAttribute('type', 'text');
+	await expect(password).toHaveValue('Synthetic visibility check');
+	await page.getByRole('button', { name: 'Hide password', exact: true }).click();
+	await expect(password).toHaveAttribute('type', 'password');
+	await expect(
+		page.getByText(
+			'One place to raise requisitions, review requests and keep a clear record of every decision.'
+		)
+	).toHaveCount(0);
+	for (const path of ['/login', '/forgot-password', '/set-password', '/missing-page']) {
+		await page.goto(path);
+		await expect(page.getByRole('contentinfo')).toHaveText(copyright);
+		await expect(page.locator('img[src="/logo.png"]')).toBeVisible();
+		await fits(page);
+	}
+	await login(page, 'requester');
+	for (const path of ['/', '/requisitions', '/requisitions/new', '/vendors', '/account']) {
+		await page.goto(path);
+		await expect(page.getByRole('contentinfo')).toHaveText(copyright);
+		await expect(page.locator('.mobile-brand img')).toBeVisible();
+		await fits(page);
+	}
+	await page.screenshot({ path: 'test-results/new-branding-mobile.png', fullPage: true });
+});

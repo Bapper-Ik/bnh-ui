@@ -1,26 +1,30 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	let { title, description, children }: { title: string; description: string; children: Snippet } =
-		$props();
+	import BrandMark from '#lib/components/ui/BrandMark.svelte';
+	import Copyright from '#lib/components/ui/Copyright.svelte';
+	let {
+		title,
+		description = '',
+		children
+	}: { title: string; description?: string; children: Snippet } = $props();
 </script>
 
 <svelte:head><title>{title} · Custodian</title></svelte:head>
 <div class="access">
 	<header>
-		<a href="/login" class="brand"
-			><span class="mark">C</span><span>Custodian<small>BY BRENDAN</small></span></a
+		<a href="/login" class="brand"><BrandMark /><span>Custodian<small>BY BRENDAN</small></span></a
 		><span class="company">Brendan Nicholas Holdings</span>
 	</header>
 	<main>
 		<div class="intro">
 			<p class="eyebrow">BNH STAFF WORKSPACE</p>
 			<h1>{title}</h1>
-			<p>{description}</p>
+			{#if description}<p>{description}</p>{/if}
 		</div>
 		{@render children()}
 	</main>
 	<footer>
-		<span>Custodian · Requisitions & approvals</span><span>For authorised BNH staff</span>
+		<Copyright />
 	</footer>
 </div>
 
@@ -51,16 +55,6 @@
 		font-size: 10px;
 		font-weight: 400;
 		margin-top: 4px;
-	}
-	.mark {
-		display: grid;
-		place-items: center;
-		background: var(--ink);
-		color: white;
-		width: 43px;
-		height: 43px;
-		border-radius: 4px;
-		font-size: 27px;
 	}
 	.company {
 		font-size: 13px;

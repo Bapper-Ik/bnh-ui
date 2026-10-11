@@ -5,6 +5,7 @@
 	import AccessLayout from '#lib/features/account/AccessLayout.svelte';
 	let email = $state('');
 	let password = $state('');
+	let showPassword = $state(false);
 	let error = $state('');
 	let busy = $state(false);
 	async function signIn(event: SubmitEvent) {
@@ -24,10 +25,7 @@
 	}
 </script>
 
-<AccessLayout
-	title="Sign in to Custodian"
-	description="One place to raise requisitions, review requests and keep a clear record of every decision."
->
+<AccessLayout title="Sign in to Custodian">
 	{#if page.url.searchParams.get('reason') === 'password-changed'}<p role="status">
 			Your password was changed. Sign in with your new password.
 		</p>{:else if page.url.searchParams.get('reason') === 'signed-out'}<p role="status">
@@ -44,15 +42,26 @@
 				placeholder="you@company.com"
 			/></label
 		>
-		<label
-			>Password<input
-				type="password"
-				autocomplete="current-password"
-				bind:value={password}
-				required
-				maxlength="1024"
-			/></label
-		>
+		<div class="password-control">
+			<label for="login-password">Password</label>
+			<div class="password-field">
+				<input
+					id="login-password"
+					type={showPassword ? 'text' : 'password'}
+					autocomplete="current-password"
+					bind:value={password}
+					required
+					maxlength="1024"
+				/>
+				<button
+					type="button"
+					class="quiet"
+					aria-label={showPassword ? 'Hide password' : 'Show password'}
+					aria-pressed={showPassword}
+					onclick={() => (showPassword = !showPassword)}>{showPassword ? 'Hide' : 'Show'}</button
+				>
+			</div>
+		</div>
 		<a href="/forgot-password">Forgot password?</a>
 		{#if error}<div class="error" role="alert">{error}</div>{/if}
 		<button type="submit" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button>
@@ -61,6 +70,23 @@
 </AccessLayout>
 
 <style>
+	.password-control {
+		display: grid;
+		gap: 9px;
+	}
+	.password-field {
+		position: relative;
+	}
+	.password-field input {
+		padding-right: 72px;
+	}
+	.password-field button {
+		position: absolute;
+		inset: 2px 2px 2px auto;
+		padding: 8px 12px;
+		font-size: 13px;
+	}
+
 	.note {
 		font-size: 12px;
 		text-align: center;

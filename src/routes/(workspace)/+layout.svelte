@@ -1,4 +1,6 @@
 <script lang="ts">
+	import BrandMark from '#lib/components/ui/BrandMark.svelte';
+	import Copyright from '#lib/components/ui/Copyright.svelte';
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { afterNavigate, goto } from '$app/navigation';
@@ -152,9 +154,7 @@
 <a class="skip-link" href="#main-content">Skip to content</a>
 <div class="workspace">
 	<aside class="desktop-sidebar">
-		<a href="/" class="brand"
-			><span class="mark">C</span><span>Custodian<small>BY BRENDAN</small></span></a
-		>
+		<a href="/" class="brand"><BrandMark /><span>Custodian<small>BY BRENDAN</small></span></a>
 		<div class="group-label">WORKSPACE</div>
 		{@render navigationLinks()}
 		<div class="sidebar-note">
@@ -182,7 +182,7 @@
 					aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg
 				>
 			</button>
-			<a href="/" class="mobile-brand">Custodian</a>
+			<a href="/" class="mobile-brand"><BrandMark />Custodian</a>
 			<span class="context">BNH / Staff workspace</span>
 			<div class="header-actions">
 				{#key data.user.id}<NotificationDrawer />{/key}
@@ -224,7 +224,7 @@
 		</header>
 		<main id="main-content" tabindex="-1">{@render children()}</main>
 		<footer>
-			<span>Custodian by Brendan</span><span>All times shown in Lagos time · WAT</span>
+			<Copyright />
 		</footer>
 	</div>
 </div>
@@ -282,16 +282,6 @@
 		font-size: 9px;
 		font-weight: 400;
 		margin-top: 4px;
-	}
-	.mark {
-		width: 37px;
-		height: 37px;
-		border-radius: 4px;
-		background: var(--ink);
-		color: white;
-		display: grid;
-		place-items: center;
-		font-size: 24px;
 	}
 	.group-label {
 		color: var(--body);
@@ -550,7 +540,9 @@
 			flex-shrink: 0;
 		}
 		.mobile-brand {
-			display: block;
+			display: flex;
+			align-items: center;
+			gap: 6px;
 			font-size: 18px;
 			font-weight: 600;
 			text-decoration: none;
