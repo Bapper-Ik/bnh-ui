@@ -12,7 +12,9 @@
 
 <svelte:head><title>{title} · Custodian</title></svelte:head>
 {#snippet brand()}
-	<a href="/login" class="brand"><BrandMark /><span>Custodian<small>BY BRENDAN</small></span></a>
+	<a href="/login" class="brand"
+		><BrandMark /><span class="brand-name">Custodian<small>BY BRENDAN</small></span></a
+	>
 {/snippet}
 <div class="access" class:login>
 	{#if !login}<header>
@@ -141,6 +143,10 @@
 		height: 72px;
 		object-fit: cover;
 		transform: translateY(-3px);
+	}
+	.login .brand-name {
+		border-left: 1px solid var(--rule);
+		padding-left: 12px;
 	}
 	.login .brand small {
 		font-size: 12px;
