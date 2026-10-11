@@ -138,7 +138,6 @@ test('returned request preserves signed evidence, corrects and routes to a diffe
 	await page
 		.getByLabel('Supporting document', { exact: true })
 		.setInputFiles({ name: 'original-quote.png', mimeType: 'image/png', buffer: png });
-	await page.getByRole('button', { name: 'Upload document', exact: true }).click();
 	await expect(page.getByRole('button', { name: 'View original-quote.png' })).toBeVisible();
 	await sign(page, 'requester', 'Review & submit');
 	await login(page, 'hod');

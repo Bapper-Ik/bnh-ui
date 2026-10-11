@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
+	import Attachments from './Attachments.svelte';
 	import PriceInput from '#lib/components/ui/PriceInput.svelte';
 	import { beforeNavigate, goto, invalidateAll } from '$app/navigation';
 	import { api, ApiError } from '#lib/api/client.js';
@@ -52,7 +53,10 @@
 	let entityId = $state(untrack(() => request?.entity_id ?? memberships[0]?.entity_id ?? ''));
 	let busy = $state(false);
 	let error = $state('');
-	let creationKey = crypto.randomUUID();
+	const creationKey = crypto.randomUUID();
+	let stagedIds = $state<string[]>([]);
+	let uploading = $state(false);
+	let uploadRefresh = $state(0);
 	let conflict = $state(false),
 		denied = $state(false),
 		dirty = $state(false);
@@ -138,7 +142,7 @@
 	}
 	async function save(event: SubmitEvent) {
 		event.preventDefault();
-		if (busy) return;
+		if (busy || uploading) return;
 		const form = event.currentTarget as HTMLFormElement;
 		for (const field of form.querySelectorAll(':invalid'))
 			field.closest('details')?.setAttribute('open', '');
@@ -169,6 +173,7 @@
 					: {
 							entity_id: entityId,
 							creation_key: creationKey,
+							staged_upload_ids: stagedIds,
 							content: payload,
 							vendor_selection: vendorSelection
 						}
@@ -184,8 +189,8 @@
 		} catch (e) {
 			if (e instanceof ApiError && e.status < 500) {
 				pendingBody = null;
-				if (e.status === 409) conflict = true;
-				else creationKey = crypto.randomUUID();
+				if (e.code === 'DOCUMENTS_CHANGED' && !request) uploadRefresh += 1;
+				else if (e.status === 409) conflict = true;
 			}
 			await failure(e);
 		} finally {
@@ -215,6 +220,7 @@
 					<label
 						>Company & department<select
 							bind:value={entityId}
+							disabled={uploading || stagedIds.length > 0}
 							onchange={() => {
 								vendorSelection = null;
 								vendorChoices = null;
@@ -430,8 +436,21 @@
 					}
 				}}>Discard changes and reload</button
 			>{/if}
+		{#if !request && entityId}
+			{#key entityId + ':' + uploadRefresh}<Attachments
+					{entityId}
+					{creationKey}
+					disabled={busy || !!pendingBody}
+					onChanged={async () => {}}
+					onStaged={(ids) => {
+						stagedIds = ids;
+						if (ids.length) dirty = true;
+					}}
+					onBusy={(value) => (uploading = value)}
+				/>{/key}
+		{/if}
 		<div class="actions">
-			<button disabled={busy || conflict}
+			<button disabled={busy || uploading || conflict}
 				>{busy ? 'Saving…' : pendingBody ? 'Retry save' : 'Save draft'}</button
 			><button
 				type="button"

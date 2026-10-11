@@ -3,7 +3,31 @@
 	import { goto } from '$app/navigation';
 	import { api, ApiError } from '#lib/api/client.js';
 	import type { AttachmentPage, AttachmentView, RequestView } from '#lib/api/schema.js';
-	let { request, onChanged }: { request: RequestView; onChanged: () => Promise<void> } = $props();
+	let {
+		request,
+		entityId,
+		creationKey,
+		onChanged,
+		onStaged,
+		onBusy,
+		disabled = false
+	}: {
+		request?: RequestView;
+		entityId?: string;
+		creationKey?: string;
+		onChanged: () => Promise<void>;
+		onStaged?: (ids: string[]) => void;
+		onBusy?: (value: boolean) => void;
+		disabled?: boolean;
+	} = $props();
+	const editable = $derived(!request || request.available_actions.includes('edit'));
+	const stagingQuery = $derived(
+		new URLSearchParams({ entity_id: entityId ?? '', creation_key: creationKey ?? '' })
+	);
+	const collection = $derived(
+		request ? '/requisitions/' + request.id + '/attachments' : '/staged-attachments'
+	);
+	const filePath = (id: string) => (request ? '/attachments/' : '/staged-attachments/') + id;
 	let files = $state<AttachmentPage | null>(null),
 		error = $state(''),
 		busy = $state(false);
@@ -12,7 +36,7 @@
 	let viewer = $state<HTMLDialogElement>(),
 		url = $state(''),
 		viewed = $state<AttachmentView | null>(null);
-	let version = $state(untrack(() => request.version));
+	let version = $state(untrack(() => request?.version ?? 0));
 	async function failure(e: unknown) {
 		error = e instanceof Error ? e.message : 'Document action failed.';
 		if (e instanceof ApiError && [401, 403, 404].includes(e.status)) {
@@ -22,24 +46,31 @@
 		}
 	}
 	async function load() {
+		error = '';
 		try {
 			files = await api<AttachmentPage>(
-				'/requisitions/' +
-					request.id +
-					'/attachments' +
-					(request.viewing_revision ? '?revision=' + request.viewing_revision : '')
+				collection +
+					(request
+						? request.viewing_revision
+							? '?revision=' + request.viewing_revision
+							: ''
+						: '?' + stagingQuery)
 			);
 			version = files.request_version;
+			onStaged?.(files.items.map((file) => file.id));
 		} catch (e) {
 			await failure(e);
 		}
 	}
+	$effect(() => {
+		onBusy?.(busy || !!selected || !files || !!error);
+	});
 	onMount(load);
 	onDestroy(() => {
 		if (url) URL.revokeObjectURL(url);
 	});
 	async function upload() {
-		if (!selected || busy) return;
+		if (!selected || busy || disabled) return;
 		if (files && selected.size > files.max_bytes) {
 			error = 'The file exceeds the upload size limit.';
 			return;
@@ -48,12 +79,12 @@
 		error = '';
 		try {
 			await api(
-				'/requisitions/' +
-					request.id +
-					'/attachments?' +
+				collection +
+					'?' +
 					new URLSearchParams({
+						...(!request ? Object.fromEntries(stagingQuery) : {}),
 						filename: selected.name,
-						expected_version: String(version),
+						...(request ? { expected_version: String(version) } : {}),
 						upload_key: uploadKey
 					}),
 				{ method: 'POST', body: selected, headers: { 'Content-Type': selected.type } }
@@ -80,7 +111,9 @@
 		busy = true;
 		error = '';
 		try {
-			await api('/attachments/' + file.id + '?expected_version=' + version, { method: 'DELETE' });
+			await api(filePath(file.id) + (request ? '?expected_version=' + version : ''), {
+				method: 'DELETE'
+			});
 			await onChanged();
 			await load();
 		} catch (e) {
@@ -99,7 +132,7 @@
 		busy = true;
 		error = '';
 		try {
-			const response = await fetch('/api/v1/attachments/' + file.id + '/content', {
+			const response = await fetch('/api/v1' + filePath(file.id) + '/content', {
 				credentials: 'same-origin'
 			});
 			if (!response.ok) {
@@ -124,6 +157,10 @@
 
 <section class="card stack">
 	<h2>Supporting documents</h2>
+	{#if !request}<p>
+			Files upload when selected. Save your draft within 24 hours to keep them with this
+			requisition.
+		</p>{/if}
 	{#if files}
 		<p>
 			PDF, PNG or JPEG · Up to {files.max_bytes / 1024 / 1024} MB each · {files.max_count} documents per
@@ -164,7 +201,7 @@
 						type="button"
 						class="secondary"
 						aria-label={'View ' + file.filename}
-						disabled={busy}
+						disabled={busy || disabled}
 						onclick={() => open(file)}
 					>
 						<svg
@@ -183,12 +220,12 @@
 						</svg>
 						View
 					</button>
-					{#if request.available_actions.includes('edit')}
+					{#if editable}
 						<button
 							type="button"
 							class="quiet"
 							aria-label={'Remove ' + file.filename}
-							disabled={busy}
+							disabled={busy || disabled}
 							onclick={() => remove(file)}
 						>
 							<svg
@@ -210,30 +247,35 @@
 				</div>
 			</div>
 		{/each}
-		{#if request.available_actions.includes('edit')}
+		{#if editable}
 			{#if files.uploads_enabled}
 				<label
 					>Supporting document<input
 						type="file"
 						accept="application/pdf,image/png,image/jpeg"
-						disabled={busy || !!selected}
+						disabled={busy || disabled || !!selected}
 						onchange={(e) => {
 							selected = e.currentTarget.files?.[0] ?? null;
 							uploadKey = crypto.randomUUID();
+							e.currentTarget.value = '';
+							void upload();
 						}}
 					/></label
 				>
 				<div class="actions">
-					<button class="secondary" disabled={busy || !selected} onclick={upload}
-						>{busy ? 'Uploading…' : 'Upload document'}</button
-					>
+					{#if busy && selected}<p role="status">Uploading {selected.name}…</p>{/if}
+					{#if selected && !busy}<button type="button" class="secondary" {disabled} onclick={upload}
+							>Retry upload</button
+						>{/if}
 					{#if selected}<button
+							type="button"
 							class="quiet"
-							disabled={busy}
+							disabled={busy || disabled}
 							onclick={() => {
 								selected = null;
+								error = '';
 								uploadKey = crypto.randomUUID();
-							}}>Choose another file</button
+							}}>Cancel file</button
 						>{/if}
 				</div>
 			{:else}<p role="status">
@@ -244,8 +286,9 @@
 	{:else}<p>Documents could not be loaded.</p>{/if}
 	{#if error}<p class="error" role="alert">{error}</p>
 		<button
+			type="button"
 			class="secondary"
-			disabled={busy}
+			disabled={busy || disabled}
 			onclick={async () => {
 				await onChanged();
 				await load();
@@ -260,6 +303,7 @@
 			/>{:else}<iframe src={url} title={viewed.filename} sandbox=""></iframe>{/if}
 		<div class="actions">
 			<a href={url} download={viewed.filename} class="button secondary">Download</a><button
+				type="button"
 				onclick={closeViewer}>Close document</button
 			>
 		</div>

@@ -69,7 +69,6 @@ test('persisted history and scoped audit paginate, filter and open private evide
 	await page
 		.getByLabel('Supporting document', { exact: true })
 		.setInputFiles({ name: 'history-quote.png', mimeType: 'image/png', buffer: png });
-	await page.getByRole('button', { name: 'Upload document', exact: true }).click();
 	await expect(page.getByRole('button', { name: 'View history-quote.png' })).toBeVisible();
 	await page.goto('/requisitions');
 	await page.getByText('More filters', { exact: true }).click();

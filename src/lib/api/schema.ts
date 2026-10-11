@@ -165,6 +165,7 @@ export type CostLine = {
 };
 
 export type CreateRequest = {
+  "staged_upload_ids"?: Array<string>;
   "entity_id": string;
   "creation_key": string;
   "content": Content;

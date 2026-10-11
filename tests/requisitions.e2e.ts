@@ -196,7 +196,6 @@ test('draft, private document viewer, signed submission and assigned office visi
 	await page
 		.getByLabel('Supporting document', { exact: true })
 		.setInputFiles({ name: 'quote.png', mimeType: 'image/png', buffer: png });
-	await page.getByRole('button', { name: 'Upload document', exact: true }).click();
 	await expect(page.getByRole('button', { name: 'View quote.png' })).toBeVisible();
 	await page.getByRole('button', { name: 'View quote.png' }).click();
 	await expect(
@@ -381,4 +380,101 @@ test('requester retracts to draft, edits and resubmits, then deletes a retracted
 	await expect(page.getByText(title, { exact: true })).toHaveCount(0);
 	const response = await page.request.get('/api/v1/requisitions/' + url.split('/').pop());
 	expect(response.status()).toBe(404);
+});
+
+test('documents upload before the first draft save, support removal and persist after submission', async ({
+	page
+}) => {
+	await login(page);
+	await page.setViewportSize({ width: 390, height: 844 });
+	await page.goto('/requisitions/new');
+	let draftsCreated = 0;
+	page.on('request', (request) => {
+		if (request.method() === 'POST' && new URL(request.url()).pathname === '/api/v1/requisitions')
+			draftsCreated++;
+	});
+	const png = Buffer.from(
+		'iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAC0lEQVR4nGNgQAYAAA4AAamRc7EAAAAASUVORK5CYII=',
+		'base64'
+	);
+	const input = page.getByLabel('Supporting document', { exact: true });
+	await input.setInputFiles({ name: 'first-quotation.png', mimeType: 'image/png', buffer: png });
+	await expect(page.getByRole('button', { name: 'View first-quotation.png' })).toBeVisible();
+	expect(draftsCreated).toBe(0);
+	await expect(page).toHaveURL(/\/requisitions\/new$/);
+	await page.getByRole('button', { name: 'View first-quotation.png' }).click();
+	await expect(
+		page.getByRole('dialog', { name: 'Document viewer' }).getByRole('img')
+	).toBeVisible();
+	await page.getByRole('button', { name: 'Close document' }).click();
+	page.once('dialog', (dialog) => dialog.accept());
+	await page.getByRole('button', { name: 'Remove first-quotation.png' }).click();
+	await expect(page.getByRole('button', { name: 'View first-quotation.png' })).toHaveCount(0);
+	await input.setInputFiles({
+		name: 'final-quotation-with-a-long-file-name-for-mobile.png',
+		mimeType: 'image/png',
+		buffer: png
+	});
+	await expect(
+		page.getByRole('button', { name: 'View final-quotation-with-a-long-file-name-for-mobile.png' })
+	).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Upload document', exact: true })).toHaveCount(0);
+	const title = 'Files before saving ' + randomUUID();
+	await fill(page, title);
+	await page.screenshot({ path: 'test-results/staged-upload-mobile.png', fullPage: true });
+	expect(
+		await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)
+	).toBeTruthy();
+	await page.getByRole('button', { name: 'Save draft', exact: true }).click();
+	await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
+	expect(draftsCreated).toBe(1);
+	await page.reload();
+	await expect(
+		page.getByRole('button', { name: 'View final-quotation-with-a-long-file-name-for-mobile.png' })
+	).toBeVisible();
+	await sign(page, 'Synthetic requester');
+	await expect(
+		page.getByRole('button', { name: 'View final-quotation-with-a-long-file-name-for-mobile.png' })
+	).toBeVisible();
+	await expect(
+		page.getByRole('button', {
+			name: 'Remove final-quotation-with-a-long-file-name-for-mobile.png'
+		})
+	).toHaveCount(0);
+});
+
+test('failed automatic upload can retry without duplicating documents or losing form entries', async ({
+	page
+}) => {
+	await login(page);
+	await page.goto('/requisitions/new');
+	const title = 'Retry automatic upload ' + randomUUID();
+	await fill(page, title);
+	let fail = true;
+	await page.route('**/api/v1/staged-attachments?*', async (route) => {
+		if (route.request().method() === 'POST' && fail) {
+			fail = false;
+			await route.fulfill({
+				status: 503,
+				contentType: 'application/json',
+				body: JSON.stringify({ code: 'SERVICE_UNAVAILABLE', message: 'Synthetic upload outage' })
+			});
+		} else await route.continue();
+	});
+	await page.getByLabel('Supporting document', { exact: true }).setInputFiles({
+		name: 'retry.png',
+		mimeType: 'image/png',
+		buffer: Buffer.from(
+			'iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAC0lEQVR4nGNgQAYAAA4AAamRc7EAAAAASUVORK5CYII=',
+			'base64'
+		)
+	});
+	await expect(page.getByText('Synthetic upload outage', { exact: true })).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Save draft', exact: true })).toBeDisabled();
+	await page.getByRole('button', { name: 'Retry upload', exact: true }).click();
+	await expect(page.getByRole('button', { name: 'View retry.png' })).toHaveCount(1);
+	await expect(page.getByLabel('Description of work or purchase')).toHaveValue(title);
+	await page.getByRole('button', { name: 'Save draft', exact: true }).click();
+	await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
+	await expect(page.getByRole('button', { name: 'View retry.png' })).toHaveCount(1);
 });
