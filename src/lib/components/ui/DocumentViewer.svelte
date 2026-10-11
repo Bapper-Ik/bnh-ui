@@ -1,13 +1,19 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import PdfPreview from './PdfPreview.svelte';
 	import { goto } from '$app/navigation';
 	import type { AttachmentView } from '#lib/api/schema.js';
 	let {
 		file,
 		onClose
-	}: { file: Pick<AttachmentView, 'id' | 'filename' | 'media_type'>; onClose: () => void } =
-		$props();
+	}: {
+		file: Pick<AttachmentView, 'id' | 'filename' | 'media_type'> & {
+			kind?: 'attachment' | 'export';
+		};
+		onClose: () => void;
+	} = $props();
 	let dialog: HTMLDialogElement;
+	let documentBlob = $state<Blob | null>(null);
 	let url = $state(''),
 		error = $state('');
 	const controller = new AbortController();
@@ -22,10 +28,13 @@
 	async function load() {
 		error = '';
 		try {
-			const response = await fetch('/api/v1/attachments/' + file.id + '/content', {
-				credentials: 'same-origin',
-				signal: controller.signal
-			});
+			const response = await fetch(
+				`/api/v1/${file.kind === 'export' ? 'exports' : 'attachments'}/${file.id}/content`,
+				{
+					credentials: 'same-origin',
+					signal: controller.signal
+				}
+			);
 			if (response.status === 401) {
 				onClose();
 				await goto('/login', { invalidateAll: true });
@@ -36,7 +45,10 @@
 				throw new Error(body?.message ?? 'Unable to open this document.');
 			}
 			const blob = await response.blob();
-			if (!controller.signal.aborted) url = URL.createObjectURL(blob);
+			if (!controller.signal.aborted) {
+				documentBlob = blob;
+				url = URL.createObjectURL(blob);
+			}
 		} catch (e) {
 			if (!controller.signal.aborted)
 				error = e instanceof Error ? e.message : 'Unable to open document.';
@@ -50,7 +62,10 @@
 		<button class="secondary" onclick={load}>Retry</button>
 	{:else if !url}<p role="status">Loading private document…</p>
 	{:else if file.media_type.startsWith('image/')}<img src={url} alt={file.filename} />
-	{:else}<iframe src={url} title={file.filename} sandbox=""></iframe>{/if}
+	{:else if documentBlob}<PdfPreview blob={documentBlob} />{/if}
+	{#if url && file.kind === 'export'}<p>
+			Download the PDF and print it using your PDF reader.
+		</p>{/if}
 	<div class="actions">
 		{#if url}<a class="button secondary" href={url} download={file.filename}>Download</a
 			>{/if}<button onclick={() => dialog.close()}>Close document</button>
@@ -77,11 +92,6 @@
 		object-fit: contain;
 		display: block;
 		margin: 20px auto;
-	}
-	iframe {
-		width: 100%;
-		height: 60vh;
-		border: 0;
 	}
 	.actions {
 		display: flex;

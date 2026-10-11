@@ -131,6 +131,7 @@ export type CapabilityView = {
 };
 
 export type ChallengeView = {
+  "transfer_details"?: TransferDetails | null;
   "id": string;
   "content_digest": string;
   "expires_at": string;
@@ -200,6 +201,24 @@ export type DashboardView = {
   "refreshed_at": string;
 };
 
+export type DebitAccount = {
+  "bank_name": string;
+  "branch_address": string;
+  "account_name": string;
+  "account_number": string;
+  "company_address"?: string;
+};
+
+export type DebitAccountUpdate = {
+  "expected_version": number;
+  "data": DebitAccount;
+};
+
+export type DebitAccountView = {
+  "version": number;
+  "data": DebitAccount | null;
+};
+
 export type DepartmentInput = {
   "name": string;
   "code"?: string;
@@ -231,6 +250,40 @@ export type EntityItem = {
   "code": string;
   "active": boolean;
   "kind": string;
+};
+
+export type ExportCommand = {
+  "expected_version": number;
+  "revision"?: number | null;
+  "include_board"?: boolean;
+  "idempotency_key": string;
+};
+
+export type ExportPage = {
+  "items": Array<ExportView>;
+  "total": number;
+  "limit": number;
+  "offset": number;
+  "can_include_board": boolean;
+  "unavailable_reason": string | null;
+};
+
+export type ExportView = {
+  "document_type"?: string;
+  "id": string;
+  "revision": number;
+  "request_version": number;
+  "include_board": boolean;
+  "filename": string;
+  "status": string;
+  "created_at": string;
+  "generated_at": string | null;
+  "template_version": string;
+  "file_digest": string | null;
+  "byte_size": number | null;
+  "attempts": number;
+  "last_error": string | null;
+  "can_retry": boolean;
 };
 
 export type ForgotPassword = {
@@ -658,6 +711,16 @@ export type Summary = {
   "department_name"?: string;
   "entity_name"?: string;
   "vendor_name"?: string;
+};
+
+export type TransferDetails = {
+  "debit"?: DebitAccount | null;
+  "debit_version"?: number;
+  "beneficiary_bank": string;
+  "beneficiary_name": string;
+  "beneficiary_account": string;
+  "amount": string;
+  "missing"?: Array<string>;
 };
 
 export type UpdateRequest = {

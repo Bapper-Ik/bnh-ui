@@ -4007,6 +4007,362 @@
           }
         }
       }
+    },
+    "/api/v1/requisitions/{request_id}/exports": {
+      "get": {
+        "tags": [
+          "Exports"
+        ],
+        "summary": "List Exports",
+        "operationId": "list_exports_api_v1_requisitions__request_id__exports_get",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          },
+          {
+            "name": "revision",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Revision"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 2147483647,
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Exports"
+        ],
+        "summary": "Create Export",
+        "operationId": "create_export_api_v1_requisitions__request_id__exports_post",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExportCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/exports/{export_id}": {
+      "get": {
+        "tags": [
+          "Exports"
+        ],
+        "summary": "Metadata",
+        "operationId": "metadata_api_v1_exports__export_id__get",
+        "parameters": [
+          {
+            "name": "export_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Export Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/exports/{export_id}/retry": {
+      "post": {
+        "tags": [
+          "Exports"
+        ],
+        "summary": "Retry",
+        "operationId": "retry_api_v1_exports__export_id__retry_post",
+        "parameters": [
+          {
+            "name": "export_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Export Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/exports/{export_id}/content": {
+      "get": {
+        "tags": [
+          "Exports"
+        ],
+        "summary": "Download",
+        "operationId": "download_api_v1_exports__export_id__content_get",
+        "parameters": [
+          {
+            "name": "export_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Export Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organisation/entities/{entity_id}/debit-account": {
+      "get": {
+        "tags": [
+          "Company bank instructions"
+        ],
+        "summary": "Get Account",
+        "operationId": "get_account_api_v1_organisation_entities__entity_id__debit_account_get",
+        "parameters": [
+          {
+            "name": "entity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Entity Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DebitAccountView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Company bank instructions"
+        ],
+        "summary": "Put Account",
+        "operationId": "put_account_api_v1_organisation_entities__entity_id__debit_account_put",
+        "parameters": [
+          {
+            "name": "entity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Entity Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DebitAccountUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DebitAccountView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -4683,6 +5039,16 @@
       },
       "ChallengeView": {
         "properties": {
+          "transfer_details": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TransferDetails"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "id": {
             "type": "string",
             "format": "uuid",
@@ -5026,6 +5392,92 @@
         ],
         "title": "DashboardView"
       },
+      "DebitAccount": {
+        "properties": {
+          "bank_name": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 1,
+            "title": "Bank Name"
+          },
+          "branch_address": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Branch Address"
+          },
+          "account_name": {
+            "type": "string",
+            "maxLength": 250,
+            "minLength": 1,
+            "title": "Account Name"
+          },
+          "account_number": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Account Number"
+          },
+          "company_address": {
+            "type": "string",
+            "maxLength": 500,
+            "title": "Company Address",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "bank_name",
+          "branch_address",
+          "account_name",
+          "account_number"
+        ],
+        "title": "DebitAccount"
+      },
+      "DebitAccountUpdate": {
+        "properties": {
+          "expected_version": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Expected Version"
+          },
+          "data": {
+            "$ref": "#/components/schemas/DebitAccount"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_version",
+          "data"
+        ],
+        "title": "DebitAccountUpdate"
+      },
+      "DebitAccountView": {
+        "properties": {
+          "version": {
+            "type": "integer",
+            "title": "Version"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DebitAccount"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "version",
+          "data"
+        ],
+        "title": "DebitAccountView"
+      },
       "DepartmentInput": {
         "properties": {
           "name": {
@@ -5193,6 +5645,206 @@
           "kind"
         ],
         "title": "EntityItem"
+      },
+      "ExportCommand": {
+        "properties": {
+          "expected_version": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expected Version"
+          },
+          "revision": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revision"
+          },
+          "include_board": {
+            "type": "boolean",
+            "title": "Include Board",
+            "default": false
+          },
+          "idempotency_key": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Idempotency Key"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_version",
+          "idempotency_key"
+        ],
+        "title": "ExportCommand"
+      },
+      "ExportPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ExportView"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "can_include_board": {
+            "type": "boolean",
+            "title": "Can Include Board"
+          },
+          "unavailable_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unavailable Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset",
+          "can_include_board",
+          "unavailable_reason"
+        ],
+        "title": "ExportPage"
+      },
+      "ExportView": {
+        "properties": {
+          "document_type": {
+            "type": "string",
+            "title": "Document Type",
+            "default": "requisition"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "revision": {
+            "type": "integer",
+            "title": "Revision"
+          },
+          "request_version": {
+            "type": "integer",
+            "title": "Request Version"
+          },
+          "include_board": {
+            "type": "boolean",
+            "title": "Include Board"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "generated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Generated At"
+          },
+          "template_version": {
+            "type": "string",
+            "title": "Template Version"
+          },
+          "file_digest": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Digest"
+          },
+          "byte_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Byte Size"
+          },
+          "attempts": {
+            "type": "integer",
+            "title": "Attempts"
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "can_retry": {
+            "type": "boolean",
+            "title": "Can Retry"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "revision",
+          "request_version",
+          "include_board",
+          "filename",
+          "status",
+          "created_at",
+          "generated_at",
+          "template_version",
+          "file_digest",
+          "byte_size",
+          "attempts",
+          "last_error",
+          "can_retry"
+        ],
+        "title": "ExportView"
       },
       "ForgotPassword": {
         "properties": {
@@ -7538,6 +8190,56 @@
           "required_authority"
         ],
         "title": "Summary"
+      },
+      "TransferDetails": {
+        "properties": {
+          "debit": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DebitAccount"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "debit_version": {
+            "type": "integer",
+            "title": "Debit Version",
+            "default": 0
+          },
+          "beneficiary_bank": {
+            "type": "string",
+            "title": "Beneficiary Bank"
+          },
+          "beneficiary_name": {
+            "type": "string",
+            "title": "Beneficiary Name"
+          },
+          "beneficiary_account": {
+            "type": "string",
+            "title": "Beneficiary Account"
+          },
+          "amount": {
+            "type": "string",
+            "title": "Amount"
+          },
+          "missing": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Missing"
+          }
+        },
+        "type": "object",
+        "required": [
+          "beneficiary_bank",
+          "beneficiary_name",
+          "beneficiary_account",
+          "amount"
+        ],
+        "title": "TransferDetails"
       },
       "UpdateRequest": {
         "properties": {

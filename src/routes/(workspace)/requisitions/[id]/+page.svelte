@@ -6,10 +6,12 @@
 	import { money, stateLabel, dateTime, lineKobo, formatKobo } from '#lib/money.js';
 	import RequisitionForm from '#lib/features/requisitions/RequisitionForm.svelte';
 	import Attachments from '#lib/features/requisitions/Attachments.svelte';
+	import Exports from '#lib/features/requisitions/Exports.svelte';
 	import HistoryTimeline from '#lib/features/requisitions/HistoryTimeline.svelte';
 	import SigningDialog from '#lib/features/requisitions/SigningDialog.svelte';
 	let { data } = $props();
 	let editing = $state(false);
+	let exportHistory = $state(0);
 	let correctionBusy = $state(false),
 		correctionError = $state('');
 	let correctionCommand: string | null = null;
@@ -214,7 +216,11 @@
 					request={req}
 					onChanged={saved}
 				/>{/key}
-			{#key `${req.id}:${req.version}:${req.viewing_revision ?? 'current'}`}<HistoryTimeline
+			{#key `${req.id}:${req.version}:${req.viewing_revision ?? 'current'}`}<Exports
+					request={req}
+					onGenerated={() => (exportHistory += 1)}
+				/>{/key}
+			{#key `${req.id}:${req.version}:${req.viewing_revision ?? 'current'}:${exportHistory}`}<HistoryTimeline
 					requestId={req.id}
 					revision={req.viewing_revision}
 				/>{/key}

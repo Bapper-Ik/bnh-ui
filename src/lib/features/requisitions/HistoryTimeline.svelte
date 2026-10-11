@@ -11,6 +11,7 @@
 		failure = $state(''),
 		lastOffset = $state(0);
 	const labels: Record<string, string> = {
+		'requisition.export.success': 'PDF generated',
 		'requisition.created': 'Draft created',
 		'requisition.updated': 'Draft updated',
 		'requisition.revision_created': 'Correction started',

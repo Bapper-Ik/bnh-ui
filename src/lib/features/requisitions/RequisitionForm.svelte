@@ -280,7 +280,10 @@
 					</div>
 					<details>
 						<summary>Bank details <span>Optional until supplied</span></summary>
-						<p class="hint">Enter all three fields when available. Otherwise, leave them empty.</p>
+						<p class="hint">
+							Enter all three fields to generate a bank transfer letter after approval. If they are
+							unknown, leave them empty; the letter will be unavailable.
+						</p>
 						<div class="grid">
 							<label>Bank name<input bind:value={content.vendor.bank_name} /></label><label
 								>Account number<input

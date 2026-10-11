@@ -250,9 +250,46 @@
 				confirm();
 			}}
 		>
-			<p><strong>{money(challenge.total)}</strong> · {challenge.authority?.replaceAll('_', ' ')}</p>
-			<p>{challenge.routing_explanation}</p>
+			<p>
+				<strong>{money(challenge.total)}</strong>{#if challenge.authority}
+					· {challenge.authority.replaceAll('_', ' ')}{/if}
+			</p>
+			{#if challenge.routing_explanation}<p>{challenge.routing_explanation}</p>{/if}
 			<p>{challenge.statement}</p>
+			{#if challenge.transfer_details}
+				{@const transfer = challenge.transfer_details}
+				<section class="transfer-summary" aria-label="Bank transfer instruction">
+					<h3>Bank transfer instruction</h3>
+					<p>Your approval signature will appear on this letter.</p>
+					<dl>
+						<dt>Amount</dt>
+						<dd>{money(transfer.amount)}</dd>
+						<dt>Debit account</dt>
+						<dd>
+							{transfer.debit
+								? `${transfer.debit.account_name} · ${transfer.debit.account_number} · ${transfer.debit.bank_name}`
+								: 'Not configured'}
+						</dd>
+						<dt>Bank branch</dt>
+						<dd>{transfer.debit?.branch_address ?? 'Not configured'}</dd>
+						<dt>Beneficiary</dt>
+						<dd>{transfer.beneficiary_name || 'Not provided'}</dd>
+						<dt>Beneficiary account</dt>
+						<dd>
+							{transfer.beneficiary_account || 'Not provided'} · {transfer.beneficiary_bank ||
+								'Bank not provided'}
+						</dd>
+					</dl>
+					{#if transfer.missing?.length}
+						<p role="status">
+							A transfer letter cannot be generated with these missing details: {transfer.missing?.join(
+								'; '
+							)}. Complete the company account before approval, or return the requisition for
+							missing beneficiary details.
+						</p>
+					{/if}
+				</section>
+			{/if}
 			{#if reason}<p><strong>Reason:</strong> {reason}</p>{/if}
 			<fieldset disabled={busy || !!pendingCommand}>
 				<label
@@ -315,6 +352,26 @@
 </dialog>
 
 <style>
+	.transfer-summary {
+		border: 1px solid var(--rule);
+		border-radius: 6px;
+		padding: 16px;
+	}
+	.transfer-summary h3 {
+		margin-top: 0;
+	}
+	.transfer-summary dl {
+		display: grid;
+		gap: 8px;
+	}
+	.transfer-summary dt {
+		font-weight: 600;
+	}
+	.transfer-summary dd {
+		margin: 0 0 8px;
+		overflow-wrap: anywhere;
+	}
+
 	fieldset {
 		border: 0;
 		margin: 0;

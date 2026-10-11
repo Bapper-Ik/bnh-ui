@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation';
+	import DebitAccount from '#lib/features/organisation/DebitAccount.svelte';
+	let bankCompany = $state<OrganisationRecord | null>(null);
 	import { api, ApiError } from '#lib/api/client.js';
 	import type { OrganisationRecord, EntityItem, Item } from '#lib/api/schema.js';
 	let { data } = $props();
@@ -195,7 +197,11 @@
 						<span class="badge">{item.active ? 'Enabled' : 'Disabled'}</span>
 					</div>
 					<div class="actions">
-						<a class="button secondary" href={link('departments', item.id)}>Departments</a><a
+						<button
+							class="secondary"
+							aria-label={'Bank details for ' + item.name}
+							onclick={() => (bankCompany = item)}>Bank details</button
+						><a class="button secondary" href={link('departments', item.id)}>Departments</a><a
 							class="button secondary"
 							href={link('offices', item.id)}>Officeholders</a
 						><button
@@ -431,6 +437,8 @@
 		</div>
 	</form>
 </dialog>
+
+{#if bankCompany}<DebitAccount company={bankCompany} onClose={() => (bankCompany = null)} />{/if}
 
 <style>
 	.page-header {

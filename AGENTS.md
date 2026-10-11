@@ -99,6 +99,8 @@ Deliver sign-in/recovery, restricted administration, a scoped dashboard, vendor 
 
 ## API integration, money, and signing
 
+The owner replaced the proprietary-font requirement with bundled free fonts (2026-10-11). Use Liberation Serif Regular for document bodies/footers and Liberation Sans Bold for headings, with their SIL Open Font License notice. Include the font binaries in the backend image and use the same files in tests; no private font copies, Render font secrets or runtime download are required. Keep PDF layout/signatures and A4 sizing consistent.
+
 The owner selected the existing Cloudinary account for supporting documents (2026-10-08). Use authenticated raw assets and application-authorised downloads; credentials stay on the backend. No R2, Backblaze or scanner provisioning is part of this release.
 
 - Server responses determine totals, lifecycle, permissions, and next actions. Monetary values are decimal strings; account numbers remain strings. Use decimal arithmetic for previews, never JS Number arithmetic for totals or authority boundaries. Preserve server precision when formatting NGN and show Africa/Lagos timestamp context.
@@ -126,3 +128,9 @@ Administrative oversight grants read access to request lists/details/status/hist
 - Inspect desktop/narrow layouts, keyboard navigation, readable errors, status labels, and private-data visibility. Do not copy personal/bank data from the supplied form into fixtures or screenshots.
 - Once configured, run `npm run lint`, `npm run format:check`, `npm run typecheck`, `npm run test -- --run`, and `npm run build`. Run relevant `npm run test:e2e` journeys against documented services. Missing services/skipped tests are not passes.
 - UI completion requires usable persisted journeys, not screenshots or mocks. Deployment and three genuine BNH staff requisitions remain separate verifications; never perform staff signatures for them.
+
+## Signed bank transfer letters (owner request, 2026-10-11)
+
+The owner explicitly authorises a bank transfer letter using the signature captured in the same approval ceremony. This extends the existing document viewer and Organisation & Authority settings, not payment execution. Bind the configured company debit account, beneficiary account and amount into the fresh approval challenge; show them and the transfer-signature consent before signing. Use the actual individual approver's signature or the Chairman's confirmation signature for an unconditional Board approval. Never use a profile signature, requester signature, Secretary signature or historic signature without that consent. Conditional/rejected/deferred requests produce no transfer letter.
+
+The implementation assumes one administrator-configured debit account per company. Account numbers remain strings. Freeze the approved bank data and signature; later master-data edits do not rewrite letters. Missing bank details are visible before signing and prevent a complete letter, without reversing an otherwise valid approval. Do not add unsigned details to a frozen letter or retroactively create letters for older approvals. Font/storage failures remain explicit and retryable from the same capture. Requesters retrieve their own private letters; administrative oversight alone grants no download access. DOC-002 depends on the DOC-001 export foundation. The owner explicitly requested both pending document features be pushed with the free-font change after local checks pass. Live Cloudinary verification and staff acceptance remain separately reported deployment checks; they do not block this development push.
