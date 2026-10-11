@@ -131,6 +131,22 @@
 		justify-content: center;
 		margin-bottom: 32px;
 	}
+	.login .brand {
+		gap: 8px;
+		font-size: 30px;
+		line-height: 1.1;
+	}
+	.login .brand :global(img) {
+		width: 72px;
+		height: 72px;
+		object-fit: cover;
+		transform: translateY(-3px);
+	}
+	.login .brand small {
+		font-size: 12px;
+		line-height: 1.2;
+		margin-top: 6px;
+	}
 	.login .intro {
 		text-align: center;
 		margin-bottom: 28px;

@@ -43,9 +43,7 @@
 			/></label
 		>
 		<div class="password-control">
-			<div class="password-heading">
-				<label for="login-password">Password</label><a href="/forgot-password">Forgot Password?</a>
-			</div>
+			<label for="login-password">Password</label>
 			<div class="password-field">
 				<input
 					id="login-password"
@@ -67,6 +65,7 @@
 		</div>
 		{#if error}<div class="error" role="alert">{error}</div>{/if}
 		<button type="submit" disabled={busy}>{busy ? 'Signing in…' : 'Sign In'}</button>
+		<a class="forgot-password" href="/forgot-password">Forgot Password?</a>
 	</form>
 </AccessLayout>
 
@@ -89,15 +88,9 @@
 		display: grid;
 		gap: 9px;
 	}
-	.password-heading {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		gap: 8px 16px;
-		flex-wrap: wrap;
-	}
-	.password-heading a {
-		font-size: 13px;
+	.forgot-password {
+		justify-self: center;
+		font-size: 14px;
 		color: var(--body);
 	}
 	.password-field {

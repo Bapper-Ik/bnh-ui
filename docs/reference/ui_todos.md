@@ -355,3 +355,10 @@ Approval challenge `transfer_details` now includes `debit_source` (`company` or 
 Removed the standalone company name, workspace eyebrow and invitation notice from Sign In. The login-only layout now centres the existing brand and form inside a responsive card, aligns Forgot Password? beside Password, enlarges inputs/actions and centres the copyright footer. The password visibility control, accessible labels, sign-in errors and session/recovery behavior remain intact.
 
 Verification: npm run lint, npm run format:check, npm run typecheck, npm run test -- --run (6 passed) and npm run build passed. The frontend Docker build also passed. The 12 connected account-access, mobile-shell, responsive-content and security Playwright journeys passed against a fresh isolated local PostgreSQL backend. Responsive assertions cover 320, 390, 768, 1024 and 1440px; login screenshots at 390px and 1440px were visually inspected. Backend source is unchanged; its static checks and 15 PDF regression tests also passed during isolated test setup. No migration or new configuration is required; deploy the frontend to publish the design.
+
+
+## WEB-002 — Login brand alignment and recovery link (2026-10-11)
+
+Moved Forgot Password? below the Sign In button and centred it. Enlarged the login brand name from 21px to 30px and the logo frame to 72px, with explicit line heights and an optical offset for the source image’s white padding. Changes apply only to login branding. Authentication and recovery behavior remain unchanged.
+
+Verification: frontend lint, format and type checks, six unit tests, production build and all ten connected account-access/mobile-shell/responsive-content browser checks passed on isolated local PostgreSQL. The responsive checks cover widths from 320px to 1440px; mobile and desktop login screenshots were visually inspected. The frontend Docker build also passed. No API, migration or configuration changes.
