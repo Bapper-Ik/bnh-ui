@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { SvelteMap } from 'svelte/reactivity';
 	import { goto } from '$app/navigation';
 	import { api, ApiError } from '#lib/api/client.js';
 	import type { ExportPage, ExportView, RequestView } from '#lib/api/schema.js';
@@ -19,12 +20,17 @@
 	let stopped = false;
 	let command = $state<string | null>(null);
 	let seen = new Set<string>();
+	const downloads = new SvelteMap<string, ReturnType<typeof setTimeout>>();
 	onMount(() => {
 		void load();
 	});
 	onDestroy(() => {
 		stopped = true;
 		clearTimeout(timer);
+		for (const [url, cleanup] of downloads) {
+			clearTimeout(cleanup);
+			URL.revokeObjectURL(url);
+		}
 	});
 	async function failed(e: unknown) {
 		error = e instanceof Error ? e.message : 'Unable to load PDF exports.';
@@ -67,6 +73,44 @@
 		} catch (e) {
 			if (e instanceof ApiError && e.status < 500) command = null;
 			await failed(e);
+		} finally {
+			busy = false;
+		}
+	}
+	async function download(item: ExportView) {
+		if (busy) return;
+		busy = true;
+		error = '';
+		try {
+			const response = await fetch(`/api/v1/exports/${item.id}/content`, {
+				credentials: 'same-origin'
+			});
+			if (!response.ok) {
+				const body = await response.json().catch(() => null);
+				throw new ApiError(
+					response.status,
+					body?.code ?? 'REQUEST_FAILED',
+					body?.message ?? 'Unable to download this PDF. Please try again.'
+				);
+			}
+			const blob = await response.blob();
+			if (stopped) return;
+			const url = URL.createObjectURL(blob);
+			const link = document.createElement('a');
+			link.href = url;
+			link.download = item.filename;
+			document.body.append(link);
+			link.click();
+			link.remove();
+			downloads.set(
+				url,
+				setTimeout(() => {
+					URL.revokeObjectURL(url);
+					downloads.delete(url);
+				}, 60000)
+			);
+		} catch (e) {
+			if (!stopped) await failed(e);
 		} finally {
 			busy = false;
 		}
@@ -143,7 +187,13 @@
 							>{item.document_type === 'bank_transfer'
 								? 'View transfer letter'
 								: 'View PDF'}</button
-						>{:else if item.can_retry}<button
+						>
+						{#if item.document_type === 'bank_transfer'}<button
+								class="secondary"
+								disabled={busy}
+								onclick={() => download(item)}>Download transfer letter</button
+							>{/if}
+					{:else if item.can_retry}<button
 							class="secondary"
 							disabled={busy || !!data.unavailable_reason}
 							onclick={() => retry(item)}>Retry PDF</button

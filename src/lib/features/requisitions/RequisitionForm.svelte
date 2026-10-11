@@ -104,7 +104,7 @@
 			};
 			vendorNote =
 				v.bank_details_state === 'restricted'
-					? 'Bank details are restricted and will not be copied.'
+					? 'Bank details are hidden here. The saved vendor account will be included for approval and in your signed payment letter.'
 					: 'A snapshot of this vendor will be saved with the request.';
 			vendorChoices = null;
 			dirty = true;
