@@ -14,6 +14,9 @@
 
 <input
 	inputmode="decimal"
+	pattern={/[0-9]+(,[0-9]{3})*(\.[0-9]{1,2})?/.source}
+	maxlength="54"
+	title="Enter an amount with no more than two decimal places."
 	required
 	value={editing ? entry : display(value)}
 	onfocus={() => {

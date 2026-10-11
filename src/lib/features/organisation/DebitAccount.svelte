@@ -26,7 +26,7 @@
 	const fields = [
 		['bank_name', 'Debit bank', 150],
 		['account_name', 'Company account name', 250],
-		['account_number', 'Company account number', 100],
+		['account_number', 'Company account number', 10],
 		['branch_address', 'Bank branch address', 500],
 		['company_address', 'Company address (optional)', 500]
 	] as const;
@@ -129,6 +129,11 @@
 								required
 								maxlength={max}
 								autocomplete="off"
+								inputmode={key === 'account_number' ? 'numeric' : undefined}
+								pattern={key === 'account_number' ? '[0-9]{10}' : undefined}
+								title={key === 'account_number'
+									? 'Enter exactly 10 digits, including any leading zeroes.'
+									: undefined}
 							/>{/if}</label
 					>
 				{/each}

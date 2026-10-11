@@ -317,3 +317,34 @@ test('item prices show grouping, clear on focus and persist exact kobo', async (
 	await page.getByRole('button', { name: 'Edit draft', exact: true }).click();
 	await expect(price).toHaveValue('248,000.15');
 });
+
+test('bank fields require a complete ten-digit account and reveal invalid collapsed fields', async ({
+	page
+}) => {
+	await login(page);
+	await page.goto('/requisitions/new');
+	const title = 'Bank validation ' + randomUUID();
+	await fill(page, title);
+	await page.locator('summary').filter({ hasText: 'Bank details' }).click();
+	await page.getByLabel('Bank name', { exact: true }).fill('Synthetic bank');
+	await page.getByLabel('Account name', { exact: true }).fill('Synthetic beneficiary');
+	const account = page.getByLabel('Account number', { exact: true });
+	await account.fill('123456789');
+	await page.locator('summary').filter({ hasText: 'Bank details' }).click();
+	await page.getByRole('button', { name: 'Save draft', exact: true }).click();
+	await expect(account).toBeVisible();
+	await expect(account).toBeFocused();
+	await expect(page).toHaveURL(/\/requisitions\/new$/);
+	await account.fill('01234abcde');
+	expect(await account.evaluate((el: HTMLInputElement) => el.checkValidity())).toBe(false);
+	await account.fill('0000000123');
+	await page.getByLabel('Account name', { exact: true }).fill('');
+	await page.getByRole('button', { name: 'Save draft', exact: true }).click();
+	await expect(page.getByLabel('Account name', { exact: true })).toBeFocused();
+	await page.getByLabel('Account name', { exact: true }).fill('Synthetic beneficiary');
+	await page.getByRole('button', { name: 'Save draft', exact: true }).click();
+	await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
+	await page.reload();
+	await page.getByRole('button', { name: 'Edit draft', exact: true }).click();
+	await expect(account).toHaveValue('0000000123');
+});

@@ -323,7 +323,15 @@
 						<label>Bank name<input bind:value={bankName} required maxlength="150" /></label><label
 							>Account name<input bind:value={accountName} required maxlength="250" /></label
 						><label
-							>Account number<input bind:value={accountNumber} required maxlength="100" /></label
+							>Account number<input
+								bind:value={accountNumber}
+								inputmode="numeric"
+								required
+								minlength="10"
+								maxlength="10"
+								pattern={/[0-9]{10}/.source}
+								title="Enter exactly 10 digits, including any leading zeroes."
+							/></label
 						>
 					</div>{/if}
 				<p class="hint">

@@ -61,6 +61,11 @@
 	let vendorSearch = $state('');
 	let vendorChoices = $state<VendorPage | null>(null);
 	let vendorNote = $state('');
+	const hasBankDetails = $derived(
+		[content.vendor.bank_name, content.vendor.account_name, content.vendor.account_number].some(
+			(value) => value.trim()
+		)
+	);
 	beforeNavigate(({ cancel }) => {
 		if (dirty && !denied && !window.confirm('Discard unsaved requisition changes?')) cancel();
 	});
@@ -134,6 +139,18 @@
 	async function save(event: SubmitEvent) {
 		event.preventDefault();
 		if (busy) return;
+		const form = event.currentTarget as HTMLFormElement;
+		for (const field of form.querySelectorAll(':invalid'))
+			field.closest('details')?.setAttribute('open', '');
+		if (!form.reportValidity()) return;
+		for (const [index, line] of content.lines.entries()) {
+			try {
+				lineKobo(line.quantity, line.unit_price);
+			} catch (e) {
+				error = `Item ${index + 1}: ${e instanceof Error ? e.message : 'Check the quantity and price.'}`;
+				return;
+			}
+		}
 		busy = true;
 		error = '';
 		try {
@@ -188,7 +205,7 @@
 {#if denied}<div class="error" role="alert">
 		Your session or access has changed. Reopen the request after signing in.
 	</div>{:else}
-	<form class="stack" onsubmit={save} oninput={() => (dirty = true)}>
+	<form class="stack" novalidate onsubmit={save} oninput={() => (dirty = true)}>
 		<fieldset class="form-fields stack" disabled={busy || !!pendingBody}>
 			{#if !request}<section class="card">
 					<div class="section-heading">
@@ -286,12 +303,31 @@
 							unknown, leave them empty; the letter will be unavailable.
 						</p>
 						<div class="grid">
-							<label>Bank name<input bind:value={content.vendor.bank_name} /></label><label
+							<label
+								>Bank name<input
+									bind:value={content.vendor.bank_name}
+									required={hasBankDetails}
+									maxlength="150"
+									pattern={/.*\S.*/.source}
+								/></label
+							><label
 								>Account number<input
 									inputmode="numeric"
 									bind:value={content.vendor.account_number}
+									required={hasBankDetails}
+									minlength="10"
+									maxlength="10"
+									pattern={/[0-9]{10}/.source}
+									title="Enter exactly 10 digits, including any leading zeroes."
 								/></label
-							><label>Account name<input bind:value={content.vendor.account_name} /></label>
+							><label
+								>Account name<input
+									bind:value={content.vendor.account_name}
+									required={hasBankDetails}
+									maxlength="250"
+									pattern={/.*\S.*/.source}
+								/></label
+							>
 						</div>
 					</details>
 				</fieldset>
@@ -319,6 +355,7 @@
 							>Planned completion date<input
 								type="date"
 								bind:value={content.completion_date}
+								min={content.start_date || undefined}
 							/></label
 						>
 					</div>
@@ -346,7 +383,13 @@
 								/></label
 							>
 							<label
-								>Quantity<input inputmode="decimal" bind:value={line.quantity} required /></label
+								>Quantity<input
+									inputmode="decimal"
+									bind:value={line.quantity}
+									pattern={/[0-9]+(\.[0-9]{1,4})?/.source}
+									maxlength="40"
+									required
+								/></label
 							>
 							<label>Unit price (₦)<PriceInput bind:value={line.unit_price} /></label>
 							<div class="line-total">
