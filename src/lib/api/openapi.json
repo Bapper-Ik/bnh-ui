@@ -1111,7 +1111,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DirectoryUpdate"
+                "$ref": "#/components/schemas/DepartmentUpdate"
               }
             }
           }
@@ -1977,7 +1977,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/OrganisationEdit"
+                "$ref": "#/components/schemas/DepartmentEdit"
               }
             }
           }
@@ -5888,6 +5888,60 @@
         ],
         "title": "DebitAccountView"
       },
+      "DepartmentEdit": {
+        "properties": {
+          "expected_version": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 64,
+            "title": "Expected Version"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 180,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Active"
+          },
+          "code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 3,
+                "minLength": 3,
+                "pattern": "^[A-Za-z]{3}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_version"
+        ],
+        "title": "DepartmentEdit"
+      },
       "DepartmentInput": {
         "properties": {
           "name": {
@@ -5898,9 +5952,9 @@
           },
           "code": {
             "type": "string",
-            "maxLength": 40,
-            "minLength": 2,
-            "pattern": "^[A-Za-z0-9_-]+$",
+            "maxLength": 3,
+            "minLength": 3,
+            "pattern": "^[A-Za-z]{3}$",
             "title": "Code"
           },
           "entity_id": {
@@ -5913,9 +5967,68 @@
         "type": "object",
         "required": [
           "name",
+          "code",
           "entity_id"
         ],
         "title": "DepartmentInput"
+      },
+      "DepartmentUpdate": {
+        "properties": {
+          "expected_version": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64,
+                "minLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Version"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 180,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Active"
+          },
+          "code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 3,
+                "minLength": 3,
+                "pattern": "^[A-Za-z]{3}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "DepartmentUpdate"
       },
       "DirectoryUpdate": {
         "properties": {

@@ -106,7 +106,9 @@
 					method: 'PATCH',
 					body: JSON.stringify({
 						expected_version: selected.version,
-						...(mode === 'edit' ? { name } : { active: !selected.active })
+						...(mode === 'edit'
+							? { name, ...(category === 'departments' ? { code } : {}) }
+							: { active: !selected.active })
 					})
 				});
 				notice =
@@ -238,6 +240,9 @@
 					<div>
 						<h3>{item.name}</h3>
 						<p>{item.code}</p>
+						{#if !/^[A-Za-z]{3}$/.test(item.code)}<p class="note">
+								Set a three-letter code to enable new requisitions for this department.
+							</p>{/if}
 						<span class="badge">{item.active ? 'Enabled' : 'Disabled'}</span
 						>{#if item.active && !company?.active}<p>
 								Unavailable while the company is disabled.
@@ -407,19 +412,23 @@
 					disabled={busy || conflict}
 				/></label
 			>
-			{#if mode === 'create'}<label
+			{#if mode === 'create' || category === 'departments'}<label
 					>Code<input
 						aria-label="Code"
 						aria-describedby="org-code-hint"
 						bind:value={code}
 						required
-						minlength="2"
-						maxlength="40"
-						pattern="[A-Za-z0-9_\-]+"
+						minlength={category === 'departments' ? 3 : 2}
+						maxlength={category === 'departments' ? 3 : 40}
+						pattern={category === 'departments' ? '[A-Za-z]{3}' : '[A-Za-z0-9_\\-]+'}
 						disabled={busy || conflict}
-					/><small id="org-code-hint">Letters, numbers, underscores and hyphens.</small></label
+					/><small id="org-code-hint"
+						>{category === 'departments'
+							? 'Exactly three letters, for example FIN. Used in new requisition references; existing references stay unchanged.'
+							: 'Letters, numbers, underscores and hyphens.'}</small
+					></label
 				>
-				{#if category === 'entities'}<label
+				{#if category === 'entities' && mode === 'create'}<label
 						>Company Type<select bind:value={kind} disabled={busy}
 							><option value="subsidiary">Subsidiary</option><option value="holding"
 								>Holding Company</option

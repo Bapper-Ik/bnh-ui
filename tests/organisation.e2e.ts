@@ -63,14 +63,17 @@ test('organisation creates and updates companies and departments with explicit s
 	await expect(page.getByText('No Departments Yet', { exact: true })).toBeVisible();
 	await page.getByRole('button', { name: 'Add Department', exact: true }).click();
 	await drawer.getByLabel('Name', { exact: true }).fill('Technology');
-	await drawer.getByLabel('Code', { exact: true }).fill('TECH');
+	await drawer.getByLabel('Code', { exact: true }).fill('ict');
 	await drawer.getByRole('button', { name: 'Create', exact: true }).click();
 	await expect(drawer).not.toBeVisible();
 	await page.reload();
 	await expect(page.getByRole('heading', { name: 'Technology', exact: true })).toBeVisible();
 	await inspectWidths(page, 'organisation-departments');
 	await page.getByRole('button', { name: 'Edit Department Technology', exact: true }).click();
+	await expect(drawer.getByLabel('Code', { exact: true })).toHaveValue('ICT');
 	await drawer.getByLabel('Name', { exact: true }).fill('Engineering');
+	await drawer.getByLabel('Code', { exact: true }).fill('eng');
+	await inspectWidths(page, 'department-code');
 	await drawer.getByRole('button', { name: 'Save Changes', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Engineering', exact: true })).toBeVisible();
 	await page.getByRole('button', { name: 'Disable Department Engineering', exact: true }).click();

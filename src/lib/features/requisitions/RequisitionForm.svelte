@@ -190,7 +190,7 @@
 			if (e instanceof ApiError && e.status < 500) {
 				pendingBody = null;
 				if (e.code === 'DOCUMENTS_CHANGED' && !request) uploadRefresh += 1;
-				else if (e.status === 409) conflict = true;
+				else if (e.status === 409 && e.code !== 'DEPARTMENT_CODE_REQUIRED') conflict = true;
 			}
 			await failure(e);
 		} finally {

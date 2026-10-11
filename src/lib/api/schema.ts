@@ -220,10 +220,24 @@ export type DebitAccountView = {
   "data": DebitAccount | null;
 };
 
+export type DepartmentEdit = {
+  "expected_version": string;
+  "name"?: string | null;
+  "active"?: boolean | null;
+  "code"?: string | null;
+};
+
 export type DepartmentInput = {
   "name": string;
-  "code"?: string;
+  "code": string;
   "entity_id": string;
+};
+
+export type DepartmentUpdate = {
+  "expected_version"?: string | null;
+  "name"?: string | null;
+  "active"?: boolean | null;
+  "code"?: string | null;
 };
 
 export type DirectoryUpdate = {

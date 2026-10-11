@@ -91,7 +91,7 @@ test('saved draft survives refresh during detail loading without an HOD', async 
 		await page.reload();
 		releaseDetail();
 		await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
-		await expect(page.getByText(/BNH-\d{4}-\d{6}/).first()).toBeVisible();
+		await expect(page.getByText(/BNH-[A-Z]{3}-\d{6,}/).first()).toBeVisible();
 		await expect(
 			page.getByText('Draft saved. You can return to it before submitting.')
 		).toBeVisible();
@@ -477,4 +477,61 @@ test('failed automatic upload can retry without duplicating documents or losing 
 	await page.getByRole('button', { name: 'Save Draft', exact: true }).click();
 	await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
 	await expect(page.getByRole('button', { name: 'View retry.png' })).toHaveCount(1);
+});
+
+test('administrator configures a department code while a requester preserves and retries the form', async ({
+	page,
+	browser
+}) => {
+	await page.setViewportSize({ width: 390, height: 900 });
+	await login(page, 'code_requester');
+	await page.goto('/requisitions/new');
+	const title = 'Department code setup ' + randomUUID();
+	await fill(page, title);
+	await page.getByRole('button', { name: 'Save Draft', exact: true }).click();
+	await expect(page.getByRole('alert')).toContainText("department's three-letter code");
+	await expect(page.getByRole('button', { name: 'Save Draft', exact: true })).toBeEnabled();
+	await expect(page.getByLabel('Description of Work or Purchase')).toHaveValue(title);
+	const context = await browser.newContext({
+		baseURL: 'http://127.0.0.1:4173',
+		extraHTTPHeaders: { 'x-forwarded-proto': 'http' }
+	});
+	const admin = await context.newPage();
+	await login(admin, 'admin');
+	await admin.goto('/organisation?tab=departments&entity=' + fixture().request_entity);
+	const card = admin.locator('article').filter({
+		has: admin.getByRole('heading', {
+			name: 'Legacy Department',
+			exact: true
+		})
+	});
+	await expect(card).toContainText('Set a three-letter code');
+	async function setCode(code: string) {
+		await card
+			.getByRole('button', {
+				name: 'Edit Department Legacy Department',
+				exact: true
+			})
+			.click();
+		const dialog = admin.getByRole('dialog');
+		await dialog.getByLabel('Code', { exact: true }).fill(code);
+		await dialog.getByRole('button', { name: 'Save Changes', exact: true }).click();
+		await expect(dialog).not.toBeVisible();
+		await expect(card).toContainText(code.toUpperCase());
+	}
+	await setCode('fin');
+	await page.getByRole('button', { name: 'Save Draft', exact: true }).click();
+	await expect(page).toHaveURL(/\/requisitions\/[0-9a-f-]+$/);
+	const reference = await page
+		.getByText(/BNH-FIN-\d{6,}/)
+		.first()
+		.innerText();
+	await setCode('adm');
+	await page.reload();
+	await expect(page.getByText(reference, { exact: true }).first()).toBeVisible();
+	await page.goto('/requisitions/new');
+	await fill(page, title + ' next');
+	await page.getByRole('button', { name: 'Save Draft', exact: true }).click();
+	await expect(page.getByText(/BNH-ADM-\d{6,}/).first()).toBeVisible();
+	await context.close();
 });
