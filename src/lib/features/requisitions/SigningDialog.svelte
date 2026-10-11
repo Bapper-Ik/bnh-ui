@@ -264,7 +264,12 @@
 					<dl>
 						<dt>Amount</dt>
 						<dd>{money(transfer.amount)}</dd>
-						<dt>Debit Account</dt>
+						<dt>
+							{transfer.debit_source === 'department'
+								? 'Department Sub-Account'
+								: 'Company Debit Account'}
+						</dt>
+						{#if transfer.debit_source === 'department'}<dd>{transfer.department_name}</dd>{/if}
 						<dd>
 							{transfer.debit
 								? `${transfer.debit.account_name} · ${transfer.debit.account_number} · ${transfer.debit.bank_name}`

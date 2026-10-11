@@ -171,3 +171,93 @@ for (const sharedVendor of [false, true]) {
 		}
 	});
 }
+
+test('HOD signs own low-value requisition separately and downloads the department-funded letter', async ({
+	browser
+}) => {
+	test.setTimeout(120000);
+	const adminContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+	const hodContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+	try {
+		const admin = await adminContext.newPage();
+		await login(admin, 'admin');
+		await admin.goto(`/organisation?tab=departments&entity=${fixture().request_entity}`);
+		const department = admin
+			.locator('article')
+			.filter({ has: admin.getByRole('heading', { name: 'Requisition Operations', exact: true }) });
+		await department
+			.getByRole('button', { name: 'Sub-Account for Requisition Operations', exact: true })
+			.click();
+		const settings = admin.getByRole('dialog', { name: 'Department Sub-Account', exact: true });
+		await settings.getByLabel('Debit Bank', { exact: true }).fill('Synthetic department bank');
+		await settings.getByLabel('Department Account Name').fill('Synthetic Operations');
+		await settings.getByLabel('Department Account Number').fill('0076543210');
+		await settings.getByLabel('Bank Branch Address').fill('Synthetic department branch');
+		await settings.getByRole('button', { name: 'Save Bank Details' }).click();
+		await expect(settings).not.toBeVisible();
+		await admin.reload();
+		await department
+			.getByRole('button', { name: 'Sub-Account for Requisition Operations', exact: true })
+			.click();
+		await expect(settings.getByLabel('Department Account Number')).toHaveValue('0076543210');
+		await expect
+			.poll(() => admin.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
+			.toBe(true);
+		await admin.screenshot({ path: 'test-results/department-account-mobile.png', fullPage: true });
+		await settings.getByRole('button', { name: 'Close Bank Account' }).click();
+
+		const hod = await hodContext.newPage();
+		await login(hod, 'hod');
+		await hod.goto('/requisitions/new');
+		const title = 'HOD department purchase ' + randomUUID();
+		await hod.getByLabel('Vendor Name', { exact: true }).fill('Synthetic HOD supplier');
+		await hod.getByText('Bank Details', { exact: false }).click();
+		await hod.getByLabel('Bank Name', { exact: true }).fill('Synthetic beneficiary bank');
+		await hod.getByLabel('Account Name', { exact: true }).fill('Synthetic beneficiary');
+		await hod.getByLabel('Account Number', { exact: true }).fill('0012345678');
+		await hod.getByLabel('Description of Work or Purchase').fill(title);
+		await hod.getByLabel('Location', { exact: true }).fill('Abuja');
+		await hod.getByRole('button', { name: '+ Add Item', exact: true }).click();
+		await hod.getByLabel('Item 1', { exact: true }).fill('Department materials');
+		await hod.getByLabel('Unit Price (₦)', { exact: true }).fill('5000000');
+		await hod.getByRole('button', { name: 'Save Draft', exact: true }).click();
+		await expect(hod.getByRole('heading', { name: title, exact: true })).toBeVisible();
+		await hod.getByRole('button', { name: 'Review & Submit', exact: true }).click();
+		await prepare(hod);
+		await sign(hod, 'hod', 'Submit Requisition');
+		await expect(hod.getByText('Awaiting Approval', { exact: true })).toBeVisible();
+		await expect(hod.getByRole('button', { name: 'Approve', exact: true })).toBeVisible();
+		await expect(hod.getByRole('button', { name: 'Reject', exact: true })).toHaveCount(0);
+		await hod.goto('/requisitions?inbox=true');
+		await hod
+			.getByRole('row')
+			.filter({ hasText: title })
+			.getByRole('link', { name: /^Open / })
+			.click();
+		await hod.getByRole('button', { name: 'Approve', exact: true }).click();
+		const approval = await prepare(hod);
+		const transfer = approval.getByRole('region', { name: 'Bank Transfer Request' });
+		await expect(transfer.getByText('Department Sub-Account', { exact: true })).toBeVisible();
+		await expect(transfer.getByText(/0076543210/)).toBeVisible();
+		await expect(transfer.getByText(/0012345678/)).toBeVisible();
+		await expect
+			.poll(() => hod.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
+			.toBe(true);
+		await hod.screenshot({ path: 'test-results/hod-self-approval-mobile.png', fullPage: true });
+		await sign(hod, 'hod', 'Approve Requisition');
+		await hod.reload();
+		await expect(hod.getByText('Approved', { exact: true })).toBeVisible();
+		const documents = hod.getByRole('region', { name: 'PDF Exports', exact: true });
+		await expect(documents.getByRole('button', { name: 'Download Transfer Letter' })).toBeVisible({
+			timeout: 25000
+		});
+		const downloaded = hod.waitForEvent('download');
+		await documents.getByRole('button', { name: 'Download Transfer Letter' }).click();
+		expect(await (await downloaded).failure()).toBeNull();
+		await hod.goto('/requisitions?inbox=true');
+		await expect(hod.getByRole('row').filter({ hasText: title })).toHaveCount(0);
+	} finally {
+		await adminContext.close();
+		await hodContext.close();
+	}
+});

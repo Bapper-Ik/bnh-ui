@@ -4580,7 +4580,7 @@
     "/api/v1/organisation/entities/{entity_id}/debit-account": {
       "get": {
         "tags": [
-          "Company bank instructions"
+          "Bank instructions"
         ],
         "summary": "Get Account",
         "operationId": "get_account_api_v1_organisation_entities__entity_id__debit_account_get",
@@ -4621,7 +4621,7 @@
       },
       "put": {
         "tags": [
-          "Company bank instructions"
+          "Bank instructions"
         ],
         "summary": "Put Account",
         "operationId": "put_account_api_v1_organisation_entities__entity_id__debit_account_put",
@@ -4634,6 +4634,100 @@
               "type": "string",
               "format": "uuid",
               "title": "Entity Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DebitAccountUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DebitAccountView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organisation/departments/{department_id}/debit-account": {
+      "get": {
+        "tags": [
+          "Bank instructions"
+        ],
+        "summary": "Get Department Account",
+        "operationId": "get_department_account_api_v1_organisation_departments__department_id__debit_account_get",
+        "parameters": [
+          {
+            "name": "department_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Department Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DebitAccountView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Bank instructions"
+        ],
+        "summary": "Put Department Account",
+        "operationId": "put_department_account_api_v1_organisation_departments__department_id__debit_account_put",
+        "parameters": [
+          {
+            "name": "department_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Department Id"
             }
           }
         ],
@@ -8509,6 +8603,38 @@
       },
       "TransferDetails": {
         "properties": {
+          "debit_source": {
+            "type": "string",
+            "enum": [
+              "company",
+              "department"
+            ],
+            "title": "Debit Source",
+            "default": "company"
+          },
+          "department_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Department Id"
+          },
+          "department_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Department Name"
+          },
           "debit": {
             "anyOf": [
               {

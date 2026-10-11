@@ -2,6 +2,7 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import DebitAccount from '#lib/features/organisation/DebitAccount.svelte';
 	let bankCompany = $state<OrganisationRecord | null>(null);
+	let bankDepartment = $state<OrganisationRecord | null>(null);
 	import { api, ApiError } from '#lib/api/client.js';
 	import type { OrganisationRecord, EntityItem, Item } from '#lib/api/schema.js';
 	let { data } = $props();
@@ -245,6 +246,13 @@
 					<div class="actions">
 						<button
 							class="secondary"
+							aria-label={'Sub-Account for ' + item.name}
+							onclick={() =>
+								(bankDepartment = { ...item, active: item.active && !!company?.active })}
+							>Sub-Account</button
+						>
+						<button
+							class="secondary"
 							aria-label={'Edit Department ' + item.name}
 							onclick={() => open('departments', 'edit', item)}>Edit</button
 						><button
@@ -438,6 +446,11 @@
 	</form>
 </dialog>
 
+{#if bankDepartment}<DebitAccount
+		company={bankDepartment}
+		department
+		onClose={() => (bankDepartment = null)}
+	/>{/if}
 {#if bankCompany}<DebitAccount company={bankCompany} onClose={() => (bankCompany = null)} />{/if}
 
 <style>

@@ -5,8 +5,13 @@
 	import type { DebitAccount, DebitAccountView } from '#lib/api/schema.js';
 	let {
 		company,
+		department = false,
 		onClose
-	}: { company: { id: string; name: string; active: boolean }; onClose: () => void } = $props();
+	}: {
+		company: { id: string; name: string; active: boolean };
+		department?: boolean;
+		onClose: () => void;
+	} = $props();
 	let dialog: HTMLDialogElement;
 	let loaded = $state(false);
 	let loading = $state(true),
@@ -23,13 +28,17 @@
 		account_number: '',
 		company_address: ''
 	});
-	const fields = [
+	const title = $derived(department ? 'Department Sub-Account' : 'Company Debit Account');
+	const endpoint = $derived(
+		`/organisation/${department ? 'departments' : 'entities'}/${company.id}/debit-account`
+	);
+	const fields = $derived([
 		['bank_name', 'Debit Bank', 150],
-		['account_name', 'Company Account Name', 250],
-		['account_number', 'Company Account Number', 10],
+		['account_name', department ? 'Department Account Name' : 'Company Account Name', 250],
+		['account_number', department ? 'Department Account Number' : 'Company Account Number', 10],
 		['branch_address', 'Bank Branch Address', 500],
 		['company_address', 'Company Address (Optional)', 500]
-	] as const;
+	] as const);
 	onMount(() => {
 		dialog.showModal();
 		void load();
@@ -57,9 +66,7 @@
 		error = '';
 		conflict = false;
 		try {
-			const result = await api<DebitAccountView>(
-				`/organisation/entities/${company.id}/debit-account`
-			);
+			const result = await api<DebitAccountView>(endpoint);
 			loaded = true;
 			version = result.version;
 			if (result.data) account = result.data;
@@ -77,7 +84,7 @@
 		busy = true;
 		error = '';
 		try {
-			await api(`/organisation/entities/${company.id}/debit-account`, {
+			await api(endpoint, {
 				method: 'PUT',
 				body: JSON.stringify({ expected_version: version, data: account })
 			});
@@ -92,20 +99,23 @@
 
 <dialog
 	bind:this={dialog}
-	aria-label="Company Debit Account"
+	aria-label={title}
 	oncancel={(e) => {
 		e.preventDefault();
 		close();
 	}}
 >
 	<div class="heading">
-		<h2>Company Debit Account</h2>
+		<h2>{title}</h2>
 		<button class="quiet" disabled={busy} onclick={close} aria-label="Close Bank Account">×</button>
 	</div>
 	<p>{company.name}</p>
 	<p>
-		This account will be shown to the approver and used in new bank transfer letters. Existing
-		signed letters retain their original bank details.
+		{department
+			? 'This sub-account is used when the department’s HOD approves their own requisition from ₦1 to ₦5 million.'
+			: 'This account is used for other approved requisitions in this company.'}
+		The approver reviews the bank details before signing. Existing signed letters retain their original
+		details.
 	</p>
 	{#if error}<p class="error" role="alert">{error}</p>{/if}
 	{#if loading}<p role="status">Loading bank details…</p>
@@ -138,7 +148,9 @@
 					>
 				{/each}
 			</fieldset>
-			{#if !company.active}<p>Enable the company before changing its debit account.</p>{/if}
+			{#if !company.active}<p>
+					Enable the {department ? 'company and department' : 'company'} before changing this account.
+				</p>{/if}
 			<div class="actions">
 				<button disabled={busy || conflict || !company.active}
 					>{busy ? 'Saving…' : 'Save Bank Details'}</button

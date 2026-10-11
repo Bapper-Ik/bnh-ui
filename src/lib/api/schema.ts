@@ -715,6 +715,9 @@ export type Summary = {
 };
 
 export type TransferDetails = {
+  "debit_source"?: "company" | "department";
+  "department_id"?: string | null;
+  "department_name"?: string | null;
   "debit"?: DebitAccount | null;
   "debit_version"?: number;
   "beneficiary_bank": string;
