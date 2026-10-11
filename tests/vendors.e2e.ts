@@ -12,7 +12,7 @@ function fixture() {
 async function login(page: Page, role = 'owner') {
 	const credentials = fixture();
 	await page.goto('/login');
-	await page.getByLabel('Work Email').fill(credentials.people.find((p) => p.role === role)!.email);
+	await page.getByLabel('Staff Email').fill(credentials.people.find((p) => p.role === role)!.email);
 	await page.getByLabel('Password', { exact: true }).fill(credentials.password);
 	await page.getByRole('button', { name: 'Sign In', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();

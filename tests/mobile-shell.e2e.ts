@@ -8,7 +8,7 @@ async function login(page: Page, role = 'oversight') {
 	};
 	await page.goto('/login');
 	await page
-		.getByLabel('Work Email')
+		.getByLabel('Staff Email')
 		.fill(fixture.people.find((person) => person.role === role)!.email);
 	await page.getByLabel('Password', { exact: true }).fill(fixture.password);
 	await page.getByRole('button', { name: 'Sign In', exact: true }).click();

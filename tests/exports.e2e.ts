@@ -12,7 +12,7 @@ test('private PDF persists through refresh, opens and downloads on desktop and m
 	};
 	await page.goto('/login');
 	await page
-		.getByLabel('Work Email')
+		.getByLabel('Staff Email')
 		.fill(fixture.people.find((p) => p.role === 'requester')!.email);
 	await page.getByLabel('Password', { exact: true }).fill(fixture.password);
 	await page.getByRole('button', { name: 'Sign In', exact: true }).click();

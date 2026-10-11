@@ -33,7 +33,7 @@
 		</p>{/if}
 	<form onsubmit={signIn} class="login-form" aria-busy={busy}>
 		<label
-			>Work Email<input
+			>Staff Email<input
 				type="email"
 				autocomplete="username"
 				bind:value={email}

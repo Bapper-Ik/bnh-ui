@@ -13,7 +13,9 @@
 <svelte:head><title>{title} · Custodian</title></svelte:head>
 {#snippet brand()}
 	<a href="/login" class="brand"
-		><BrandMark /><span class="brand-name">Custodian<small>BY BRENDAN</small></span></a
+		><BrandMark /><span class="brand-name"
+			>Custodian<small>{login ? 'by Brendan Nicholas Holdings' : 'BY BRENDAN'}</small></span
+		></a
 	>
 {/snippet}
 <div class="access" class:login>
@@ -145,6 +147,7 @@
 		transform: translateY(-3px);
 	}
 	.login .brand-name {
+		min-width: 0;
 		border-left: 1px solid var(--rule);
 		padding-left: 12px;
 	}

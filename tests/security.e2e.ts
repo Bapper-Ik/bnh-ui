@@ -10,7 +10,7 @@ function credentials(role = 'security') {
 }
 async function login(page: Page, role = 'security', password = credentials(role).password) {
 	await page.goto('/login');
-	await page.getByLabel('Work Email').fill(credentials(role).email);
+	await page.getByLabel('Staff Email').fill(credentials(role).email);
 	await page.getByLabel('Password', { exact: true }).fill(password);
 	await page.getByRole('button', { name: 'Sign In', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();

@@ -9,7 +9,7 @@ async function login(page: Page, role: string) {
 		password: string;
 	};
 	await page.goto('/login');
-	await page.getByLabel('Work Email').fill(f.people.find((p) => p.role === role)!.email);
+	await page.getByLabel('Staff Email').fill(f.people.find((p) => p.role === role)!.email);
 	await page.getByLabel('Password', { exact: true }).fill(f.password);
 	await page.getByRole('button', { name: 'Sign In', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
@@ -86,7 +86,7 @@ test('populated requisition content fits phones, tablets and desktop with persis
 test('sign-in and password recovery content fits narrow screens', async ({ page }) => {
 	await page.goto('/login');
 	await page
-		.getByLabel('Work Email')
+		.getByLabel('Staff Email')
 		.fill('synthetic-long-work-email-for-mobile-testing@example.com');
 	await inspectWidths(page, 'login');
 	await page.getByRole('link', { name: 'Forgot Password?' }).click();
