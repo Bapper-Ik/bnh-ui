@@ -348,3 +348,10 @@ New submissions use bnh-doa-v2. A unique current HOD of the requester’s own de
 Screen 12 → Departments → Sub-Account reuses the bank drawer. GET/PUT `/organisation/departments/{department_id}/debit-account` uses the existing DebitAccountView/Update schema, `organisation:manage`, active scope, ten-digit string validation, expected-version conflicts and atomic audit. No settings are exposed to ordinary HODs.
 
 Approval challenge `transfer_details` now includes `debit_source` (`company` or `department`), optional `department_id` and `department_name`. Show the source and exact account details before signing. Eligible self-approvals use only the department account; other routes use the company account. Missing details are shown before approval and create an explicit unavailable letter, never a silent fallback. Changing the account invalidates a prepared challenge; later edits cannot rewrite an approved letter. Deploy backend migration 0020 before the updated frontend. No environment variables are added.
+
+
+## WEB-002 — Simplified login design (2026-10-11)
+
+Removed the standalone company name, workspace eyebrow and invitation notice from Sign In. The login-only layout now centres the existing brand and form inside a responsive card, aligns Forgot Password? beside Password, enlarges inputs/actions and centres the copyright footer. The password visibility control, accessible labels, sign-in errors and session/recovery behavior remain intact.
+
+Verification: npm run lint, npm run format:check, npm run typecheck, npm run test -- --run (6 passed) and npm run build passed. The frontend Docker build also passed. The 12 connected account-access, mobile-shell, responsive-content and security Playwright journeys passed against a fresh isolated local PostgreSQL backend. Responsive assertions cover 320, 390, 768, 1024 and 1440px; login screenshots at 390px and 1440px were visually inspected. Backend source is unchanged; its static checks and 15 PDF regression tests also passed during isolated test setup. No migration or new configuration is required; deploy the frontend to publish the design.

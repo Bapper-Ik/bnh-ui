@@ -429,3 +429,10 @@ Verification: Ruff check/format and mypy passed. The full isolated-PostgreSQL ru
 Frontend lint/format/type checks, six unit tests, production build and all 54 connected browser journeys passed. The new mobile journey saves/reopens department settings, submits as HOD, opens My Tasks, signs the exact sub-account instruction, downloads the letter and verifies removal from the queue. Its mobile account/signing layouts were inspected and viewport-overflow checks passed. Both Docker builds passed; OpenAPI and frontend types were regenerated.
 
 Deploy backend migration 0020 before the frontend, then configure each applicable department sub-account through Organisation & Authority before approving new own-HOD requests. No new environment variables. Existing signed requests/letters are not migrated or rewritten. Live deployment/provider behavior and genuine staff acceptance remain separate from local verification.
+
+
+## WEB-002 — Simplified login design (2026-10-11)
+
+Removed the standalone company name, workspace eyebrow and invitation notice from Sign In. The login-only layout now centres the existing brand and form inside a responsive card, aligns Forgot Password? beside Password, enlarges inputs/actions and centres the copyright footer. The password visibility control, accessible labels, sign-in errors and session/recovery behavior remain intact.
+
+Verification: npm run lint, npm run format:check, npm run typecheck, npm run test -- --run (6 passed) and npm run build passed. The frontend Docker build also passed. The 12 connected account-access, mobile-shell, responsive-content and security Playwright journeys passed against a fresh isolated local PostgreSQL backend. Responsive assertions cover 320, 390, 768, 1024 and 1440px; login screenshots at 390px and 1440px were visually inspected. Backend source is unchanged; its static checks and 15 PDF regression tests also passed during isolated test setup. No migration or new configuration is required; deploy the frontend to publish the design.

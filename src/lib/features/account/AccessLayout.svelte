@@ -5,27 +5,29 @@
 	let {
 		title,
 		description = '',
+		login = false,
 		children
-	}: { title: string; description?: string; children: Snippet } = $props();
+	}: { title: string; description?: string; login?: boolean; children: Snippet } = $props();
 </script>
 
 <svelte:head><title>{title} · Custodian</title></svelte:head>
-<div class="access">
-	<header>
-		<a href="/login" class="brand"><BrandMark /><span>Custodian<small>BY BRENDAN</small></span></a
-		><span class="company">Brendan Nicholas Holdings</span>
-	</header>
+{#snippet brand()}
+	<a href="/login" class="brand"><BrandMark /><span>Custodian<small>BY BRENDAN</small></span></a>
+{/snippet}
+<div class="access" class:login>
+	{#if !login}<header>
+			{@render brand()}<span class="company">Brendan Nicholas Holdings</span>
+		</header>{/if}
 	<main>
+		{#if login}<div class="login-brand">{@render brand()}</div>{/if}
 		<div class="intro">
-			<p class="eyebrow">BNH STAFF WORKSPACE</p>
+			{#if !login}<p class="eyebrow">BNH STAFF WORKSPACE</p>{/if}
 			<h1>{title}</h1>
 			{#if description}<p>{description}</p>{/if}
 		</div>
 		{@render children()}
 	</main>
-	<footer>
-		<Copyright />
-	</footer>
+	<footer><Copyright /></footer>
 </div>
 
 <style>
@@ -108,6 +110,54 @@
 		}
 		h1 {
 			font-size: 28px;
+		}
+	}
+
+	.login {
+		background: var(--surface);
+		padding: 48px 24px 24px;
+		gap: 40px;
+	}
+	.login main {
+		max-width: 440px;
+		padding: 36px;
+		background: var(--white);
+		border: 1px solid var(--rule);
+		border-radius: 16px;
+		box-shadow: 0 8px 32px rgb(0 0 0 / 4%);
+	}
+	.login-brand {
+		display: flex;
+		justify-content: center;
+		margin-bottom: 32px;
+	}
+	.login .intro {
+		text-align: center;
+		margin-bottom: 28px;
+	}
+	.login h1 {
+		font-size: 26px;
+		margin: 0;
+	}
+	.login footer {
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		border: 0;
+		padding: 0;
+		line-height: 1.6;
+		font-size: 12px;
+	}
+	@media (max-width: 480px) {
+		.login {
+			padding: 32px 16px 24px;
+			gap: 32px;
+		}
+		.login main {
+			padding: 28px 20px;
+		}
+		.login h1 {
+			font-size: 24px;
 		}
 	}
 </style>

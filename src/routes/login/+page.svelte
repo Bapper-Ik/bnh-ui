@@ -25,13 +25,13 @@
 	}
 </script>
 
-<AccessLayout title="Sign In to Custodian">
+<AccessLayout title="Sign In to Custodian" login>
 	{#if page.url.searchParams.get('reason') === 'password-changed'}<p role="status">
 			Your password was changed. Sign in with your new password.
 		</p>{:else if page.url.searchParams.get('reason') === 'signed-out'}<p role="status">
 			Your selected sessions have been signed out.
 		</p>{/if}
-	<form onsubmit={signIn} class="stack" aria-busy={busy}>
+	<form onsubmit={signIn} class="login-form" aria-busy={busy}>
 		<label
 			>Work Email<input
 				type="email"
@@ -43,12 +43,15 @@
 			/></label
 		>
 		<div class="password-control">
-			<label for="login-password">Password</label>
+			<div class="password-heading">
+				<label for="login-password">Password</label><a href="/forgot-password">Forgot Password?</a>
+			</div>
 			<div class="password-field">
 				<input
 					id="login-password"
 					type={showPassword ? 'text' : 'password'}
 					autocomplete="current-password"
+					placeholder="Enter your password"
 					bind:value={password}
 					required
 					maxlength="1024"
@@ -62,17 +65,40 @@
 				>
 			</div>
 		</div>
-		<a href="/forgot-password">Forgot Password?</a>
 		{#if error}<div class="error" role="alert">{error}</div>{/if}
 		<button type="submit" disabled={busy}>{busy ? 'Signing in…' : 'Sign In'}</button>
-		<p class="note">Access is by invitation. Contact your administrator if you need an account.</p>
 	</form>
 </AccessLayout>
 
 <style>
+	.login-form {
+		display: grid;
+		gap: 24px;
+	}
+	.login-form input {
+		min-height: 52px;
+		border-radius: 8px;
+		font-size: 16px;
+	}
+	.login-form button[type='submit'] {
+		min-height: 52px;
+		border-radius: 8px;
+		width: 100%;
+	}
 	.password-control {
 		display: grid;
 		gap: 9px;
+	}
+	.password-heading {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 8px 16px;
+		flex-wrap: wrap;
+	}
+	.password-heading a {
+		font-size: 13px;
+		color: var(--body);
 	}
 	.password-field {
 		position: relative;
@@ -82,14 +108,19 @@
 	}
 	.password-field button {
 		position: absolute;
-		inset: 2px 2px 2px auto;
+		inset: 4px 4px 4px auto;
 		padding: 8px 12px;
 		font-size: 13px;
+		border-radius: 6px;
 	}
-
-	.note {
-		font-size: 12px;
-		text-align: center;
-		margin: 0;
+	.password-field button:hover {
+		background: var(--surface);
+		color: var(--ink);
+	}
+	[role='status'] {
+		font-size: 14px;
+		padding: 12px;
+		background: var(--surface);
+		border-radius: 8px;
 	}
 </style>
