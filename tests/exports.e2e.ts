@@ -38,14 +38,11 @@ test('private PDF persists through refresh, opens and downloads on desktop and m
 	await exports.getByRole('button', { name: 'View PDF', exact: true }).click();
 	const viewer = page.getByRole('dialog', { name: 'Document viewer' });
 	await expect(viewer.getByRole('link', { name: 'Download', exact: true })).toBeVisible();
-	await expect(viewer.getByRole('img', { name: 'PDF page 1 of 2', exact: true })).toBeVisible();
-	await viewer.getByRole('button', { name: 'Next page', exact: true }).click();
-	await expect(viewer.getByRole('img', { name: 'PDF page 2 of 2', exact: true })).toBeVisible();
+	await expect(viewer.getByRole('img', { name: 'PDF page 1 of 1', exact: true })).toBeVisible();
 	await viewer.getByText('Page text', { exact: true }).click();
-	await expect(viewer.getByText(/Draft only. No requester declaration/)).toBeVisible();
+	await expect(viewer.getByText(/No requester declaration has been signed/)).toBeVisible();
+	await expect(viewer.getByText(/SHA-256|Signature reference|Export verification/)).toHaveCount(0);
 	await viewer.getByText('Page text', { exact: true }).click();
-	await viewer.getByRole('button', { name: 'Previous page', exact: true }).click();
-	await expect(viewer.getByRole('img', { name: 'PDF page 1 of 2', exact: true })).toBeVisible();
 	const downloadPromise = page.waitForEvent('download');
 	await viewer.getByRole('link', { name: 'Download', exact: true }).click();
 	const download = await downloadPromise;
