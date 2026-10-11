@@ -335,6 +335,8 @@ Make the existing backend persist its records in PostgreSQL and establish migrat
 
 **Single-URL update (2026-10-07):** Owner-approved DATABASE_URL now serves migration and application use per environment. Development and production use separate databases. The previous elevated-role rejection is superseded. Full backend 174 tests and isolated staged 105 tests passed with Ruff, formatting and mypy; deployment environment configuration remains operator-supplied.
 
+**Developer onboarding update (2026-10-11):** Added `docs/development.md` to both repositories and the shared workspace, with sibling `dev` clones, locked dependencies, isolated local PostgreSQL, schema provisioning/migration, one-time operator bootstrap, application startup, Resend/Cloudinary settings, checks, API generation, code map, delivery gate and troubleshooting. Replaced stale README startup notes and corrected deployment summaries. Fresh local clones installed successfully; a new operator signed in through both Vite and the built Node frontend against a fresh database at migration 0020. API generation reproduced the committed contracts. Verification details are recorded in `task_done.md`. No runtime, schema or API changes.
+
 ### Requirement Basis
 
 [B] Persistent storage and one shared system; [R] existing scaffold; [D] runtime/deployment implementation details.

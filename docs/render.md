@@ -15,7 +15,7 @@ On the backend, set `ALLOWED_ORIGINS` to a JSON array containing this frontend's
 
 The browser talks to `/api/v1` on the frontend's own domain. The Svelte server forwards those requests to `BACKEND_URL` and returns session cookies unchanged. This keeps login/CSRF handling on one browser origin. Database credentials belong only to the backend.
 
-The sign-in screen is available at `/login`; successful sign-in opens `/vendors`. Screens 1–3 include `/login`, `/forgot-password` and `/recover` (shared reset/activation). Vendors includes search and add/detail/edit drawers. Screen 11 (`/staff`) and screen 12 (`/organisation`) are also delivered; other journeys in the fourteen-screen inventory are unfinished. Configure account email on the backend as described below. To access the workspace, create a real configuration operator using the backend's one-time provisioning command. There are no seeded production passwords or pretend requisitions.
+The sign-in screen is available at `/login`; successful sign-in opens the dashboard at `/`. The application supports the fourteen reusable screens, including requisition, approval, Board, audit and account-security journeys. Configure email and private storage on the backend. Create a configuration operator using its one-time provisioning command; there are no default credentials. See [local development and onboarding](development.md) for the full setup.
 
 ## Local container
 
@@ -32,7 +32,7 @@ Reference: [Render Docker deployments](https://render.com/docs/docker), [SvelteK
 
 ## Account access
 
-Deploy the matching backend account-access release and let its startup script apply migration 0010. The backend uses one `DATABASE_URL` for migrations and the running application; `MIGRATION_DATABASE_URL` is no longer needed. Development and production each use a different database and backend connection. To send account links, configure backend `MAIL_FROM`, `RESEND_API_KEY`, `ACCOUNT_LINK_SECRET` and `FRONTEND_ORIGIN`, then set `MAIL_ENABLED=true`. See the backend deployment guide for sender verification and secret requirements. No email secrets belong on this frontend service.
+Deploy the matching backend and let its startup script apply all migrations through the current head (`0020`). The backend uses one `DATABASE_URL` for migrations and the running application; `MIGRATION_DATABASE_URL` is no longer needed. Development and production each use a different database and backend connection. To send account links, configure backend `MAIL_FROM`, `RESEND_API_KEY`, `ACCOUNT_LINK_SECRET` and `FRONTEND_ORIGIN`, then set `MAIL_ENABLED=true`. See the backend deployment guide for sender verification and secret requirements. No email secrets belong on this frontend service.
 
 Set `FRONTEND_ORIGIN` to this frontend's exact HTTPS origin and include it in backend `ALLOWED_ORIGINS`. With email disabled, the form reports unavailable delivery. Links use a fragment, which the page removes from visible/history state before validation. Passwords and tokens stay out of browser storage. Reset signs out existing sessions; activation grants no automatic authority. The invitation dialog is available on Staff & Access (`/staff`) for users with staff:manage. Create companies and departments on Organisation & Authority (`/organisation`), then assign approved staff memberships and offices on Staff & Access. Both screens require their specific administrative capabilities. No new environment variables or schema migration are needed for screen 12.
 
@@ -44,7 +44,7 @@ The image sets `BODY_SIZE_LIMIT=11M` for supporting-document uploads. Remove an 
 
 ## Individual approval release
 
-Deploy the backend through schema 0012 before this frontend. The existing startup script runs that migration automatically. No new environment variables are required. My Tasks opens the assigned individual approval inbox; returned requests use Start correction and the existing requisition form. Earlier signed revisions and documents remain available through Request history. The Board workspace and requisition notifications are delivered by the subsequent matching releases; the latest backend schema requirement is 0015.
+Deploy the backend through schema 0012 before this frontend. The existing startup script runs that migration automatically. No new environment variables are required. My Tasks opens the assigned individual approval inbox; returned requests use Start correction and the existing requisition form. Earlier signed revisions and documents remain available through Request history. The Board workspace and requisition notifications are delivered by the subsequent matching releases; the current backend migration head is `0020`.
 
 ## Notification drawer release
 

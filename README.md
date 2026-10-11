@@ -1,81 +1,36 @@
-# Custodian frontend
+# Custodian Frontend
 
-Minimal SvelteKit/TypeScript interface for BNH. The release scope is the fourteen reusable screens in [the screen inventory](docs/reference/ui_scrrens.md).
+SvelteKit and TypeScript interface for Brendan Nicholas Holdings' requisition and approval system. Development branch: `dev`. Use Node 24.21.0, pinned in `.nvmrc`, and npm's committed lockfile.
 
-## Delivered journey
+**Start here: [Clone, Set Up and Develop](docs/development.md).** The guide covers both repositories, configuration, first sign-in, the codebase map, tests and the feature delivery workflow. Keep `bnh-ui` beside `bnh-backend`.
 
-Screen 10, Vendors: company-scoped search and pagination; add/detail/edit drawers; contact and bank capture; server-controlled sensitive access; explicit unknown/restricted states; version conflict protection. Screens 1–3 also provide sign-in, forgot-password and a shared reset/activation form, including expired links, password matching and session revocation. Email requires backend Resend configuration. Screen 11 (`/staff`) adds staff search/status filters, invitations, account controls, department membership and protected office appointments in drawers. It requires staff:manage; additional actions require their own permissions. Screen 12 (`/organisation`) provides company/department creation, name and enabled-state changes, named officeholder history with eligibility and configuration gaps, and the read-only approval matrix. It requires organisation:manage. Dashboard remains unfinished. The root route currently opens Vendors. Screens 5–7 deliver saved drafts, private documents, signed submission and historical revision views. Screen 8 is My Tasks (`/requisitions?inbox=true`), with assigned HOD/Chief of Staff/MD approvals, rejection and return signing on the shared detail screen. Returned requests use Start correction, followed by a fresh signature and recalculated route. Screen 9 is the Board Resolution Workspace (`/requisitions/{id}/board`), reached from stage-specific My Tasks or the permitted requisition action. Secretary drafts, private formal evidence, signing, Chairman confirmation/return, correction history and later resolutions are persisted. Conditional approval remains explicitly on hold. Deploy the matching backend through schema 0015 before this frontend.
+## Run Locally
 
-## Render deployment
+After starting the backend and creating your individual operator account as described in the guide:
 
-Dockerfile and render.yaml are included. Follow [the Render setup](docs/render.md), deploy branch `dev`, and configure the backend URL.
+```bash
+nvm install
+nvm use
+npm ci
+BACKEND_URL=http://127.0.0.1:8000 npm run dev -- --host localhost --port 5173 --strictPort
+```
 
-## Local development
+Open `http://localhost:5173/login`. Successful sign-in opens the dashboard at `/`. The frontend's `/api/v1` proxy forwards authenticated requests to the configured backend origin; secrets stay on the backend.
 
-Use Node 24.21.0 (`nvm use`) and `npm ci`. Start the delivered backend with `.venv/bin/uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8000` in `bnh-backend`, then run `npm run dev -- --host localhost` here. Use the configured individual operator/staff account. There are no default production credentials.
+## Application Scope
 
-`BACKEND_URL` selects the trusted backend origin (default `http://127.0.0.1:8000`). Both development and production forward `/api/v1` through the same server proxy with HttpOnly session cookies and CSRF. Configure the backend's allowed origin to match the frontend.
+The application uses fourteen reusable screens for sign-in/recovery, dashboard, requisitions, details/signing, assigned tasks, Board resolutions, vendors, staff, organisation, audit and account security. Shared drawers handle notifications, private documents, administration and signatures. Layouts adapt to mobile and desktop; available actions follow backend permissions and request state.
 
-## Verification
+Requesters can persist drafts, attach documents, submit, retract before action, respond to revision requests and download permitted PDFs and approved transfer letters. Administrators configure three-letter department codes and company/department debit accounts; administration alone grants no financial approval authority.
 
-Run `npm run lint`, `npm run format:check`, `npm run typecheck`, `npm run test -- --run`, and `npm run build`.
+## Documentation
 
-For real browser verification, keep both repositories as siblings. In the backend, provision the isolated local PostgreSQL database with `.venv/bin/python -m scripts.dev_database` and run `.venv/bin/pytest` to apply and verify migrations. Then run `npm run build` and `npm run test:e2e` here. Install Playwright Chromium or set `CHROME_PATH` to your installed Chrome executable. The runner starts its own backend on 8017 and the built Node application on 4173; those ports must be free. Fixture creation refuses non-loopback/non-test database URLs and uses synthetic accounts only. Results/screenshots and fixture credentials stay ignored in `test-results/`.
+- [Development and onboarding guide](docs/development.md)
+- [Render deployment](docs/render.md)
+- [Engineering and delivery instructions](AGENTS.md)
+- [Fourteen-screen scope](docs/reference/ui_scrrens.md)
+- [Feature requirements and tracker](docs/reference/implementation_pan.md)
+- [Current integration notes](docs/reference/ui_todos.md)
+- [Delivery and verification history](docs/reference/task_done.md)
 
-Generate the delivered API types with `.venv/bin/python -m scripts.export_openapi` in the backend. The default `app.main` contract includes the delivered requisition and Board journeys.
-
-These checks do not establish a Render deployment or real staff acceptance.
-
-## Request history and Audit Log
-
-Screens 5/8 now include scoped requester, department, company, vendor, inclusive Lagos creation dates and own-request filters. Screen 7 shows the pending actor/assignment blocker and a paginated timeline with signed-revision and permitted Board-record references. Meeting dates are separate from system recording/signing times. Screen 13 (`/audit`) is visible only with explicit `audit:read`; the server separately limits each event and document to the viewer's scope. It supports action/reference, actor, company, outcome and inclusive Lagos event-date filters with bounded pagination. A read-only auditor can open permitted requests/evidence, without request mutations or confidential Board access.
-
-Deploy backend schema `0014` before this frontend; no new UI environment variables are required. An authorised configuration operator provisions company-scoped auditors with the backend's `scripts.configure_audit_reviewer` command. Deployment does not grant anyone access automatically. Audit names reflect current profiles; signed names remain in request history. Read-access events are recorded separately from the activity feed. Actual external archive delivery, PDFs and the dashboard are separate unfinished features.
-
-## Notifications
-
-The workspace header has a notification drawer for requester updates and currently eligible assigned work, with unread filtering, paging, persisted read state, retries and honest email delivery status. Opening an alert marks it read and navigates to the authenticated requisition or private Board workspace; it never signs a decision. Alerts refresh on navigation, window focus and every 30 seconds while the page is visible. Failed refreshes clear displayed results; expired sessions return to sign-in.
-
-Deploy backend schema `0015` before this UI. Existing backend Resend settings enable email; no new frontend variable is needed. In-app alerts remain available while email is disabled or delivery fails. See the backend notification operations guide for retry limits and historical-email handling. `tests/notifications.e2e.ts` verifies the drawer, role handoffs, persisted reads, mobile layout and error recovery against the real test backend with private synthetic email capture.
-
-## Dashboard (screen 4)
-
-Sign-in and the workspace brand open `/`. The dashboard shows real scoped status counts, own-request totals, latest requisitions, recent permitted activity and currently assigned work. Status cards open the existing filtered list; request links open the existing detail/review screen. Creation, task and administrative shortcuts follow current server capabilities. Read-only reviewers cannot create or approve, and technical administrators do not gain financial visibility.
-
-Data refreshes on window focus or the explicit Refresh dashboard control. Failed refreshes clear the old results and provide retry; expired sessions return to sign-in. No extra environment variable or migration is needed. Deploy the backend dashboard API first. The real-backend dashboard tests cover persistence, scoped roles, links, mobile layout and failed/expired refreshes.
-
-### My Account & Security
-
-Screen 14 is available to every signed-in user at `/account`, including read-only reviewers. It shows read-only personal/company/department details and current office appointments, a current-password-protected password-change form, and paginated active sessions. Individual, other-session and all-session sign-outs require confirmation; changing a password signs out all sessions and cancels outstanding reset links. Server times display in Lagos time. Refresh/focus reloads current access, API failures clear stale details, and expiry returns to sign-in. Passwords are never stored in browser storage. Profile/department/authority editing and MFA setup are not exposed.
-
-Deploy the matching backend security APIs before this frontend. Existing Dockerfiles and Render settings apply; no new configuration or migration is required. Connected browser tests use isolated synthetic accounts, not production staff.
-
-### Mobile workspace (WEB-001)
-
-At widths up to 900px, Open navigation reveals a modal drawer instead of wrapping sidebar links above the page. It closes on route selection, Escape, backdrop tap or a resize to desktop, with keyboard focus handling and background scroll locking. The sticky mobile header keeps navigation, branding, notifications and the account control on one row. Open Account menu for the full name/email, Account & Security and Sign out; long identities wrap inside the dropdown. Notifications retain unread badges and a private responsive drawer. Desktop retains its sidebar and labelled controls. Role visibility and all server permissions are unchanged.
-
-Deploy only the frontend from dev using the existing Dockerfile. No API, database or Render setting changes are needed. Tests use isolated synthetic accounts; local verification does not establish live deployment.
-
-### Responsive page content (WEB-001–003)
-
-All fourteen screen templates adapt their content to phones, tablets and desktop columns. Requisition/inbox, vendor, staff, cost-breakdown and authority-matrix tables become labelled record cards when the available column is narrow; the same fields and actions remain available. Forms and drawers use single-column fields where needed, line-item totals stay readable, and action groups, dashboard panels and account sessions align within their cards. Attachments retain compact View/Remove controls.
-
-Content breakpoints use the available container width, including the reduced content area beside the desktop sidebar. Browser checks cover populated pages at 320, 390, 768, 1024 and 1440px, including large monetary values, persisted mobile editing, approval/signing and Board records. The checks inspect internal containers and controls as well as page overflow. Responsive screenshots remain ignored under `test-results/content-*.png`.
-
-Deploy the frontend from `dev` using the existing Dockerfile. No backend, migration or environment changes are required. Local browser verification is separate from Render deployment and staff acceptance.
-
-### Administrator visibility
-
-Full system administrators can browse requisitions and vendors across BNH using the existing screens, even without a department membership. Requisitions, dashboard counts and public history show the expanded scope; oversight-only details clearly state that the request is read-only. Bank values and supporting/Board documents retain their separate restrictions. Approval actions and My Tasks still depend on office assignments.
-
-Vendors loads its company selector from `/api/v1/vendors/companies` instead of treating view access as membership. The server's company `can_create` flag controls Add vendor; requisition creation uses `UserView.can_create_requisitions`. Existing vendor edit capabilities remain server-authorised. No new screen or Render variable is introduced. Deploy the matching backend first. Existing administrators with all three staff, organisation and appointment-management permissions receive the view automatically; no live account changes are made by tests.
-
-## PDF exports (DOC-001; exact-font acceptance pending)
-
-Screen 7 generates private PDFs from a saved draft or selected signed revision, shows persistent job status/retry controls and opens ready files in the shared viewer. The viewer renders pages locally with bundled PDF.js, supports previous/next pages and readable page text, and retains the original-file download. It uses authenticated bytes without external document viewers or browser-plugin requirements. No additional screen is introduced.
-
-Deploy backend migration `0016` first. The backend bundles Liberation Serif and Liberation Sans Bold; no private font files or font environment variables are needed. Private Cloudinary storage uses the existing backend configuration. Browser tests use the same fonts as production and isolated storage; the live Cloudinary round trip remains a post-deployment check.
-
-Signed transfer requests (DOC-002): administrators configure the company debit account from Organisation & Authority; approvers review both accounts and consent to place the current approval signature on the transfer letter. The requester opens the automatically generated document on the approved requisition, downloads it and prints it. No extra screen or payment execution is added. The backend requires migrations 0016–0017, private Cloudinary and the bundled free PDF fonts. Live-provider verification remains a post-deployment check.
-
-Vendor directory bank labels reflect actual access: `Recorded` for authorised details, `Recorded · restricted access` for restricted details, and `Not supplied` when absent. Staff retain full access to vendors they created; eligible company officers and full system administrators can view full details in their existing scope. The backend rechecks privileges on each request.
+The development guide lists all lint, formatting, type, unit and connected-browser checks. Browser tests require the sibling backend and isolated local PostgreSQL; they do not use deployed accounts or live provider keys. Deploy this repository as a Node web service using its tracked Dockerfile, not as a static site.
