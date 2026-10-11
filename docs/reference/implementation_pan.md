@@ -2111,6 +2111,8 @@ Deliver the complete self-service browser journey for staff to prepare, sign, su
 
 **Login redesign follow-up (2026-10-11):** Removed the standalone company name, workspace eyebrow and invitation notice from Sign In. The login-only layout now centres the existing brand and form inside a responsive card, centres Forgot Password? below Sign In, enlarges and aligns the logo/brand name with a vertical divider, and enlarges inputs/actions and centres the copyright footer. Login uses Staff Email and the exact subtitle “by Brendan Nicholas Holdings”, with wrapping on narrow screens. The password visibility control, accessible labels, sign-in errors and session/recovery behavior remain intact. Twelve connected browser checks, six unit tests, frontend lint/format/type checks, production build and frontend Docker build passed. Visual inspection confirmed the desktop/mobile layout. Delivery evidence is recorded in task_done.md.
 
+**Shared footer/sidebar follow-up (2026-10-11):** Centred the copyright text through the shared Copyright component for all workspace, public access and error screens, including wrapped mobile text. Removed the company description from both the desktop sidebar and mobile navigation drawer. Verification is recorded in task_done.md.
+
 ### Requirement Basis
 
 Confirmed business scope plus the explicitly identified implementation defaults in Section 1.6.

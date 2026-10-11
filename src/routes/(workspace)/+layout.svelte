@@ -157,10 +157,6 @@
 		<a href="/" class="brand"><BrandMark /><span>Custodian<small>BY BRENDAN</small></span></a>
 		<div class="group-label">WORKSPACE</div>
 		{@render navigationLinks()}
-		<div class="sidebar-note">
-			Brendan Nicholas Holdings
-			<p>Requisitions & delegated authority</p>
-		</div>
 	</aside>
 	<div class="body">
 		<header class="workspace-header">
@@ -246,10 +242,6 @@
 		>
 	</div>
 	{@render navigationLinks()}
-	<div class="sidebar-note">
-		Brendan Nicholas Holdings
-		<p>Requisitions & delegated authority</p>
-	</div>
 </dialog>
 
 <style>
@@ -315,16 +307,6 @@
 	}
 	nav a:hover {
 		background: var(--surface);
-	}
-	.sidebar-note {
-		margin-top: auto;
-		padding: 48px 12px 0;
-		font-size: 11px;
-		color: var(--body);
-	}
-	.sidebar-note p {
-		margin: 8px 0 0;
-		font-size: 11px;
 	}
 	.body {
 		min-width: 0;
