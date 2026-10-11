@@ -1934,6 +1934,10 @@ Owner request (2026-10-11), `transfer-request.jpeg`, and explicit instruction to
 - Missing bank data is disclosed before approval and stored as an unavailable letter with an explicit reason. It is never repaired using later unsigned data. Font/storage failure does not undo approval; retries preserve the original capture.
 - The requester views/downloads the private letter in the existing document viewer and prints the PDF through a PDF reader. Oversight permissions alone do not grant bank-letter download access.
 
+### Payment letter simplification (2026-10-11)
+
+The owner's template correction removes the revision suffix from the printed requisition reference, the electronic-signing timestamp line, and the entire repeated-reference/page/payment-disclaimer footer. Retain the ordinary letter date, payment instructions, beneficiary details, drawn approval signature, signer name and office. Internal revision/signature/approval records remain unchanged; previously generated private files retain their existing bytes. The revised one-page letter was rendered and visually inspected. All 367 backend tests, Ruff check/format, mypy, three connected document browser journeys and the backend Docker build passed.
+
 ### Shared vendor and requester download correction (2026-10-11)
 
 Vendor-directory redaction no longer prevents a complete transfer instruction. For a restricted selected vendor, the server resolves the beneficiary from the exact immutable vendor version captured by the submitted revision, scoped to the same company and vendor. It never uses the latest master account. The individual approver or confirming Chairman reviews and signs these exact beneficiary details in the existing transfer ceremony. Requester-facing requisition/vendor views stay redacted, while the requester can download the resulting approved bank letter through the existing private export endpoint.
@@ -2088,6 +2092,8 @@ Deliver the complete self-service browser journey for staff to prepare, sign, su
 **Blocker:** Live Cloudinary credentials/account behavior and BNH signature-method acceptance remain deployment/acceptance checks, separate from local implementation verification.
 
 **Dashboard follow-up (screen 4):** Delivered current-scope status counts, own-request counts, actual pending tasks, safe recent activity and permitted shortcuts. Sign-in now lands on the shared dashboard. Ordinary staff have no approval panel; Board-only events require current eligibility. Refresh/focus rechecks scope; errors clear stale results. Verification: full backend suite **281 passed**, Ruff/format/mypy; frontend lint/format/types, **6 unit tests**, production build and **34 browser tests passed**, including desktop/390px visual inspection, persisted counts, role visibility, retry and expiry. The owner authorised Dashboard and My Account & Security while DOC-001 awaits licensed fonts; backup/recovery remains deferred. Dashboard publication uses its own WEB-002 commits on origin/dev, excluding unfinished PDF code.
+
+**Cost-entry correction (2026-10-11):** Unit prices display comma grouping and two decimal places outside editing. Focusing starts a blank entry; leaving it untouched restores the previous value, while typed/pasted values persist as exact decimal strings. Eight connected requisition/responsive browser tests, six unit tests, lint/format/type checks and production build pass. No backend or API change.
 
 ### Requirement Basis
 

@@ -294,3 +294,26 @@ test('read-only deep link denial and expired session clears edited content', asy
 	await expect(page).toHaveURL(/\/login$/);
 	await expect(page.getByLabel('Vendor name')).toHaveCount(0);
 });
+
+test('item prices show grouping, clear on focus and persist exact kobo', async ({ page }) => {
+	await login(page);
+	await page.goto('/requisitions/new');
+	const title = 'Formatted price ' + randomUUID();
+	await fill(page, title, '1234567.89');
+	const price = page.getByLabel('Unit price (₦)', { exact: true });
+	await price.blur();
+	await expect(price).toHaveValue('1,234,567.89');
+	await price.focus();
+	await expect(price).toHaveValue('');
+	await price.blur();
+	await expect(price).toHaveValue('1,234,567.89');
+	await price.fill('248,000.15');
+	await price.blur();
+	await expect(price).toHaveValue('248,000.15');
+	await page.getByRole('button', { name: 'Save draft', exact: true }).click();
+	await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
+	await page.reload();
+	await expect(page.getByText('₦248,000.15').first()).toBeVisible();
+	await page.getByRole('button', { name: 'Edit draft', exact: true }).click();
+	await expect(price).toHaveValue('248,000.15');
+});

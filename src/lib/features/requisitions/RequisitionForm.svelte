@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
+	import PriceInput from '#lib/components/ui/PriceInput.svelte';
 	import { beforeNavigate, goto, invalidateAll } from '$app/navigation';
 	import { api, ApiError } from '#lib/api/client.js';
 	import type {
@@ -347,13 +348,7 @@
 							<label
 								>Quantity<input inputmode="decimal" bind:value={line.quantity} required /></label
 							>
-							<label
-								>Unit price (₦)<input
-									inputmode="decimal"
-									bind:value={line.unit_price}
-									required
-								/></label
-							>
+							<label>Unit price (₦)<PriceInput bind:value={line.unit_price} /></label>
 							<div class="line-total">
 								<span>Total</span><strong>{preview(line.quantity, line.unit_price)}</strong>
 							</div>
