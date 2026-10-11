@@ -348,3 +348,37 @@ test('bank fields require a complete ten-digit account and reveal invalid collap
 	await page.getByRole('button', { name: 'Edit draft', exact: true }).click();
 	await expect(account).toHaveValue('0000000123');
 });
+
+test('requester retracts to draft, edits and resubmits, then deletes a retracted draft', async ({
+	page
+}) => {
+	await login(page);
+	await page.goto('/requisitions/new');
+	const title = 'Retractable request ' + randomUUID();
+	await fill(page, title);
+	await page.getByRole('button', { name: 'Save draft', exact: true }).click();
+	await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
+	const url = page.url();
+	await sign(page, 'Synthetic requester');
+	await expect(page.getByRole('button', { name: 'Delete draft', exact: true })).toHaveCount(0);
+	page.once('dialog', (dialog) => dialog.accept());
+	await page.getByRole('button', { name: 'Retract requisition', exact: true }).click();
+	await expect(page.getByRole('button', { name: 'Edit draft', exact: true })).toBeVisible();
+	await page.reload();
+	await page.getByRole('button', { name: 'Edit draft', exact: true }).click();
+	await page.getByLabel('Location', { exact: true }).fill('Revised location after retraction');
+	await page.getByRole('button', { name: 'Save draft', exact: true }).click();
+	await expect(page.getByText('Revised location after retraction', { exact: true })).toBeVisible();
+	await sign(page, 'Synthetic requester');
+	page.once('dialog', (dialog) => dialog.accept());
+	await page.getByRole('button', { name: 'Retract requisition', exact: true }).click();
+	await expect(page.getByRole('button', { name: 'Delete draft', exact: true })).toBeVisible();
+	page.once('dialog', (dialog) => dialog.accept());
+	await page.getByRole('button', { name: 'Delete draft', exact: true }).click();
+	await expect(page).toHaveURL(/\/requisitions$/);
+	await page.getByLabel('Search requisitions').fill(title);
+	await page.getByRole('button', { name: 'Apply filters' }).click();
+	await expect(page.getByText(title, { exact: true })).toHaveCount(0);
+	const response = await page.request.get('/api/v1/requisitions/' + url.split('/').pop());
+	expect(response.status()).toBe(404);
+});

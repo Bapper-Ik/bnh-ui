@@ -40,6 +40,43 @@
 		}
 	}
 
+	let managing = $state(false);
+	let managementCommand: { action: 'delete' | 'retract'; body: string } | null = null;
+	async function manage(action: 'delete' | 'retract') {
+		if (managing) return;
+		if (
+			!managementCommand &&
+			!window.confirm(
+				action === 'delete'
+					? 'Delete this draft? It will be removed from your requisitions.'
+					: 'Return this requisition to Draft? Approval will stop until you submit it again.'
+			)
+		)
+			return;
+		if (managementCommand && managementCommand.action !== action) return;
+		managementCommand ??= {
+			action,
+			body: JSON.stringify({ expected_version: req.version, idempotency_key: crypto.randomUUID() })
+		};
+		managing = true;
+		correctionError = '';
+		try {
+			await api(`/requisitions/${req.id}/${action}`, {
+				method: 'POST',
+				body: managementCommand.body
+			});
+			managementCommand = null;
+			if (action === 'delete') await goto('/requisitions', { invalidateAll: true });
+			else await invalidateAll();
+		} catch (e) {
+			if (e instanceof ApiError && e.status < 500) managementCommand = null;
+			correctionError = e instanceof Error ? e.message : 'Unable to update this requisition.';
+			if (e instanceof ApiError && e.status === 401) await goto('/login', { invalidateAll: true });
+		} finally {
+			managing = false;
+		}
+	}
+
 	let signing = $state<Intent['action'] | null>(null);
 	const req = $derived(data.request);
 	const vendor = $derived(req.content.vendor);
@@ -263,6 +300,14 @@
 					<button class="quiet" onclick={() => invalidateAll()}>Reload request</button>
 				</p>{/if}
 			<div class="stack action-stack">
+				{#each ['delete', 'retract'] as action (action)}
+					{#if req.available_actions.includes(action)}<button
+							class="secondary"
+							disabled={managing}
+							onclick={() => manage(action as 'delete' | 'retract')}
+							>{action === 'delete' ? 'Delete draft' : 'Retract requisition'}</button
+						>{/if}
+				{/each}
 				{#if req.available_actions.includes('board_workspace')}<a
 						class="button"
 						href={'/requisitions/' + req.id + '/board'}>Open Board workspace</a

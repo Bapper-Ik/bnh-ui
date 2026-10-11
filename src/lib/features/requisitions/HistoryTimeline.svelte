@@ -15,6 +15,7 @@
 		'requisition.created': 'Draft created',
 		'requisition.updated': 'Draft updated',
 		'requisition.revision_created': 'Correction started',
+		'requisition.retracted': 'Retracted to draft',
 		submission: 'Requisition submitted',
 		approve: 'Approval signed',
 		reject: 'Rejection signed',
