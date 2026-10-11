@@ -197,7 +197,9 @@
 							><td role="cell" data-label="Bank details"
 								>{vendor.bank_details_state === 'unknown'
 									? 'Not supplied'
-									: 'Recorded · restricted access'}</td
+									: vendor.bank_details_state === 'supplied'
+										? 'Recorded'
+										: 'Recorded · restricted access'}</td
 							><td role="cell" data-label="Actions"
 								><button
 									class="secondary"

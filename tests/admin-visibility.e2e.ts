@@ -73,7 +73,8 @@ test('administrator without membership can inspect requests and vendors across c
 		).toBeVisible();
 		await expect(page.getByText(/Administrative oversight ·/)).toBeVisible();
 		await expect(page.getByText(/Document access is restricted/)).toBeVisible();
-		await expect(page.getByText('0000000088', { exact: true })).toHaveCount(0);
+		await page.locator('summary').filter({ hasText: 'Bank details' }).click();
+		await expect(page.getByText('0000000088', { exact: true })).toBeVisible();
 		await expect(
 			page.getByRole('button', {
 				name: /^(Edit draft|Approve|Review & submit|Reject|Return for revision)$/
@@ -97,7 +98,7 @@ test('administrator without membership can inspect requests and vendors across c
 		await expect(page.getByRole('button', { name: '+ Add vendor', exact: true })).toHaveCount(0);
 		await page.getByRole('button', { name: 'View ' + data.vendor.name, exact: true }).click();
 		await expect(page.getByRole('button', { name: 'Edit vendor', exact: true })).toHaveCount(0);
-		await expect(page.getByText('0000000088', { exact: true })).toHaveCount(0);
+		await expect(page.getByText('0000000088', { exact: true })).toBeVisible();
 		await page.getByRole('button', { name: 'Close vendor drawer' }).click();
 	}
 	await expect

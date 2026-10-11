@@ -100,3 +100,57 @@ test('vendor capture, saved zeroes, updates, stale edits and restricted views', 
 		await context.close();
 	}
 });
+
+test('officers see full vendor details while ordinary peers stay restricted', async ({ page }) => {
+	test.setTimeout(90000);
+	const name = 'Officer-visible supplier ' + Date.now();
+	await login(page, 'requester');
+	const memberships = await (await page.request.get('/api/v1/organisation/memberships')).json();
+	const csrf = (await page.context().cookies()).find(
+		(cookie) => cookie.name === 'custodian_csrf'
+	)!.value;
+	const created = await page.request.post('/api/v1/vendors', {
+		headers: { origin: 'http://127.0.0.1:4173', 'x-csrf-token': csrf },
+		data: {
+			entity_id: memberships[0].entity_id,
+			data: {
+				name,
+				bank: {
+					bank_name: 'Synthetic officer bank',
+					account_name: name,
+					account_number: '0000000789'
+				}
+			}
+		}
+	});
+	expect(created.status()).toBe(201);
+	for (const role of [
+		'requester',
+		'hod',
+		'chief_of_staff',
+		'md',
+		'secretary',
+		'chairman',
+		'draft_requester'
+	]) {
+		await login(page, role);
+		await page.getByLabel('Search vendors').fill(name);
+		await page.getByRole('button', { name: 'Search', exact: true }).click();
+		const row = page.getByRole('row').filter({ hasText: name });
+		await expect(
+			row.getByText(role === 'draft_requester' ? 'Recorded · restricted access' : 'Recorded', {
+				exact: true
+			})
+		).toBeVisible();
+		await row.getByRole('button', { name: 'View ' + name, exact: true }).click();
+		const dialog = page.getByRole('dialog');
+		if (role === 'draft_requester') {
+			await expect(dialog.getByText('You do not have access to these bank details.')).toBeVisible();
+			await expect(dialog.getByText('0000000789', { exact: true })).toHaveCount(0);
+		} else {
+			await expect(dialog.getByText('0000000789', { exact: true })).toBeVisible();
+		}
+		if (role !== 'requester')
+			await expect(dialog.getByRole('button', { name: 'Edit vendor', exact: true })).toHaveCount(0);
+	}
+});
