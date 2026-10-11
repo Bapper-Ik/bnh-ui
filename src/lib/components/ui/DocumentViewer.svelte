@@ -56,7 +56,7 @@
 	}
 </script>
 
-<dialog bind:this={dialog} onclose={onClose} aria-label="Document viewer">
+<dialog bind:this={dialog} onclose={onClose} aria-label="Document Viewer">
 	<h2>{file.filename}</h2>
 	{#if error}<p role="alert" class="error">{error}</p>
 		<button class="secondary" onclick={load}>Retry</button>
@@ -68,7 +68,7 @@
 		</p>{/if}
 	<div class="actions">
 		{#if url}<a class="button secondary" href={url} download={file.filename}>Download</a
-			>{/if}<button onclick={() => dialog.close()}>Close document</button>
+			>{/if}<button onclick={() => dialog.close()}>Close Document</button>
 	</div>
 </dialog>
 

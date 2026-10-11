@@ -48,26 +48,26 @@
 		<p>Welcome, {data.user.name}. Here is your current requisition activity.</p>
 	</div>
 	<button class="secondary" disabled={busy} onclick={refresh}
-		>{busy ? 'Refreshing…' : 'Refresh dashboard'}</button
+		>{busy ? 'Refreshing…' : 'Refresh Dashboard'}</button
 	>
 </div>
 {#if error}<p class="error" role="alert">{error} Use Refresh dashboard to try again.</p>{/if}
 {#if !dashboard && busy}<p role="status">Loading your dashboard…</p>{/if}
 {#if dashboard}
-	<div class="shortcuts" aria-label="Dashboard shortcuts">
-		{#if dashboard.can_create}<a class="button" href="/requisitions/new">Create requisition</a>{/if}
-		<a class="button secondary" href="/requisitions?my_requests=true">My requisitions</a>
+	<div class="shortcuts" aria-label="Dashboard Shortcuts">
+		{#if dashboard.can_create}<a class="button" href="/requisitions/new">Create Requisition</a>{/if}
+		<a class="button secondary" href="/requisitions?my_requests=true">My Requisitions</a>
 		{#if dashboard.can_access_approval_inbox}<a
 				class="button secondary"
 				href="/requisitions?inbox=true">Open My Tasks</a
 			>{/if}
 		{#if data.user.permissions.includes('staff:manage') && !data.user.read_only}<a
 				class="button secondary"
-				href="/staff">Manage staff</a
+				href="/staff">Manage Staff</a
 			>{/if}
 		{#if data.user.permissions.includes('organisation:manage') && !data.user.read_only}<a
 				class="button secondary"
-				href="/organisation">Manage organisation</a
+				href="/organisation">Manage Organisation</a
 			>{/if}
 		{#if data.user.permissions.includes('audit:read')}<a class="button secondary" href="/audit"
 				>View Audit Log</a
@@ -75,7 +75,7 @@
 	</div>
 	<div class="totals">
 		<a class="card metric" href="/requisitions"
-			><span>Visible requisitions</span><strong>{dashboard.total}</strong></a
+			><span>Visible Requisitions</span><strong>{dashboard.total}</strong></a
 		>
 		<a class="card metric" href="/requisitions?my_requests=true"
 			><span>Raised by you</span><strong>{dashboard.own_requests}</strong></a
@@ -84,8 +84,8 @@
 				><span>Awaiting your action</span><strong>{dashboard.tasks.total}</strong></a
 			>{/if}
 	</div>
-	<section class="card" aria-label="Request status counts">
-		<h2>Requests by status</h2>
+	<section class="card" aria-label="Request Status Counts">
+		<h2>Requests by Status</h2>
 		<p>
 			Counts include only requisitions you can currently access. Approved means authorised, not
 			paid.
@@ -100,24 +100,24 @@
 	</section>
 	<div class="panels">
 		<div class="stack">
-			{#if dashboard.can_access_approval_inbox}<section class="card" aria-label="Outstanding tasks">
-					<h2>Awaiting your action</h2>
+			{#if dashboard.can_access_approval_inbox}<section class="card" aria-label="Outstanding Tasks">
+					<h2>Awaiting Your Action</h2>
 					{#if dashboard.tasks.items.length === 0}<p>
 							No requisitions currently need your action.
 						</p>{/if}
 					<ul>
 						{#each dashboard.tasks.items as request (request.id)}<li>
 								<a href={'/requisitions/' + request.id}>{request.reference}</a>
-								<p>{request.description || 'Untitled requisition'}</p>
+								<p>{request.description || 'Untitled Requisition'}</p>
 								<small>{stateLabel(request.state)} · {money(request.total)}</small>
 							</li>{/each}
 					</ul>
 					{#if dashboard.tasks.total > 5}<a href="/requisitions?inbox=true"
-							>View all {dashboard.tasks.total} tasks</a
+							>View All {dashboard.tasks.total} Tasks</a
 						>{/if}
 				</section>{/if}
-			<section class="card" aria-label="Latest requisitions">
-				<h2>Latest requisitions</h2>
+			<section class="card" aria-label="Latest Requisitions">
+				<h2>Latest Requisitions</h2>
 				{#if dashboard.recent_requests.items.length === 0}<p>
 						No requisitions to display yet.
 					</p>{/if}
@@ -128,7 +128,7 @@
 									>{money(request.total)}</span
 								>
 							</div>
-							<p>{request.description || 'Untitled requisition'}</p>
+							<p>{request.description || 'Untitled Requisition'}</p>
 							<small
 								>{stateLabel(request.state)} · {request.requester_name}<br />Created {dateTime(
 									request.created_at
@@ -136,11 +136,11 @@
 							>
 						</li>{/each}
 				</ul>
-				{#if dashboard.total > 5}<a href="/requisitions">View all requisitions</a>{/if}
+				{#if dashboard.total > 5}<a href="/requisitions">View All Requisitions</a>{/if}
 			</section>
 		</div>
-		<section class="card" aria-label="Recent activity">
-			<h2>Recent activity</h2>
+		<section class="card" aria-label="Recent Activity">
+			<h2>Recent Activity</h2>
 			<p>The latest recorded actions on requests you can access.</p>
 			{#if dashboard.activity.length === 0}<p>No recent requisition activity.</p>{/if}
 			<ul>

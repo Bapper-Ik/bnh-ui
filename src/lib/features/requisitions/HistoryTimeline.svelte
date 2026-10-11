@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { authorityLabel } from '#lib/money.js';
 	import { onMount } from 'svelte';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { goto } from '$app/navigation';
@@ -12,21 +13,21 @@
 		lastOffset = $state(0);
 	const labels: Record<string, string> = {
 		'requisition.export.success': 'PDF generated',
-		'requisition.created': 'Draft created',
-		'requisition.updated': 'Draft updated',
-		'requisition.revision_created': 'Correction started',
-		'requisition.retracted': 'Retracted to draft',
-		submission: 'Requisition submitted',
-		approve: 'Approval signed',
-		reject: 'Rejection signed',
-		return: 'Returned to requester',
-		board_recorded: 'Board record created',
-		board_submitted: 'Board record signed by Secretary',
+		'requisition.created': 'Draft Created',
+		'requisition.updated': 'Draft Updated',
+		'requisition.revision_created': 'Correction Started',
+		'requisition.retracted': 'Retracted to Draft',
+		submission: 'Requisition Submitted',
+		approve: 'Approval Signed',
+		reject: 'Rejection Signed',
+		return: 'Returned to Requester',
+		board_recorded: 'Board Record Created',
+		board_submitted: 'Board Record Signed by Secretary',
 		board_return: 'Returned to Secretary',
-		board_approve: 'Board approval confirmed',
-		board_reject: 'Board rejection confirmed',
-		board_defer: 'Board deferment confirmed',
-		board_conditional_approve: 'Conditional Board approval confirmed'
+		board_approve: 'Board Approval Confirmed',
+		board_reject: 'Board Rejection Confirmed',
+		board_defer: 'Board Deferment Confirmed',
+		board_conditional_approve: 'Conditional Board Approval Confirmed'
 	};
 	async function load(offset = 0) {
 		if (busy) return;
@@ -50,11 +51,11 @@
 	});
 </script>
 
-<section class="card" aria-busy={busy} aria-label="Request history">
-	<h2>Request history</h2>
+<section class="card" aria-busy={busy} aria-label="Request History">
+	<h2>Request History</h2>
 	<p>Recorded actions in chronological order. Times are shown in Lagos time.</p>
 	{#if failure}<div class="error" role="alert">
-			{failure} <button class="quiet" onclick={() => load(lastOffset)}>Retry history</button>
+			{failure} <button class="quiet" onclick={() => load(lastOffset)}>Retry History</button>
 		</div>{/if}
 	{#if busy}<p role="status">Loading history…</p>{/if}
 	{#if result}
@@ -68,12 +69,12 @@
 								· Revision {event.revision}{/if}
 						</p>
 						<time datetime={event.at}>{dateTime(event.at)}</time>
-						{#if event.authority}<p>Authority: {event.authority.replaceAll('_', ' ')}</p>{/if}
+						{#if event.authority}<p>Authority: {authorityLabel(event.authority)}</p>{/if}
 						{#if event.routing_explanation}<p>{event.routing_explanation}</p>{/if}
 						{#if event.reason}<p class="reason">{event.reason}</p>{/if}
 						{#if event.type === 'submission'}<p>
 								<a href={`/requisitions/${requestId}?revision=${event.revision}`}
-									>View signed revision {event.revision}</a
+									>View Signed Revision {event.revision}</a
 								>
 							</p>{/if}
 						{#if event.meeting_date}<p>
@@ -81,12 +82,12 @@
 							</p>{/if}
 						{#if event.resolution_id}<p>
 								<a href={`/requisitions/${requestId}/board#record-${event.resolution_id}`}
-									>Board record {event.resolution_number}: {event.resolution_reference}</a
+									>Board Record {event.resolution_number}: {event.resolution_reference}</a
 								>
 							</p>{/if}
 						{#if event.evidence_filename}<p>Resolution evidence: {event.evidence_filename}</p>{/if}
 						{#if event.signature_id || event.digest}<details>
-								<summary>Signing evidence</summary>
+								<summary>Signing Evidence</summary>
 								{#if event.signature_id}<p>
 										Signature reference <code>{event.signature_id}</code>
 									</p>{/if}
@@ -109,12 +110,12 @@
 						class="secondary"
 						disabled={busy}
 						onclick={() => load(Math.max(0, result!.offset - result!.limit))}
-						>Earlier actions</button
+						>Earlier Actions</button
 					>{/if}
 				{#if result.offset + result.limit < result.total}<button
 						class="secondary"
 						disabled={busy}
-						onclick={() => load(result!.offset + result!.limit)}>Later actions</button
+						onclick={() => load(result!.offset + result!.limit)}>Later Actions</button
 					>{/if}
 			</div>
 		</div>

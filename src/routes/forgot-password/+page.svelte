@@ -27,7 +27,7 @@
 </script>
 
 <AccessLayout
-	title={message ? 'Check your email' : 'Forgot your password?'}
+	title={message ? 'Check Your Email' : 'Forgot Your Password?'}
 	description={message
 		? 'Follow the link to choose your password.'
 		: 'Enter your work email to request a secure password link. You can also request a new account activation link here.'}
@@ -35,14 +35,14 @@
 	{#if message}<div class="stack">
 			<p role="status">{message}</p>
 			<p>Links expire after 30 minutes. If you requested more than one, use the latest email.</p>
-			<a href="/login" class="button">Back to sign in</a><button
+			<a href="/login" class="button">Back to Sign In</a><button
 				class="quiet"
-				onclick={() => (message = '')}>Use another email</button
+				onclick={() => (message = '')}>Use Another Email</button
 			>
 		</div>
 	{:else}<form onsubmit={send} class="stack" aria-busy={busy}>
 			<label
-				>Work email<input
+				>Work Email<input
 					type="email"
 					autocomplete="email"
 					bind:value={email}
@@ -53,8 +53,8 @@
 			>
 			{#if error}<p class="error" role="alert">{error}</p>{/if}
 			<button type="submit" disabled={busy}
-				>{busy ? 'Requesting link…' : 'Send password link'}</button
+				>{busy ? 'Requesting Link…' : 'Send Password Link'}</button
 			>
-			<a href="/login">Back to sign in</a>
+			<a href="/login">Back to Sign In</a>
 		</form>{/if}
 </AccessLayout>

@@ -14,12 +14,12 @@
 	let showPassword = $state(false);
 	const title = $derived(
 		viewState === 'success'
-			? 'Your password is set'
+			? 'Your Password Is Set'
 			: viewState === 'invalid'
-				? 'This link is unavailable'
+				? 'This Link Is Unavailable'
 				: purpose === 'activate'
-					? 'Activate your account'
-					: 'Set your password'
+					? 'Activate Your Account'
+					: 'Set Your Password'
 	);
 	async function validateLink() {
 		if (!token) {
@@ -92,8 +92,8 @@
 			<p role="alert">
 				This link is invalid, expired, or has already been used. Request a new link to continue.
 			</p>
-			<a href="/forgot-password" class="button">Request a new link</a><a href="/login"
-				>Back to sign in</a
+			<a href="/forgot-password" class="button">Request a New Link</a><a href="/login"
+				>Back to Sign In</a
 			>
 		</div>
 	{:else if viewState === 'unavailable'}<div class="stack">
@@ -104,11 +104,11 @@
 			<p role="status">
 				{purpose === 'activate' ? 'Your account is ready.' : 'Your password has been updated.'}
 			</p>
-			<a class="button" href="/login">Sign in</a>
+			<a class="button" href="/login">Sign In</a>
 		</div>
 	{:else}<form class="stack" onsubmit={save} aria-busy={busy}>
 			<label
-				>New password<input
+				>New Password<input
 					type={showPassword ? 'text' : 'password'}
 					autocomplete="new-password"
 					minlength="12"
@@ -120,7 +120,7 @@
 			>
 			<small id="password-help">Use at least 12 characters.</small>
 			<label
-				>Confirm new password<input
+				>Confirm New Password<input
 					type={showPassword ? 'text' : 'password'}
 					autocomplete="new-password"
 					minlength="12"
@@ -130,17 +130,17 @@
 				/></label
 			>
 			<label class="toggle"
-				><input type="checkbox" bind:checked={showPassword} />Show passwords</label
+				><input type="checkbox" bind:checked={showPassword} />Show Passwords</label
 			>
 			{#if error}<p class="error" role="alert">{error}</p>{/if}
 			<button disabled={busy} type="submit"
 				>{busy
-					? 'Saving password…'
+					? 'Saving Password…'
 					: purpose === 'activate'
-						? 'Activate account'
-						: 'Set password'}</button
+						? 'Activate Account'
+						: 'Set Password'}</button
 			>
-			<a href="/login">Back to sign in</a>
+			<a href="/login">Back to Sign In</a>
 		</form>{/if}
 </AccessLayout>
 

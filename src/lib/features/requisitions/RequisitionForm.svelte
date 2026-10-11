@@ -214,11 +214,11 @@
 		<fieldset class="form-fields stack" disabled={busy || !!pendingBody}>
 			{#if !request}<section class="card">
 					<div class="section-heading">
-						<h2>Requesting department</h2>
+						<h2>Requesting Department</h2>
 						<span class="eyebrow">01</span>
 					</div>
 					<label
-						>Company & department<select
+						>Company & Department<select
 							bind:value={entityId}
 							disabled={uploading || stagedIds.length > 0}
 							onchange={() => {
@@ -227,7 +227,7 @@
 								content.vendor = { ...emptyVendor };
 							}}
 							required
-							><option value="" disabled>Select your department</option
+							><option value="" disabled>Select Your Department</option
 							>{#each memberships as membership (membership.entity_id)}<option
 									value={membership.entity_id}
 									>{membership.entity_name} · {membership.department_name}</option
@@ -237,20 +237,20 @@
 				</section>{/if}
 			<section class="card">
 				<div class="section-heading">
-					<h2>Vendor information</h2>
+					<h2>Vendor Information</h2>
 					<span class="eyebrow">02</span>
 				</div>
 				<div class="vendor-lookup">
 					<div class="vendor-search">
 						<label
-							>Find an existing vendor<input
+							>Find an Existing Vendor<input
 								bind:value={vendorSearch}
 								maxlength="250"
 								placeholder="Search by vendor name"
 							/></label
 						>
 						<button type="button" class="secondary" onclick={findVendors} disabled={!entityId}
-							>Search vendors</button
+							>Search Vendors</button
 						>
 					</div>
 					{#if vendorChoices}
@@ -272,52 +272,52 @@
 							onclick={() => {
 								vendorSelection = null;
 								dirty = true;
-							}}>Use these details as manual entry</button
+							}}>Use These Details as Manual Entry</button
 						>{/if}
 				</div>
 				<fieldset class="form-fields" disabled={!!vendorSelection}>
 					<div class="grid">
-						<label>Vendor name<input bind:value={content.vendor.name} maxlength="250" /></label>
+						<label>Vendor Name<input bind:value={content.vendor.name} maxlength="250" /></label>
 						<label
-							>Contact person<input
+							>Contact Person<input
 								bind:value={content.vendor.contact_person}
 								maxlength="180"
 							/></label
 						>
 						<label
-							>Phone number<input
+							>Phone Number<input
 								type="tel"
 								bind:value={content.vendor.phone}
 								maxlength="1024"
 							/></label
 						>
-						<label>Email address<input type="email" bind:value={content.vendor.email} /></label>
+						<label>Email Address<input type="email" bind:value={content.vendor.email} /></label>
 						<label
-							>Business address<input bind:value={content.vendor.address} maxlength="1000" /></label
+							>Business Address<input bind:value={content.vendor.address} maxlength="1000" /></label
 						>
 						<label
-							>RC number / ID<input
+							>RC Number / ID<input
 								bind:value={content.vendor.registration_id}
 								maxlength="150"
 							/></label
 						>
 					</div>
 					<details>
-						<summary>Bank details <span>Optional until supplied</span></summary>
+						<summary>Bank Details <span>Optional until supplied</span></summary>
 						<p class="hint">
 							Enter all three fields to generate a bank transfer letter after approval. If they are
 							unknown, leave them empty; the letter will be unavailable.
 						</p>
 						<div class="grid">
 							<label
-								>Bank name<input
+								>Bank Name<input
 									bind:value={content.vendor.bank_name}
 									required={hasBankDetails}
 									maxlength="150"
 									pattern={/.*\S.*/.source}
 								/></label
 							><label
-								>Account number<input
+								>Account Number<input
 									inputmode="numeric"
 									bind:value={content.vendor.account_number}
 									required={hasBankDetails}
@@ -327,7 +327,7 @@
 									title="Enter exactly 10 digits, including any leading zeroes."
 								/></label
 							><label
-								>Account name<input
+								>Account Name<input
 									bind:value={content.vendor.account_name}
 									required={hasBankDetails}
 									maxlength="250"
@@ -340,25 +340,25 @@
 			</section>
 			<section class="card">
 				<div class="section-heading">
-					<h2>Scope of work</h2>
+					<h2>Scope of Work</h2>
 					<span class="eyebrow">03</span>
 				</div>
 				<div class="stack">
 					<label
-						>Description of work or purchase<textarea
+						>Description of Work or Purchase<textarea
 							bind:value={content.description}
 							maxlength="5000"
 							placeholder="Describe what is needed and why."></textarea></label
 					>
 					<div class="grid">
 						<label>Location<input bind:value={content.location} maxlength="500" /></label><label
-							>Warranty / guarantee<input
+							>Warranty / Guarantee<input
 								bind:value={content.warranty}
-								placeholder="Terms or Not applicable"
+								placeholder="Enter terms, or leave blank if not applicable."
 							/></label
-						><label>Planned start date<input type="date" bind:value={content.start_date} /></label
+						><label>Planned Start Date<input type="date" bind:value={content.start_date} /></label
 						><label
-							>Planned completion date<input
+							>Planned Completion Date<input
 								type="date"
 								bind:value={content.completion_date}
 								min={content.start_date || undefined}
@@ -366,7 +366,7 @@
 						>
 					</div>
 					<label
-						>Payment terms<textarea
+						>Payment Terms<textarea
 							bind:value={content.payment_terms}
 							placeholder="Leave empty if not yet agreed."></textarea></label
 					>
@@ -374,7 +374,7 @@
 			</section>
 			<section class="card">
 				<div class="section-heading">
-					<h2>Cost breakdown</h2>
+					<h2>Cost Breakdown</h2>
 					<span class="eyebrow">NGN</span>
 				</div>
 				<p class="hint">Include delivery and any applicable taxes as separate items.</p>
@@ -397,14 +397,14 @@
 									required
 								/></label
 							>
-							<label>Unit price (₦)<PriceInput bind:value={line.unit_price} /></label>
+							<label>Unit Price (₦)<PriceInput bind:value={line.unit_price} /></label>
 							<div class="line-total">
 								<span>Total</span><strong>{preview(line.quantity, line.unit_price)}</strong>
 							</div>
 							<button
 								type="button"
 								class="quiet remove"
-								aria-label={'Remove item ' + (index + 1)}
+								aria-label={'Remove Item ' + (index + 1)}
 								onclick={() => content.lines.splice(index, 1)}>×</button
 							>
 						</div>{/each}
@@ -415,9 +415,9 @@
 						class="secondary"
 						onclick={() =>
 							content.lines.push({ description: '', quantity: '1', unit_price: '0.00' })}
-						>+ Add item</button
+						>+ Add Item</button
 					>
-					<div><small>Grand total</small><strong>{total}</strong></div>
+					<div><small>Grand Total</small><strong>{total}</strong></div>
 				</div>
 			</section>
 		</fieldset>
@@ -434,7 +434,7 @@
 						await invalidateAll();
 						window.location.reload();
 					}
-				}}>Discard changes and reload</button
+				}}>Discard Changes and Reload</button
 			>{/if}
 		{#if !request && entityId}
 			{#key entityId + ':' + uploadRefresh}<Attachments
@@ -451,7 +451,7 @@
 		{/if}
 		<div class="actions">
 			<button disabled={busy || uploading || conflict}
-				>{busy ? 'Saving…' : pendingBody ? 'Retry save' : 'Save draft'}</button
+				>{busy ? 'Saving…' : pendingBody ? 'Retry Save' : 'Save Draft'}</button
 			><button
 				type="button"
 				class="secondary"

@@ -17,9 +17,9 @@ async function mailedLink(email: string) {
 }
 async function login(page: Page, email: string, password: string) {
 	await page.goto('/login');
-	await page.getByLabel('Work email').fill(email);
+	await page.getByLabel('Work Email').fill(email);
 	await page.getByLabel('Password', { exact: true }).fill(password);
-	await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+	await page.getByRole('button', { name: 'Sign In', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
 	await page.goto('/vendors');
 }
@@ -39,20 +39,20 @@ test('forgot password through delivered link, password matching, revoked session
 	const logoutResponse = page.waitForResponse((response) =>
 		response.url().endsWith('/api/v1/auth/logout')
 	);
-	await page.getByRole('button', { name: 'Account menu', exact: true }).click();
-	await page.getByRole('button', { name: 'Sign out', exact: true }).click();
+	await page.getByRole('button', { name: 'Account Menu', exact: true }).click();
+	await page.getByRole('button', { name: 'Sign Out', exact: true }).click();
 	const logout = await logoutResponse;
 	expect(logout.status(), await logout.text()).toBe(200);
-	await page.getByRole('link', { name: 'Forgot password?' }).click();
-	await expect(page.getByRole('heading', { name: 'Forgot your password?' })).toBeVisible();
-	await page.getByLabel('Work email').fill(staff.email);
-	await page.getByRole('button', { name: 'Send password link' }).click();
-	await expect(page.getByRole('heading', { name: 'Check your email' })).toBeVisible();
+	await page.getByRole('link', { name: 'Forgot Password?' }).click();
+	await expect(page.getByRole('heading', { name: 'Forgot Your Password?' })).toBeVisible();
+	await page.getByLabel('Work Email').fill(staff.email);
+	await page.getByRole('button', { name: 'Send Password Link' }).click();
+	await expect(page.getByRole('heading', { name: 'Check Your Email' })).toBeVisible();
 	expect((await otherSessionPage.request.get('/api/v1/auth/me')).status()).toBe(200);
 	const mail = await mailedLink(staff.email);
 	expect(mail.purpose).toBe('reset');
 	await page.goto(mail.url);
-	await expect(page.getByLabel('New password', { exact: true })).toBeVisible();
+	await expect(page.getByLabel('New Password', { exact: true })).toBeVisible();
 	expect(new URL(page.url()).hash).toBe('');
 	const stored = await page.evaluate(() =>
 		JSON.stringify({
@@ -65,25 +65,25 @@ test('forgot password through delivered link, password matching, revoked session
 	expect(stored).not.toContain(rawToken);
 	expect(stored).not.toContain(staff.password);
 	await page
-		.getByLabel('New password', { exact: true })
+		.getByLabel('New Password', { exact: true })
 		.fill('Synthetic-new-browser-password-2026');
-	await page.getByLabel('Confirm new password').fill('Synthetic-mismatching-password-2026');
-	await page.getByRole('button', { name: 'Set password', exact: true }).click();
+	await page.getByLabel('Confirm New Password').fill('Synthetic-mismatching-password-2026');
+	await page.getByRole('button', { name: 'Set Password', exact: true }).click();
 	await expect(page.getByRole('alert')).toContainText('do not match');
-	await page.getByLabel('Confirm new password').fill('Synthetic-new-browser-password-2026');
+	await page.getByLabel('Confirm New Password').fill('Synthetic-new-browser-password-2026');
 	await inspectWidths(page, 'set-password');
 	await page.screenshot({ path: 'test-results/account-reset-desktop.png', fullPage: true });
-	await page.getByRole('button', { name: 'Set password', exact: true }).click();
-	await expect(page.getByRole('heading', { name: 'Your password is set' })).toBeVisible();
+	await page.getByRole('button', { name: 'Set Password', exact: true }).click();
+	await expect(page.getByRole('heading', { name: 'Your Password Is Set' })).toBeVisible();
 	await otherSessionPage.goto('/vendors');
 	await expect(
-		otherSessionPage.getByRole('heading', { name: 'Sign in to Custodian' })
+		otherSessionPage.getByRole('heading', { name: 'Sign In to Custodian' })
 	).toBeVisible();
 	await oldSession.close();
 	await page.goto(mail.url);
-	await expect(page.getByRole('heading', { name: 'This link is unavailable' })).toBeVisible();
-	await page.getByRole('link', { name: 'Request a new link' }).click();
-	await expect(page.getByRole('heading', { name: 'Forgot your password?' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'This Link Is Unavailable' })).toBeVisible();
+	await page.getByRole('link', { name: 'Request a New Link' }).click();
+	await expect(page.getByRole('heading', { name: 'Forgot Your Password?' })).toBeVisible();
 	await login(page, staff.email, 'Synthetic-new-browser-password-2026');
 });
 
@@ -101,34 +101,34 @@ test('protected invitation activates on the shared screen without granting autho
 	expect(response.status()).toBe(201);
 	const mail = await mailedLink(email);
 	expect(mail.purpose).toBe('activate');
-	await page.getByRole('button', { name: 'Account menu', exact: true }).click();
-	await page.getByRole('button', { name: 'Sign out', exact: true }).click();
-	await expect(page.getByRole('heading', { name: 'Sign in to Custodian' })).toBeVisible();
+	await page.getByRole('button', { name: 'Account Menu', exact: true }).click();
+	await page.getByRole('button', { name: 'Sign Out', exact: true }).click();
+	await expect(page.getByRole('heading', { name: 'Sign In to Custodian' })).toBeVisible();
 	await page.goto(mail.url);
-	await expect(page.getByRole('heading', { name: 'Activate your account' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Activate Your Account' })).toBeVisible();
 	await inspectWidths(page, 'activate-account');
 	await page.setViewportSize({ width: 390, height: 844 });
 	await expect(page.locator('body')).toHaveJSProperty('scrollWidth', 390);
 	await page.screenshot({ path: 'test-results/account-activate-mobile.png', fullPage: true });
-	await page.getByLabel('New password', { exact: true }).fill('Synthetic-invite-password-2026');
-	await page.getByLabel('Confirm new password').fill('Synthetic-invite-password-2026');
-	await page.getByRole('button', { name: 'Activate account', exact: true }).click();
+	await page.getByLabel('New Password', { exact: true }).fill('Synthetic-invite-password-2026');
+	await page.getByLabel('Confirm New Password').fill('Synthetic-invite-password-2026');
+	await page.getByRole('button', { name: 'Activate Account', exact: true }).click();
 	await expect(page.getByRole('status')).toContainText('account is ready');
 	await login(page, email, 'Synthetic-invite-password-2026');
-	await expect(page.getByRole('heading', { name: 'No active company membership' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'No Active Company Membership' })).toBeVisible();
 	const current = await page.request.get('/api/v1/auth/me');
 	expect((await current.json()).permissions).toEqual([]);
 });
 
 test('missing and malformed recovery links offer a safe new-link path', async ({ page }) => {
 	await page.goto('/recover');
-	await expect(page.getByRole('heading', { name: 'This link is unavailable' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'This Link Is Unavailable' })).toBeVisible();
 	await page.goto('/recover#token=invalid');
-	await expect(page.getByRole('heading', { name: 'This link is unavailable' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'This Link Is Unavailable' })).toBeVisible();
 	expect(new URL(page.url()).hash).toBe('');
-	await page.getByRole('link', { name: 'Request a new link' }).click();
-	await page.getByLabel('Work email').fill('unregistered-' + randomUUID() + '@example.com');
-	await page.getByRole('button', { name: 'Send password link' }).click();
+	await page.getByRole('link', { name: 'Request a New Link' }).click();
+	await page.getByLabel('Work Email').fill('unregistered-' + randomUUID() + '@example.com');
+	await page.getByRole('button', { name: 'Send Password Link' }).click();
 	await expect(page.getByRole('status')).toContainText(
 		'If this email belongs to an eligible account'
 	);
@@ -143,9 +143,9 @@ test('unavailable session service shows a safe recoverable error state', async (
 		})
 	);
 	await page.goto('/vendors');
-	await expect(page.getByRole('heading', { name: 'Unable to load this page' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Unable to Load This Page' })).toBeVisible();
 	await expect(page.getByRole('alert')).toHaveText('Your request could not be completed.');
 	await page.unroute('**/api/v1/auth/me');
 	await page.getByRole('button', { name: 'Retry', exact: true }).click();
-	await expect(page.getByRole('heading', { name: 'Sign in to Custodian' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Sign In to Custodian' })).toBeVisible();
 });

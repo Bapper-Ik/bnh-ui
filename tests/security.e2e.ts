@@ -10,18 +10,18 @@ function credentials(role = 'security') {
 }
 async function login(page: Page, role = 'security', password = credentials(role).password) {
 	await page.goto('/login');
-	await page.getByLabel('Work email').fill(credentials(role).email);
+	await page.getByLabel('Work Email').fill(credentials(role).email);
 	await page.getByLabel('Password', { exact: true }).fill(password);
-	await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+	await page.getByRole('button', { name: 'Sign In', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
 	await openNavigation(page);
 	await page.getByRole('link', { name: 'My Account & Security', exact: true }).click();
-	await expect(page.getByRole('region', { name: 'Account details' })).toBeVisible();
+	await expect(page.getByRole('region', { name: 'Account Details' })).toBeVisible();
 }
 async function confirm(page: Page) {
 	await page
 		.getByRole('dialog')
-		.getByRole('button', { name: 'Confirm sign out', exact: true })
+		.getByRole('button', { name: 'Confirm Sign Out', exact: true })
 		.click();
 }
 
@@ -37,9 +37,9 @@ test('account profile, session revocation and password change persist across sep
 	const second = await other.newPage();
 	try {
 		await login(second);
-		await page.getByRole('button', { name: 'Refresh account' }).click();
+		await page.getByRole('button', { name: 'Refresh Account' }).click();
 		await expect(page.getByText('2 active sessions', { exact: true })).toBeVisible();
-		const details = page.getByRole('region', { name: 'Account details' });
+		const details = page.getByRole('region', { name: 'Account Details' });
 		await expect(details.getByText(credentials().email, { exact: true })).toBeVisible();
 		await expect(details.locator('input,select')).toHaveCount(0);
 		await page.screenshot({ path: 'test-results/security-desktop.png', fullPage: true });
@@ -48,41 +48,41 @@ test('account profile, session revocation and password change persist across sep
 			.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
 			.toBe(true);
 		await page.screenshot({ path: 'test-results/security-mobile.png', fullPage: true });
-		await page.getByRole('button', { name: /Sign out session from/ }).click();
+		await page.getByRole('button', { name: /Sign Out Session from/ }).click();
 		await page.getByRole('dialog').getByRole('button', { name: 'Cancel', exact: true }).click();
 		await expect(page.getByText('2 active sessions', { exact: true })).toBeVisible();
-		await page.getByRole('button', { name: /Sign out session from/ }).click();
+		await page.getByRole('button', { name: /Sign Out Session from/ }).click();
 		await confirm(page);
 		await expect(page.getByText('1 active session', { exact: true })).toBeVisible();
 		await second.reload();
-		await expect(second.getByRole('heading', { name: 'Sign in to Custodian' })).toBeVisible();
+		await expect(second.getByRole('heading', { name: 'Sign In to Custodian' })).toBeVisible();
 		await login(second);
-		await page.getByRole('button', { name: 'Refresh account' }).click();
-		await page.getByRole('button', { name: 'Sign out other sessions', exact: true }).click();
+		await page.getByRole('button', { name: 'Refresh Account' }).click();
+		await page.getByRole('button', { name: 'Sign Out Other Sessions', exact: true }).click();
 		await confirm(page);
 		await expect(page.getByText('1 active session', { exact: true })).toBeVisible();
 		await second.reload();
-		await expect(second.getByRole('heading', { name: 'Sign in to Custodian' })).toBeVisible();
+		await expect(second.getByRole('heading', { name: 'Sign In to Custodian' })).toBeVisible();
 		await login(second);
 		const newPassword = 'Synthetic-security-browser-password-2026';
-		await page.getByLabel('Current password', { exact: true }).fill(credentials().password);
-		await page.getByLabel('New password', { exact: true }).fill(newPassword);
-		await page.getByLabel('Confirm new password').fill('Synthetic-mismatch-password');
-		await page.getByRole('button', { name: 'Change password and sign out' }).click();
+		await page.getByLabel('Current Password', { exact: true }).fill(credentials().password);
+		await page.getByLabel('New Password', { exact: true }).fill(newPassword);
+		await page.getByLabel('Confirm New Password').fill('Synthetic-mismatch-password');
+		await page.getByRole('button', { name: 'Change Password and Sign Out' }).click();
 		await expect(page.getByRole('alert')).toContainText('do not match');
-		await page.getByLabel('Current password', { exact: true }).fill('incorrect');
-		await page.getByLabel('Confirm new password').fill(newPassword);
-		await page.getByRole('button', { name: 'Change password and sign out' }).click();
+		await page.getByLabel('Current Password', { exact: true }).fill('incorrect');
+		await page.getByLabel('Confirm New Password').fill(newPassword);
+		await page.getByRole('button', { name: 'Change Password and Sign Out' }).click();
 		await expect(page.getByRole('alert')).toContainText('Current password is incorrect');
-		await expect(page.getByLabel('New password', { exact: true })).toHaveValue('');
-		await page.getByLabel('Current password', { exact: true }).fill(credentials().password);
-		await page.getByLabel('New password', { exact: true }).fill(newPassword);
-		await page.getByLabel('Confirm new password').fill(newPassword);
-		await page.getByRole('button', { name: 'Change password and sign out' }).click();
-		await expect(page.getByRole('heading', { name: 'Sign in to Custodian' })).toBeVisible();
+		await expect(page.getByLabel('New Password', { exact: true })).toHaveValue('');
+		await page.getByLabel('Current Password', { exact: true }).fill(credentials().password);
+		await page.getByLabel('New Password', { exact: true }).fill(newPassword);
+		await page.getByLabel('Confirm New Password').fill(newPassword);
+		await page.getByRole('button', { name: 'Change Password and Sign Out' }).click();
+		await expect(page.getByRole('heading', { name: 'Sign In to Custodian' })).toBeVisible();
 		await expect(page.getByRole('status')).toContainText('Your password was changed');
 		await second.reload();
-		await expect(second.getByRole('heading', { name: 'Sign in to Custodian' })).toBeVisible();
+		await expect(second.getByRole('heading', { name: 'Sign In to Custodian' })).toBeVisible();
 		const stored = await page.evaluate(() =>
 			JSON.stringify({
 				local: { ...localStorage },
@@ -92,9 +92,9 @@ test('account profile, session revocation and password change persist across sep
 		);
 		expect(stored).not.toContain(newPassword);
 		await login(page, 'security', newPassword);
-		await page.getByRole('button', { name: 'Sign out all sessions', exact: true }).click();
+		await page.getByRole('button', { name: 'Sign Out All Sessions', exact: true }).click();
 		await confirm(page);
-		await expect(page.getByRole('heading', { name: 'Sign in to Custodian' })).toBeVisible();
+		await expect(page.getByRole('heading', { name: 'Sign In to Custodian' })).toBeVisible();
 	} finally {
 		await other.close();
 	}
@@ -105,7 +105,7 @@ test('read-only staff can manage their account; refresh failure clears details a
 }) => {
 	await login(page, 'readonly');
 	await expect(page.getByText('Read-only workspace', { exact: true })).toBeVisible();
-	await expect(page.getByRole('button', { name: 'Change password and sign out' })).toBeEnabled();
+	await expect(page.getByRole('button', { name: 'Change Password and Sign Out' })).toBeEnabled();
 	await page.route('**/api/v1/auth/profile', (route) =>
 		route.fulfill({
 			status: 503,
@@ -116,13 +116,13 @@ test('read-only staff can manage their account; refresh failure clears details a
 			})
 		})
 	);
-	await page.getByRole('button', { name: 'Refresh account' }).click();
+	await page.getByRole('button', { name: 'Refresh Account' }).click();
 	await expect(page.getByRole('alert')).toContainText('Account temporarily unavailable');
-	await expect(page.getByRole('region', { name: 'Account details' })).toHaveCount(0);
+	await expect(page.getByRole('region', { name: 'Account Details' })).toHaveCount(0);
 	await page.unroute('**/api/v1/auth/profile');
-	await page.getByRole('button', { name: 'Refresh account' }).click();
-	await expect(page.getByRole('region', { name: 'Account details' })).toBeVisible();
+	await page.getByRole('button', { name: 'Refresh Account' }).click();
+	await expect(page.getByRole('region', { name: 'Account Details' })).toBeVisible();
 	await page.context().clearCookies();
-	await page.getByRole('button', { name: 'Refresh account' }).click();
-	await expect(page.getByRole('heading', { name: 'Sign in to Custodian' })).toBeVisible();
+	await page.getByRole('button', { name: 'Refresh Account' }).click();
+	await expect(page.getByRole('heading', { name: 'Sign In to Custodian' })).toBeVisible();
 });

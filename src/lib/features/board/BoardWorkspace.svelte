@@ -117,20 +117,20 @@
 	}
 </script>
 
-<a class="back" href={'/requisitions/' + req.id}>← Requisition details & supporting documents</a>
+<a class="back" href={'/requisitions/' + req.id}>← Requisition Details & Supporting Documents</a>
 <div class="page-header">
 	<div>
 		<p class="eyebrow">{req.reference} · SIGNED REQUISITION REVISION {req.revision_number}</p>
-		<h1>Board resolution</h1>
+		<h1>Board Resolution</h1>
 		<p>{req.entity_name} · {req.requester_name}</p>
 	</div>
 	<span class="status">{stateLabel(req.state)}</span>
 </div>
 <div class="overview card">
-	<div><span>Request total</span><strong>{money(req.total)}</strong></div>
+	<div><span>Request Total</span><strong>{money(req.total)}</strong></div>
 	<p>{req.content.description}</p>
 	<a href={'/requisitions/' + req.id + '?revision=' + req.revision_number}
-		>Review exact signed requisition →</a
+		>Review Exact Signed Requisition →</a
 	>
 </div>
 {#if ['DEFERRED', 'CONDITIONALLY_APPROVED'].includes(req.state)}<p class="notice" role="status">
@@ -142,7 +142,7 @@
 		{last.return_reason} The requisition stays unchanged.
 	</p>{/if}
 {#if error}<div class="error" role="alert">
-		{error}<button class="quiet" onclick={() => invalidateAll()}>Reload case</button>
+		{error}<button class="quiet" onclick={() => invalidateAll()}>Reload Case</button>
 	</div>{/if}
 {#if editing}
 	<form
@@ -159,10 +159,10 @@
 		<div>
 			<h2>
 				{actions.includes('later_resolution')
-					? 'Record a later Board decision'
+					? 'Record a Later Board Decision'
 					: actions.includes('correct')
-						? 'Correct the returned record'
-						: 'Meeting record'}
+						? 'Correct the Returned Record'
+						: 'Meeting Record'}
 			</h2>
 			<p>
 				Record the actual meeting outcome. Save your draft before attaching evidence or signing.
@@ -173,31 +173,31 @@
 				<label>Company / Board<input bind:value={form.board_name} maxlength="250" required /></label
 				>
 				<label
-					>Actual meeting date<input type="date" bind:value={form.meeting_date} required /></label
+					>Actual Meeting Date<input type="date" bind:value={form.meeting_date} required /></label
 				>
 				<label
-					>Resolution reference<input bind:value={form.reference} maxlength="200" required /></label
+					>Resolution Reference<input bind:value={form.reference} maxlength="200" required /></label
 				>
 				<label
-					>Meeting outcome<select bind:value={form.outcome}
+					>Meeting Outcome<select bind:value={form.outcome}
 						><option value="APPROVE">Approve</option><option value="REJECT">Reject</option><option
 							value="DEFER">Defer</option
-						><option value="CONDITIONAL_APPROVE">Conditional approval — hold</option></select
+						><option value="CONDITIONAL_APPROVE">Conditional Approval — Hold</option></select
 					></label
 				>
 			</div>
 			{#if actions.includes('correct') || (actions.includes('edit') && last?.kind === 'correction')}<label
-					>Correction summary<textarea
+					>Correction Summary<textarea
 						bind:value={form.correction_summary}
 						maxlength="2000"
 						required></textarea></label
 				>{/if}
 			<label
-				>Decision text<textarea bind:value={form.decision_text} maxlength="10000" required rows="4"
+				>Decision Text<textarea bind:value={form.decision_text} maxlength="10000" required rows="4"
 				></textarea></label
 			>
 			{#if form.outcome === 'APPROVE' || form.outcome === 'CONDITIONAL_APPROVE'}<label
-					>Authorised amount (NGN)<input
+					>Authorised Amount (NGN)<input
 						bind:value={form.authorised_amount}
 						inputmode="decimal"
 						required
@@ -205,18 +205,18 @@
 					></label
 				>{/if}
 			<label
-				>Conditions / follow-up<textarea
+				>Conditions / Follow-Up<textarea
 					bind:value={form.conditions}
 					required={form.outcome === 'CONDITIONAL_APPROVE'}
 					maxlength="5000"
 					rows="3"></textarea></label
 			>
 			<label
-				>Attendance / participants<textarea bind:value={form.attendance} maxlength="5000" required
+				>Attendance / Participants<textarea bind:value={form.attendance} maxlength="5000" required
 				></textarea></label
 			>
 			<label
-				>Quorum basis / policy reference<textarea
+				>Quorum Basis / Policy Reference<textarea
 					bind:value={form.quorum_basis}
 					maxlength="2000"
 					required></textarea></label
@@ -228,16 +228,16 @@
 				></label
 			>
 			<label
-				>Formal evidence type<select bind:value={form.evidence_type}
-					><option value="resolution">Formal resolution</option><option value="minutes_extract"
-						>Authenticated minutes extract</option
+				>Formal Evidence Type<select bind:value={form.evidence_type}
+					><option value="resolution">Formal Resolution</option><option value="minutes_extract"
+						>Authenticated Minutes Extract</option
 					></select
 				></label
 			>
 		</fieldset>
 		<div class="actions">
 			<button disabled={busy}
-				>{busy ? 'Saving…' : pendingSave ? 'Retry save' : 'Save resolution draft'}</button
+				>{busy ? 'Saving…' : pendingSave ? 'Retry Save' : 'Save Resolution Draft'}</button
 			><span class="help"
 				>{dirty
 					? 'Unsaved changes'
@@ -250,7 +250,7 @@
 {/if}
 {#if last && actions.includes('edit')}
 	<section class="card evidence">
-		<h2>Formal meeting evidence</h2>
+		<h2>Formal Meeting Evidence</h2>
 		<p>
 			A signed resolution or authenticated minutes extract is required before submission. PDF, PNG
 			or JPEG, up to 5 MB.
@@ -262,7 +262,7 @@
 				>
 			</div>{/if}
 		<label
-			>{last.evidence ? 'Replace evidence' : 'Attach evidence'}<input
+			>{last.evidence ? 'Replace Evidence' : 'Attach Evidence'}<input
 				type="file"
 				accept="application/pdf,image/png,image/jpeg"
 				disabled={busy || dirty || !board.uploads_enabled}
@@ -276,23 +276,23 @@
 		{#if pendingUpload && error}<button
 				class="secondary"
 				disabled={busy || dirty}
-				onclick={() => upload()}>Retry evidence upload</button
+				onclick={() => upload()}>Retry Evidence Upload</button
 			>{/if}
 	</section>
 {/if}
 <div class="actions record-actions">
 	{#if !editing && (actions.includes('correct') || actions.includes('later_resolution'))}<button
 			onclick={successor}
-			>{actions.includes('correct') ? 'Start record correction' : 'Record later resolution'}</button
+			>{actions.includes('correct') ? 'Start Record Correction' : 'Record Later Resolution'}</button
 		>{/if}
 	{#each actions.filter( (a) => ['board_submit', 'board_confirm', 'board_return'].includes(a) ) as action (action)}<button
 			disabled={busy || dirty || (action === 'board_submit' && !last?.evidence)}
 			onclick={() => (signing = action as BoardIntent['action'])}
 			>{action === 'board_submit'
-				? 'Review & submit to Chairman'
+				? 'Review & Submit to Chairman'
 				: action === 'board_confirm'
-					? 'Confirm Board decision'
-					: 'Return record to Secretary'}</button
+					? 'Confirm Board Decision'
+					: 'Return Record to Secretary'}</button
 		>{/each}
 </div>
 {#if !actions.length}<p role="status">
@@ -301,19 +301,23 @@
 			: 'There is no action assigned to you at this stage.'}
 	</p>{/if}
 <section class="history">
-	<h2>Resolution history</h2>
+	<h2>Resolution History</h2>
 	<p>Meeting dates and system recording times are separate. Times below are Africa/Lagos.</p>
 	{#if !board.records.length}<p>No meeting record yet.</p>{/if}
 	{#each [...board.records].reverse() as record (record.id)}
 		<details id={'record-' + record.id} class="card" open={record.id === last?.id}>
 			<summary
-				>Record {record.number} · {record.kind.replaceAll('_', ' ')} · {stateLabel(
-					record.status
-				)}</summary
+				>Record {record.number} · {(
+					{
+						initial: 'Initial Resolution',
+						correction: 'Correction',
+						later_resolution: 'Later Resolution'
+					} as Record<string, string>
+				)[record.kind] ?? record.kind} · {stateLabel(record.status)}</summary
 			>
 			<dl class="grid">
 				<div>
-					<dt>Meeting / reference</dt>
+					<dt>Meeting / Reference</dt>
 					<dd>
 						{record.data.meeting_date || 'Not entered'} · {record.data.reference || 'Not entered'}
 					</dd>
@@ -323,11 +327,20 @@
 					<dd>{record.data.board_name}</dd>
 				</div>
 				<div>
-					<dt>Recorded outcome</dt>
-					<dd>{record.data.outcome?.replaceAll('_', ' ')}</dd>
+					<dt>Recorded Outcome</dt>
+					<dd>
+						{(
+							{
+								APPROVE: 'Approval',
+								REJECT: 'Rejection',
+								DEFER: 'Deferment',
+								CONDITIONAL_APPROVE: 'Conditional Approval'
+							} as Record<string, string>
+						)[record.data.outcome ?? ''] ?? 'Not Recorded'}
+					</dd>
 				</div>
 				<div>
-					<dt>Authorised amount</dt>
+					<dt>Authorised Amount</dt>
 					<dd>
 						{record.data.authorised_amount
 							? money(record.data.authorised_amount)
@@ -347,13 +360,13 @@
 					</dd>
 				</div>
 			</dl>
-			{#if record.data.correction_summary}<h3>Correction summary</h3>
+			{#if record.data.correction_summary}<h3>Correction Summary</h3>
 				<p>{record.data.correction_summary}</p>{/if}
 			<h3>Decision</h3>
 			<p class="preserve">{record.data.decision_text}</p>
-			{#if record.data.conditions}<h3>Conditions / follow-up</h3>
+			{#if record.data.conditions}<h3>Conditions / Follow-Up</h3>
 				<p class="preserve">{record.data.conditions}</p>{/if}
-			<h3>Attendance & quorum attestation</h3>
+			<h3>Attendance & Quorum Attestation</h3>
 			<p class="preserve">{record.data.attendance}</p>
 			<p>
 				{record.data.quorum_attested ? 'Attested' : 'Not yet attested'} · {record.data.quorum_basis}
@@ -361,7 +374,7 @@
 			{#if record.evidence}<div class="file">
 					<span title={record.evidence.filename}>{record.evidence.filename}</span><button
 						class="secondary"
-						onclick={() => (viewed = record.evidence)}>View evidence</button
+						onclick={() => (viewed = record.evidence)}>View Evidence</button
 					>
 				</div>{/if}
 			{#if record.submitted_at}<p class="signature">

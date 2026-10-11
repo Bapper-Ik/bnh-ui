@@ -409,3 +409,10 @@ Selecting a supporting file now uploads it immediately on new and saved drafts. 
 Verification: full backend suite passed 392 tests on isolated PostgreSQL; all eight focused staging tests passed after the final used-key guard and an additional audit-rollback retry regression (393 distinct cases). All 53 connected browser journeys passed, including upload/preview/removal before any draft exists, refresh and signed manifest persistence, failed automatic-upload retry and existing-draft auto-upload. Six frontend unit tests, Ruff/format/mypy, frontend lint/format/type checks, production build and both Docker builds passed. The new-form mobile screenshot was visually inspected and its viewport overflow assertion passed. OpenAPI/types regenerated.
 
 Deploy backend migration 0019 before the frontend via the existing tracked Docker startup. No new environment variables. The Render guide records temporary-buffer expiry, sleeping-instance cleanup, provider retry behavior and the existing possibility of a private unreferenced object after an abandoned storage-success/database-failure retry. Live Cloudinary credentials and staff acceptance remain separate deployment checks.
+
+
+## WEB-002 — Consistent interface wording (2026-10-11)
+
+All fourteen screens and shared dialogs use Title Case headings, labels and actions, with sentence-case explanations. Requisition details now show Vendor Name. Authority names, Board outcomes and system notification headings have readable display labels; API values, user-entered text and signed declarations remain unchanged.
+
+Verification: frontend lint, format, type checks, six unit tests and production build passed. The full 53-journey browser run found ten stale wording assertions; all affected journeys were corrected and passed in the 30-case rerun plus the final two account-security checks (53 distinct cases verified). Desktop and mobile approval views were inspected; responsive journey assertions passed. The final frontend Docker build passed. Backend source is unchanged; its static checks and 15 PDF regression tests also passed on isolated PostgreSQL. No migration or new settings are needed.

@@ -148,24 +148,24 @@
 		<h1>My Account &amp; Security</h1>
 		<p>Review your account details and manage access to your account.</p>
 	</div>
-	<button class="secondary" disabled={busy} onclick={() => refresh()}>Refresh account</button>
+	<button class="secondary" disabled={busy} onclick={() => refresh()}>Refresh Account</button>
 </div>
 {#if error}<p class="error" role="alert">{error}</p>{/if}
 {#if success}<p role="status">{success}</p>{/if}
 {#if busy && !profile}<p role="status">Loading your account…</p>{/if}
 {#if profile}
 	<div class="account-grid">
-		<section class="card" aria-label="Account details">
-			<h2>Account details</h2>
+		<section class="card" aria-label="Account Details">
+			<h2>Account Details</h2>
 			<dl>
-				<dt>Full name</dt>
+				<dt>Full Name</dt>
 				<dd>{profile.name}</dd>
-				<dt>Work email</dt>
+				<dt>Work Email</dt>
 				<dd>{profile.email}</dd>
-				<dt>Account access</dt>
+				<dt>Account Access</dt>
 				<dd>{profile.read_only ? 'Read-only workspace' : 'Staff workspace'}</dd>
 			</dl>
-			<h3>Company and department</h3>
+			<h3>Company and Department</h3>
 			{#if !profile.memberships.length}<p>No company membership is assigned.</p>{/if}
 			<ul>
 				{#each profile.memberships as membership (membership.company)}<li>
@@ -173,7 +173,7 @@
 						<p>{membership.department} · {membership.active ? 'Active' : 'Inactive'}</p>
 					</li>{/each}
 			</ul>
-			<h3>Current office appointments</h3>
+			<h3>Current Office Appointments</h3>
 			{#if !profile.offices.length}<p>No active office appointment.</p>{/if}
 			<ul>
 				{#each profile.offices as office, index (index)}<li>
@@ -185,14 +185,14 @@
 				Contact your administrator to correct your details, department or office appointment.
 			</p>
 		</section>
-		<section class="card" aria-label="Change password">
-			<h2>Change password</h2>
+		<section class="card" aria-label="Change Password">
+			<h2>Change Password</h2>
 			<p>
 				Use at least 12 characters. Changing your password signs you out on every device and cancels
 				outstanding password-reset links.
 			</p>
 			<form onsubmit={changePassword}>
-				<label for="current-password">Current password</label><input
+				<label for="current-password">Current Password</label><input
 					id="current-password"
 					type="password"
 					autocomplete="current-password"
@@ -201,7 +201,7 @@
 					bind:value={currentPassword}
 					disabled={busy}
 				/>
-				<label for="new-password">New password</label><input
+				<label for="new-password">New Password</label><input
 					id="new-password"
 					type="password"
 					autocomplete="new-password"
@@ -211,7 +211,7 @@
 					bind:value={newPassword}
 					disabled={busy}
 				/>
-				<label for="confirm-password">Confirm new password</label><input
+				<label for="confirm-password">Confirm New Password</label><input
 					id="confirm-password"
 					type="password"
 					autocomplete="new-password"
@@ -221,14 +221,14 @@
 					bind:value={confirmation}
 					disabled={busy}
 				/>
-				<button disabled={busy}>Change password and sign out</button>
+				<button disabled={busy}>Change Password and Sign Out</button>
 			</form>
 		</section>
 	</div>
-	<section class="card sessions" aria-label="Active sessions">
+	<section class="card sessions" aria-label="Active Sessions">
 		<div class="session-heading">
 			<div>
-				<h2>Active sessions</h2>
+				<h2>Active Sessions</h2>
 				<p>
 					Sessions remain active until they expire or are signed out. Times are shown in Lagos time
 					(WAT).
@@ -242,13 +242,13 @@
 						ask(
 							'/auth/sessions/revoke-others',
 							'Sign out all other sessions? This session will stay active.'
-						)}>Sign out other sessions</button
+						)}>Sign Out Other Sessions</button
 				><button
 					class="secondary"
 					disabled={busy}
 					onclick={() =>
 						ask('/auth/sessions/revoke', 'Sign out every session, including this one?', true)}
-					>Sign out all sessions</button
+					>Sign Out All Sessions</button
 				>
 			</div>
 		</div>
@@ -264,8 +264,8 @@
 							class="secondary"
 							disabled={busy}
 							aria-label={session.current
-								? 'Sign out this session'
-								: 'Sign out session from ' + dateTime(session.created_at)}
+								? 'Sign Out This Session'
+								: 'Sign Out Session from ' + dateTime(session.created_at)}
 							onclick={() =>
 								ask(
 									'/auth/sessions/' + session.id + '/revoke',
@@ -273,7 +273,7 @@
 										? 'Sign out this session?'
 										: 'Sign out this session on the other device?',
 									session.current
-								)}>Sign out session</button
+								)}>Sign Out Session</button
 						>
 					</li>{/each}
 			</ul>
@@ -281,12 +281,12 @@
 					<button
 						class="secondary"
 						disabled={busy || offset === 0}
-						onclick={() => refresh(Math.max(0, offset - 20))}>Previous sessions</button
+						onclick={() => refresh(Math.max(0, offset - 20))}>Previous Sessions</button
 					><span>{offset + 1}–{Math.min(offset + 20, sessions.total)} of {sessions.total}</span
 					><button
 						class="secondary"
 						disabled={busy || offset + 20 >= sessions.total}
-						onclick={() => refresh(offset + 20)}>Next sessions</button
+						onclick={() => refresh(offset + 20)}>Next Sessions</button
 					>
 				</div>{/if}{:else}<p>Use Refresh account to reload the session list.</p>{/if}
 	</section>
@@ -298,7 +298,7 @@
 		pending = null;
 	}}
 >
-	<h2 id="session-confirm-title">Confirm sign out</h2>
+	<h2 id="session-confirm-title">Confirm Sign Out</h2>
 	<p>{pending?.message}</p>
 	<div class="actions">
 		<button
@@ -307,7 +307,7 @@
 				pending = null;
 				dialog.close();
 			}}>Cancel</button
-		><button onclick={revoke}>Confirm sign out</button>
+		><button onclick={revoke}>Confirm Sign Out</button>
 	</div>
 </dialog>
 

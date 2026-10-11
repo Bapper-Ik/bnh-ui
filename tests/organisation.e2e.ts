@@ -15,9 +15,9 @@ function fixture() {
 async function login(page: Page, role = 'admin') {
 	const f = fixture();
 	await page.goto('/login');
-	await page.getByLabel('Work email').fill(f.people.find((p) => p.role === role)!.email);
+	await page.getByLabel('Work Email').fill(f.people.find((p) => p.role === role)!.email);
 	await page.getByLabel('Password', { exact: true }).fill(f.password);
-	await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+	await page.getByRole('button', { name: 'Sign In', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
 	await page.goto('/vendors');
 }
@@ -46,22 +46,22 @@ test('organisation creates and updates companies and departments with explicit s
 	await login(page);
 	await page.getByRole('link', { name: 'Organisation & Authority', exact: true }).click();
 	const company = 'Synthetic screen company ' + randomUUID();
-	await page.getByRole('button', { name: 'Add company', exact: true }).click();
+	await page.getByRole('button', { name: 'Add Company', exact: true }).click();
 	const drawer = page.getByRole('dialog');
 	await drawer.getByLabel('Name', { exact: true }).fill(company);
 	await drawer.getByLabel('Code', { exact: true }).fill('ORG_' + randomUUID().slice(0, 8));
-	await drawer.getByLabel('Company type').selectOption('holding');
+	await drawer.getByLabel('Company Type').selectOption('holding');
 	await inspectWidths(page, 'organisation-form');
 	await drawer.getByRole('button', { name: 'Create', exact: true }).click();
 	await expect(drawer).not.toBeVisible();
 	const card = page
 		.locator('article')
 		.filter({ has: page.getByRole('heading', { name: company, exact: true }) });
-	await expect(card).toContainText('Holding company');
+	await expect(card).toContainText('Holding Company');
 	await inspectWidths(page, 'organisation-companies');
 	await card.getByRole('link', { name: 'Departments', exact: true }).click();
-	await expect(page.getByText('No departments yet', { exact: true })).toBeVisible();
-	await page.getByRole('button', { name: 'Add department', exact: true }).click();
+	await expect(page.getByText('No Departments Yet', { exact: true })).toBeVisible();
+	await page.getByRole('button', { name: 'Add Department', exact: true }).click();
 	await drawer.getByLabel('Name', { exact: true }).fill('Technology');
 	await drawer.getByLabel('Code', { exact: true }).fill('TECH');
 	await drawer.getByRole('button', { name: 'Create', exact: true }).click();
@@ -69,26 +69,26 @@ test('organisation creates and updates companies and departments with explicit s
 	await page.reload();
 	await expect(page.getByRole('heading', { name: 'Technology', exact: true })).toBeVisible();
 	await inspectWidths(page, 'organisation-departments');
-	await page.getByRole('button', { name: 'Edit department Technology', exact: true }).click();
+	await page.getByRole('button', { name: 'Edit Department Technology', exact: true }).click();
 	await drawer.getByLabel('Name', { exact: true }).fill('Engineering');
-	await drawer.getByRole('button', { name: 'Save changes', exact: true }).click();
+	await drawer.getByRole('button', { name: 'Save Changes', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Engineering', exact: true })).toBeVisible();
-	await page.getByRole('button', { name: 'Disable department Engineering', exact: true }).click();
+	await page.getByRole('button', { name: 'Disable Department Engineering', exact: true }).click();
 	await expect(drawer).toContainText('Historical records will remain');
 	await drawer.getByRole('button', { name: 'Confirm', exact: true }).click();
 	await expect(page.locator('article')).toContainText('Disabled');
-	await page.getByRole('button', { name: 'Enable department Engineering', exact: true }).click();
+	await page.getByRole('button', { name: 'Enable Department Engineering', exact: true }).click();
 	await expect(drawer).toContainText(
 		'may make retained memberships and appointments effective again'
 	);
 	await drawer.getByRole('button', { name: 'Confirm', exact: true }).click();
 	await expect(page.locator('article')).toContainText('Enabled');
 	await page.getByRole('link', { name: 'Companies', exact: true }).click();
-	await card.getByRole('button', { name: 'Disable company ' + company, exact: true }).click();
+	await card.getByRole('button', { name: 'Disable Company ' + company, exact: true }).click();
 	await drawer.getByRole('button', { name: 'Confirm', exact: true }).click();
 	await expect(card).toContainText('Disabled');
 	await card.getByRole('link', { name: 'Departments', exact: true }).click();
-	await expect(page.getByRole('button', { name: 'Add department', exact: true })).toBeDisabled();
+	await expect(page.getByRole('button', { name: 'Add Department', exact: true })).toBeDisabled();
 	await expect(
 		page.getByText('Unavailable while the company is disabled.', { exact: true })
 	).toBeVisible();
@@ -110,7 +110,7 @@ test('organisation stale edits preserve input and expired sessions clear the dra
 	await page.goto('/organisation');
 	await peer.goto('/organisation');
 	for (const p of [page, peer])
-		await p.getByRole('button', { name: 'Edit company ' + name, exact: true }).click();
+		await p.getByRole('button', { name: 'Edit Company ' + name, exact: true }).click();
 	await page
 		.getByRole('dialog')
 		.getByLabel('Name', { exact: true })
@@ -119,27 +119,27 @@ test('organisation stale edits preserve input and expired sessions clear the dra
 		.getByRole('dialog')
 		.getByLabel('Name', { exact: true })
 		.fill(name + ' unsaved');
-	await page.getByRole('dialog').getByRole('button', { name: 'Save changes', exact: true }).click();
+	await page.getByRole('dialog').getByRole('button', { name: 'Save Changes', exact: true }).click();
 	await expect(page.getByRole('dialog')).not.toBeVisible();
-	await peer.getByRole('dialog').getByRole('button', { name: 'Save changes', exact: true }).click();
+	await peer.getByRole('dialog').getByRole('button', { name: 'Save Changes', exact: true }).click();
 	await expect(peer.getByRole('alert')).toContainText('Your entries are preserved');
 	await expect(peer.getByRole('dialog').getByLabel('Name', { exact: true })).toHaveValue(
 		name + ' unsaved'
 	);
-	await peer.getByRole('button', { name: 'Discard and reload', exact: true }).click();
+	await peer.getByRole('button', { name: 'Discard and Reload', exact: true }).click();
 	await expect(peer.getByRole('heading', { name: name + ' first', exact: true })).toBeVisible();
-	await peer.getByRole('button', { name: 'Edit company ' + name + ' first', exact: true }).click();
+	await peer.getByRole('button', { name: 'Edit Company ' + name + ' first', exact: true }).click();
 	await peer.getByRole('dialog').getByLabel('Name', { exact: true }).fill(name);
-	await peer.getByRole('dialog').getByRole('button', { name: 'Save changes', exact: true }).click();
+	await peer.getByRole('dialog').getByRole('button', { name: 'Save Changes', exact: true }).click();
 	await expect(peer.getByRole('dialog')).not.toBeVisible();
 	await page.reload();
-	await page.getByRole('button', { name: 'Edit company ' + name, exact: true }).click();
+	await page.getByRole('button', { name: 'Edit Company ' + name, exact: true }).click();
 	await page.getByRole('dialog').getByLabel('Name', { exact: true }).fill('Must not save');
 	expect((await command(page, '/auth/logout')).status).toBe(200);
 	// Notification refresh may detect revocation before the attempted save does.
 	await Promise.race([
 		page.waitForURL(/\/login$/),
-		page.getByRole('dialog').getByRole('button', { name: 'Save changes', exact: true }).click()
+		page.getByRole('dialog').getByRole('button', { name: 'Save Changes', exact: true }).click()
 	]);
 	await expect(page).toHaveURL(/\/login$/);
 	await expect(page.getByRole('dialog')).toHaveCount(0);
@@ -191,7 +191,7 @@ test('organisation office history, readonly matrix, restricted links and narrow 
 		.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
 		.toBe(true);
 	await page.screenshot({ path: 'test-results/organisation-office-mobile.png', fullPage: true });
-	await page.getByRole('link', { name: 'Approval matrix', exact: true }).click();
+	await page.getByRole('link', { name: 'Approval Matrix', exact: true }).click();
 	await expect(page.getByText('Read-only · NGN', { exact: true })).toBeVisible();
 	await inspectWidths(page, 'approval-matrix');
 	await expect(page.getByRole('row', { name: /Ordinary staff/ })).toContainText(
@@ -206,7 +206,7 @@ test('organisation office history, readonly matrix, restricted links and narrow 
 	await expect
 		.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
 		.toBe(true);
-	await page.getByRole('region', { name: 'Approval matrix', exact: true }).focus();
+	await page.getByRole('region', { name: 'Approval Matrix', exact: true }).focus();
 	await page.keyboard.press('ArrowRight');
 	await page.screenshot({ path: 'test-results/organisation-matrix-mobile.png', fullPage: true });
 	const context = await browser.newContext({
@@ -220,7 +220,7 @@ test('organisation office history, readonly matrix, restricted links and narrow 
 	).toHaveCount(0);
 	await staff.goto('/organisation?tab=offices&entity=' + f.entity);
 	await expect(
-		staff.getByRole('heading', { name: 'Access restricted', exact: true })
+		staff.getByRole('heading', { name: 'Access Restricted', exact: true })
 	).toBeVisible();
 	await expect(staff.getByText('Synthetic organisation officeholder', { exact: true })).toHaveCount(
 		0

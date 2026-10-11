@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto, invalidateAll } from '$app/navigation';
-	import { money } from '#lib/money.js';
+	import { money, authorityLabel } from '#lib/money.js';
 	import { api, ApiError } from '#lib/api/client.js';
 	import type { BoardIntent, ChallengeView, Intent, Point, RequestView } from '#lib/api/schema.js';
 	let {
@@ -183,13 +183,13 @@
 		}
 	}
 	const labels = {
-		submit: 'Submit requisition',
-		approve: 'Approve requisition',
-		reject: 'Reject requisition',
-		return: 'Return for revision',
-		board_submit: 'Submit Board record',
-		board_confirm: 'Confirm Board decision',
-		board_return: 'Return record to Secretary'
+		submit: 'Submit Requisition',
+		approve: 'Approve Requisition',
+		reject: 'Reject Requisition',
+		return: 'Return for Revision',
+		board_submit: 'Submit Board Record',
+		board_confirm: 'Confirm Board Decision',
+		board_return: 'Return Record to Secretary'
 	};
 </script>
 
@@ -199,7 +199,7 @@
 		if (busy) event.preventDefault();
 		else onCancel();
 	}}
-	aria-label={signingTarget ? 'Sign Board record' : 'Sign requisition'}
+	aria-label={signingTarget ? 'Sign Board Record' : 'Sign Requisition'}
 >
 	<div class="dialog-heading">
 		<div>
@@ -209,7 +209,7 @@
 		<button
 			type="button"
 			class="quiet close"
-			aria-label="Close signing"
+			aria-label="Close Signing"
 			disabled={busy}
 			onclick={() => {
 				dialog.close();
@@ -230,7 +230,7 @@
 					>Reason<textarea bind:value={reason} required maxlength="2000"></textarea></label
 				>{/if}
 			<label
-				>Your password<input
+				>Your Password<input
 					type="password"
 					autocomplete="current-password"
 					bind:value={password}
@@ -239,7 +239,7 @@
 			>
 			{#if error}<div class="error" role="alert">{error}</div>{/if}
 			<button disabled={busy || reviewRequired}
-				>{busy ? 'Verifying…' : 'Continue to signature'}</button
+				>{busy ? 'Verifying…' : 'Continue to Signature'}</button
 			>
 		</form>
 	{:else}
@@ -252,29 +252,29 @@
 		>
 			<p>
 				<strong>{money(challenge.total)}</strong>{#if challenge.authority}
-					· {challenge.authority.replaceAll('_', ' ')}{/if}
+					· {authorityLabel(challenge.authority)}{/if}
 			</p>
 			{#if challenge.routing_explanation}<p>{challenge.routing_explanation}</p>{/if}
 			<p>{challenge.statement}</p>
 			{#if challenge.transfer_details}
 				{@const transfer = challenge.transfer_details}
-				<section class="transfer-summary" aria-label="Bank transfer instruction">
-					<h3>Bank transfer instruction</h3>
+				<section class="transfer-summary" aria-label="Bank Transfer Request">
+					<h3>Bank Transfer Request</h3>
 					<p>Your approval signature will appear on this letter.</p>
 					<dl>
 						<dt>Amount</dt>
 						<dd>{money(transfer.amount)}</dd>
-						<dt>Debit account</dt>
+						<dt>Debit Account</dt>
 						<dd>
 							{transfer.debit
 								? `${transfer.debit.account_name} · ${transfer.debit.account_number} · ${transfer.debit.bank_name}`
 								: 'Not configured'}
 						</dd>
-						<dt>Bank branch</dt>
+						<dt>Bank Branch</dt>
 						<dd>{transfer.debit?.branch_address ?? 'Not configured'}</dd>
 						<dt>Beneficiary</dt>
 						<dd>{transfer.beneficiary_name || 'Not provided'}</dd>
-						<dt>Beneficiary account</dt>
+						<dt>Beneficiary Account</dt>
 						<dd>
 							{transfer.beneficiary_account || 'Not provided'} · {transfer.beneficiary_bank ||
 								'Bank not provided'}
@@ -293,7 +293,7 @@
 			{#if reason}<p><strong>Reason:</strong> {reason}</p>{/if}
 			<fieldset disabled={busy || !!pendingCommand}>
 				<label
-					>Confirm your full name<input
+					>Confirm Your Full Name<input
 						bind:value={signer}
 						placeholder={name}
 						required
@@ -301,7 +301,7 @@
 					/></label
 				>
 				<div>
-					<label for="signature">Your signature</label>
+					<label for="signature">Your Signature</label>
 					<p id="signature-help" class="help">
 						Draw with a mouse, pen or touch. Keyboard: Enter starts or ends a stroke; arrow keys
 						move the pen.
@@ -312,7 +312,7 @@
 						width="600"
 						height="160"
 						tabindex="0"
-						aria-label="Draw your signature"
+						aria-label="Draw Your Signature"
 						aria-describedby="signature-help"
 						onpointerdown={start}
 						onpointermove={move}
@@ -320,7 +320,7 @@
 						onpointercancel={() => (drawing = false)}
 						onkeydown={keyboard}
 					></canvas>
-					<button type="button" class="quiet" onclick={reset}>Clear signature</button>
+					<button type="button" class="quiet" onclick={reset}>Clear Signature</button>
 				</div>
 				<label class="checkbox"
 					><input type="checkbox" bind:checked={consent} required /><span
@@ -347,7 +347,7 @@
 				dialog.close();
 				onCancel();
 				await invalidateAll();
-			}}>Reload request to review again</button
+			}}>Reload Request to Review Again</button
 		>{/if}
 </dialog>
 

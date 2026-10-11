@@ -12,9 +12,9 @@ function fixture() {
 async function login(page: Page, role: string) {
 	const f = fixture();
 	await page.goto('/login');
-	await page.getByLabel('Work email').fill(f.people.find((p) => p.role === role)!.email);
+	await page.getByLabel('Work Email').fill(f.people.find((p) => p.role === role)!.email);
 	await page.getByLabel('Password', { exact: true }).fill(f.password);
-	await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+	await page.getByRole('button', { name: 'Sign In', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
 	await page.goto('/vendors');
 }
@@ -22,10 +22,10 @@ async function sign(page: Page, role: string, button: string, confirm: string, r
 	await page.getByRole('button', { name: button, exact: true }).click();
 	const dialog = page.getByRole('dialog');
 	if (reason) await dialog.getByLabel('Reason', { exact: true }).fill(reason);
-	await dialog.getByLabel('Your password').fill(fixture().password);
-	await dialog.getByRole('button', { name: 'Continue to signature' }).click();
-	await dialog.getByLabel('Confirm your full name').fill('Synthetic ' + role);
-	await dialog.getByLabel('Draw your signature').focus();
+	await dialog.getByLabel('Your Password').fill(fixture().password);
+	await dialog.getByRole('button', { name: 'Continue to Signature' }).click();
+	await dialog.getByLabel('Confirm Your Full Name').fill('Synthetic ' + role);
+	await dialog.getByLabel('Draw Your Signature').focus();
 	for (const key of ['Enter', 'ArrowRight', 'ArrowDown', 'Enter']) await page.keyboard.press(key);
 	await dialog.getByRole('checkbox').check();
 	await dialog.getByRole('button', { name: confirm, exact: true }).click();
@@ -35,38 +35,38 @@ async function create(page: Page, role: string, amount: string) {
 	await login(page, role);
 	await page.goto('/requisitions/new');
 	const title = 'Board journey ' + randomUUID();
-	await page.getByLabel('Vendor name', { exact: true }).fill('Synthetic Board supplier');
-	await page.getByLabel('Description of work or purchase').fill(title);
+	await page.getByLabel('Vendor Name', { exact: true }).fill('Synthetic Board supplier');
+	await page.getByLabel('Description of Work or Purchase').fill(title);
 	await page.getByLabel('Location', { exact: true }).fill('Abuja');
-	await page.getByRole('button', { name: '+ Add item', exact: true }).click();
+	await page.getByRole('button', { name: '+ Add Item', exact: true }).click();
 	await page.getByLabel('Item 1', { exact: true }).fill('Equipment');
-	await page.getByLabel('Unit price (₦)', { exact: true }).fill(amount);
-	await page.getByRole('button', { name: 'Save draft', exact: true }).click();
+	await page.getByLabel('Unit Price (₦)', { exact: true }).fill(amount);
+	await page.getByRole('button', { name: 'Save Draft', exact: true }).click();
 	await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
 	const url = page.url();
-	await sign(page, role, 'Review & submit', 'Submit requisition');
-	await expect(page.getByText('Awaiting Board resolution', { exact: true })).toBeVisible();
+	await sign(page, role, 'Review & Submit', 'Submit Requisition');
+	await expect(page.getByText('Awaiting Board Resolution', { exact: true })).toBeVisible();
 	return { url, title };
 }
 async function fillRecord(page: Page, outcome: string) {
-	await page.getByLabel('Actual meeting date', { exact: true }).fill('2026-01-01');
-	await page.getByLabel('Resolution reference', { exact: true }).fill('SYN-001');
-	await page.getByRole('combobox', { name: 'Meeting outcome', exact: true }).selectOption(outcome);
-	await page.getByLabel('Decision text', { exact: true }).fill('Synthetic actual Board decision');
+	await page.getByLabel('Actual Meeting Date', { exact: true }).fill('2026-01-01');
+	await page.getByLabel('Resolution Reference', { exact: true }).fill('SYN-001');
+	await page.getByRole('combobox', { name: 'Meeting Outcome', exact: true }).selectOption(outcome);
+	await page.getByLabel('Decision Text', { exact: true }).fill('Synthetic actual Board decision');
 	if (outcome === 'CONDITIONAL_APPROVE')
 		await page
-			.getByLabel('Conditions / follow-up', { exact: true })
+			.getByLabel('Conditions / Follow-Up', { exact: true })
 			.fill('Permit required before authorisation can proceed.');
-	await page.getByLabel('Attendance / participants', { exact: true }).fill('Synthetic directors');
+	await page.getByLabel('Attendance / Participants', { exact: true }).fill('Synthetic directors');
 	await page
-		.getByLabel('Quorum basis / policy reference', { exact: true })
+		.getByLabel('Quorum Basis / Policy Reference', { exact: true })
 		.fill('Synthetic Board charter');
 	await page.getByRole('checkbox').check();
-	await page.getByRole('button', { name: 'Save resolution draft', exact: true }).click();
+	await page.getByRole('button', { name: 'Save Resolution Draft', exact: true }).click();
 	await expect(page.getByText('Draft saved', { exact: true })).toBeVisible();
 }
 async function evidence(page: Page) {
-	await page.getByLabel('Attach evidence', { exact: true }).setInputFiles({
+	await page.getByLabel('Attach Evidence', { exact: true }).setInputFiles({
 		name: 'formal-resolution.png',
 		mimeType: 'image/png',
 		buffer: Buffer.from(
@@ -75,7 +75,7 @@ async function evidence(page: Page) {
 		)
 	});
 	await expect(
-		page.getByRole('button', { name: 'Review & submit to Chairman', exact: true })
+		page.getByRole('button', { name: 'Review & Submit to Chairman', exact: true })
 	).toBeEnabled();
 }
 
@@ -87,7 +87,7 @@ async function openAlerts(page: Page, title: string, reference: string) {
 		.filter({ hasText: reference })
 		.filter({ hasText: title });
 	await expect(async () => {
-		await drawer.getByRole('button', { name: 'Refresh notifications' }).click();
+		await drawer.getByRole('button', { name: 'Refresh Notifications' }).click();
 		await expect(row).toBeVisible();
 	}).toPass({ timeout: 15000 });
 	return { drawer, row };
@@ -118,29 +118,29 @@ test('notification opens assigned work; read state survives refresh and email ha
 	await login(page, 'requester');
 	await page.goto('/requisitions/new');
 	const title = 'Notification journey ' + randomUUID();
-	await page.getByLabel('Vendor name', { exact: true }).fill('Synthetic notifications supplier');
-	await page.getByLabel('Description of work or purchase').fill(title);
+	await page.getByLabel('Vendor Name', { exact: true }).fill('Synthetic notifications supplier');
+	await page.getByLabel('Description of Work or Purchase').fill(title);
 	await page.getByLabel('Location', { exact: true }).fill('Abuja');
-	await page.getByRole('button', { name: '+ Add item', exact: true }).click();
+	await page.getByRole('button', { name: '+ Add Item', exact: true }).click();
 	await page.getByLabel('Item 1', { exact: true }).fill('Materials');
-	await page.getByLabel('Unit price (₦)', { exact: true }).fill('100');
-	await page.getByRole('button', { name: 'Save draft', exact: true }).click();
+	await page.getByLabel('Unit Price (₦)', { exact: true }).fill('100');
+	await page.getByRole('button', { name: 'Save Draft', exact: true }).click();
 	await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
 	const reqUrl = page.url(),
 		ref = await reference(page);
-	await sign(page, 'requester', 'Review & submit', 'Submit requisition');
-	await expect(page.getByText('Awaiting approval', { exact: true })).toBeVisible();
+	await sign(page, 'requester', 'Review & Submit', 'Submit Requisition');
+	await expect(page.getByText('Awaiting Approval', { exact: true })).toBeVisible();
 	await expect.poll(() => mails(ref, 'Requisition needs your review').length).toBe(1);
 	const email = mails(ref, 'Requisition needs your review')[0];
 	expect(email.recipient).toBe(fixture().people.find((p) => p.role === 'hod')!.email);
 	expect(email.url).toBe(reqUrl);
 	await login(page, 'hod');
 	let alerts = await openAlerts(page, 'Requisition needs your review', ref);
-	await alerts.row.getByRole('button', { name: 'Mark as read' }).click();
+	await alerts.row.getByRole('button', { name: 'Mark as Read' }).click();
 	await expect(alerts.row.getByText('Unread', { exact: true })).toHaveCount(0);
 	await page.reload();
 	alerts = await openAlerts(page, 'Requisition needs your review', ref);
-	await expect(alerts.row.getByRole('button', { name: 'Mark as read' })).toHaveCount(0);
+	await expect(alerts.row.getByRole('button', { name: 'Mark as Read' })).toHaveCount(0);
 	await inspectWidths(page, 'notifications-populated');
 	await page.screenshot({ path: 'test-results/notifications-desktop.png', fullPage: true });
 	await page.setViewportSize({ width: 390, height: 844 });
@@ -148,17 +148,17 @@ test('notification opens assigned work; read state survives refresh and email ha
 		.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
 		.toBe(true);
 	await page.screenshot({ path: 'test-results/notifications-mobile.png', fullPage: true });
-	await alerts.row.getByRole('button', { name: 'Open requisition', exact: true }).click();
+	await alerts.row.getByRole('button', { name: 'Open Requisition', exact: true }).click();
 	await expect(page).toHaveURL(reqUrl);
-	await expect(page.getByText('Awaiting approval', { exact: true })).toBeVisible();
-	await sign(page, 'hod', 'Approve', 'Approve requisition');
+	await expect(page.getByText('Awaiting Approval', { exact: true })).toBeVisible();
+	await sign(page, 'hod', 'Approve', 'Approve Requisition');
 	await login(page, 'requester');
 	alerts = await openAlerts(page, 'Requisition approved', ref);
-	await alerts.row.getByRole('button', { name: 'Open requisition', exact: true }).click();
+	await alerts.row.getByRole('button', { name: 'Open Requisition', exact: true }).click();
 	await expect(page.getByText('Approved', { exact: true })).toBeVisible();
 	await login(page, 'peer');
 	await page.getByRole('button', { name: 'Notifications', exact: true }).click();
-	await expect(page.getByRole('heading', { name: 'No notifications yet' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'No Notifications Yet' })).toBeVisible();
 	await expect(page.getByRole('dialog').getByText(ref, { exact: false })).toHaveCount(0);
 });
 
@@ -169,26 +169,26 @@ test('Board alerts hand off from Secretary to Chairman and report the actual hol
 	const req = await create(page, 'md', '1');
 	const ref = await reference(page);
 	await login(page, 'secretary');
-	let alerts = await openAlerts(page, 'Board resolution needs recording', ref);
-	await alerts.row.getByRole('button', { name: 'Open Board workspace' }).click();
-	await expect(page.getByRole('heading', { name: 'Board resolution', exact: true })).toBeVisible();
+	let alerts = await openAlerts(page, 'Board Resolution needs recording', ref);
+	await alerts.row.getByRole('button', { name: 'Open Board Workspace' }).click();
+	await expect(page.getByRole('heading', { name: 'Board Resolution', exact: true })).toBeVisible();
 	await fillRecord(page, 'CONDITIONAL_APPROVE');
 	await evidence(page);
-	await sign(page, 'secretary', 'Review & submit to Chairman', 'Submit Board record');
+	await sign(page, 'secretary', 'Review & Submit to Chairman', 'Submit Board Record');
 	await login(page, 'chairman');
-	alerts = await openAlerts(page, 'Board record needs your review', ref);
-	await alerts.row.getByRole('button', { name: 'Open Board workspace' }).click();
-	await sign(page, 'chairman', 'Confirm Board decision', 'Confirm Board decision');
+	alerts = await openAlerts(page, 'Board Record needs your review', ref);
+	await alerts.row.getByRole('button', { name: 'Open Board Workspace' }).click();
+	await sign(page, 'chairman', 'Confirm Board Decision', 'Confirm Board Decision');
 	await login(page, 'md');
-	alerts = await openAlerts(page, 'Conditional Board approval confirmed — on hold', ref);
-	await expect(alerts.row.getByRole('button', { name: 'Open Board workspace' })).toHaveCount(0);
-	await alerts.row.getByRole('button', { name: 'Open requisition', exact: true }).click();
+	alerts = await openAlerts(page, 'Conditional Board Approval Confirmed — on hold', ref);
+	await expect(alerts.row.getByRole('button', { name: 'Open Board Workspace' })).toHaveCount(0);
+	await alerts.row.getByRole('button', { name: 'Open Requisition', exact: true }).click();
 	await expect(page).toHaveURL(req.url);
-	await expect(page.locator('.status')).toHaveText('Conditional approval — on hold');
+	await expect(page.locator('.status')).toHaveText('Conditional Approval — on Hold');
 	await login(page, 'secretary');
-	alerts = await openAlerts(page, 'Later Board resolution required — hold remains', ref);
-	await alerts.row.getByRole('button', { name: 'Open Board workspace' }).click();
-	await expect(page.getByRole('button', { name: 'Record later resolution' })).toBeVisible();
+	alerts = await openAlerts(page, 'Later Board Resolution required — hold remains', ref);
+	await alerts.row.getByRole('button', { name: 'Open Board Workspace' }).click();
+	await expect(page.getByRole('button', { name: 'Record Later Resolution' })).toBeVisible();
 });
 
 test('drawer clears stale alerts on failure, retries and redirects an expired session', async ({
@@ -209,10 +209,10 @@ test('drawer clears stale alerts on failure, retries and redirects an expired se
 	await expect(drawer.getByRole('alert')).toBeVisible();
 	await expect(drawer.getByRole('listitem')).toHaveCount(0);
 	await page.unroute('**/api/v1/notifications?**');
-	await drawer.getByRole('button', { name: 'Retry notifications' }).click();
-	await expect(drawer.getByRole('heading', { name: 'No notifications yet' })).toBeVisible();
+	await drawer.getByRole('button', { name: 'Retry Notifications' }).click();
+	await expect(drawer.getByRole('heading', { name: 'No Notifications Yet' })).toBeVisible();
 	await page.context().clearCookies();
-	await drawer.getByRole('button', { name: 'Refresh notifications' }).click();
+	await drawer.getByRole('button', { name: 'Refresh Notifications' }).click();
 	await expect(page).toHaveURL(/\/login$/);
 	await expect(page.getByRole('button', { name: 'Notifications', exact: true })).toHaveCount(0);
 });
@@ -223,8 +223,8 @@ test('focus refreshes coalesce while the notification request is still running',
 	await login(page, 'peer');
 	await page.getByRole('button', { name: 'Notifications', exact: true }).click();
 	const drawer = page.getByRole('dialog', { name: 'Notifications', exact: true });
-	await expect(drawer.getByRole('button', { name: 'Refresh notifications' })).toBeEnabled();
-	await drawer.getByRole('button', { name: 'Close notifications' }).click();
+	await expect(drawer.getByRole('button', { name: 'Refresh Notifications' })).toBeEnabled();
+	await drawer.getByRole('button', { name: 'Close Notifications' }).click();
 	let release!: () => void;
 	const gate = new Promise<void>((resolve) => {
 		release = resolve;
@@ -241,11 +241,11 @@ test('focus refreshes coalesce while the notification request is still running',
 		await page.evaluate(() => {
 			for (let i = 0; i < 10; i++) window.dispatchEvent(new Event('focus'));
 		});
-		await drawer.getByLabel('Unread only').check();
+		await drawer.getByLabel('Unread Only').check();
 		expect(calls.length).toBe(1);
 		release();
-		await expect(drawer.getByRole('heading', { name: 'No unread notifications' })).toBeVisible();
-		await expect(drawer.getByRole('button', { name: 'Refresh notifications' })).toBeEnabled();
+		await expect(drawer.getByRole('heading', { name: 'No Unread Notifications' })).toBeVisible();
+		await expect(drawer.getByRole('button', { name: 'Refresh Notifications' })).toBeEnabled();
 		expect(calls).toHaveLength(2);
 		expect(calls[1]).toContain('unread=true');
 	} finally {

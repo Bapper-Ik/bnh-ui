@@ -49,7 +49,7 @@
 <form method="GET" class="card filters">
 	<div class="filter-grid">
 		<label
-			>Search audit log<input
+			>Search Audit Log<input
 				name="search"
 				value={data.filters.search}
 				placeholder="Request reference or action"
@@ -57,7 +57,7 @@
 			/></label
 		>
 		<label
-			>Exact action<input
+			>Exact Action<input
 				name="action"
 				value={data.filters.action}
 				placeholder="e.g. requisition.created"
@@ -82,7 +82,7 @@
 			/></label
 		>
 		<label
-			>Recorded through (Lagos)<input
+			>Recorded Through (Lagos)<input
 				type="date"
 				name="date_to"
 				value={data.filters.date_to}
@@ -90,19 +90,19 @@
 		>
 	</div>
 	<div class="actions">
-		<button class="secondary">Apply filters</button><a href="/audit">Clear filters / refresh</a>
+		<button class="secondary">Apply Filters</button><a href="/audit">Clear Filters / Refresh</a>
 	</div>
 </form>
 {#if failure}<p class="error" role="alert">{failure}</p>{/if}
 <div class="section-heading">
-	<h2>Recorded actions <span class="count">{data.events.total}</span></h2>
+	<h2>Recorded Actions <span class="count">{data.events.total}</span></h2>
 	<small>As of {dateTime(data.events.before)}</small>
 </div>
 {#if !data.events.items.length}<div class="empty">
-		<h2>No matching audit events</h2>
+		<h2>No Matching Audit Events</h2>
 		<p>Change the filters or check that your review scope covers the relevant company.</p>
 	</div>{:else}
-	<ol class="events" aria-label="Audit events">
+	<ol class="events" aria-label="Audit Events">
 		{#each data.events.items as event (event.id)}
 			<li class="card">
 				<div class="event-top">
@@ -115,7 +115,7 @@
 				</p>
 				<div class="actions">
 					{#if event.request_id}<a href={'/requisitions/' + event.request_id}
-							>{event.reference ?? 'View request'}</a
+							>{event.reference ?? 'View Request'}</a
 						>{/if}
 					{#if event.attachment_id}<button
 							class="quiet"
@@ -125,14 +125,14 @@
 						>{/if}
 				</div>
 				<details>
-					<summary>Record references</summary>
+					<summary>Record References</summary>
 					<dl>
 						<div>
 							<dt>Event</dt>
 							<dd>{event.id}</dd>
 						</div>
 						{#if event.actor_id}<div>
-								<dt>Actor identity</dt>
+								<dt>Actor Identity</dt>
 								<dd>{event.actor_id}</dd>
 							</div>{/if}
 						{#if event.revision_id}<div>
@@ -140,7 +140,7 @@
 								<dd>{event.revision_id}</dd>
 							</div>{/if}
 						{#if event.content_digest}<div>
-								<dt>Content digest</dt>
+								<dt>Content Digest</dt>
 								<dd>{event.content_digest}</dd>
 							</div>{/if}
 					</dl>
@@ -158,11 +158,11 @@
 		<div class="actions">
 			{#if data.events.offset > 0}<a
 					class="button secondary"
-					href={link(Math.max(0, data.events.offset - data.events.limit))}>Newer events</a
+					href={link(Math.max(0, data.events.offset - data.events.limit))}>Newer Events</a
 				>{/if}
 			{#if data.events.offset + data.events.limit < data.events.total}<a
 					class="button secondary"
-					href={link(data.events.offset + data.events.limit)}>Older events</a
+					href={link(data.events.offset + data.events.limit)}>Older Events</a
 				>{/if}
 		</div>
 	</div>

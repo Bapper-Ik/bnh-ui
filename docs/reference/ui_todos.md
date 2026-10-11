@@ -334,3 +334,8 @@ Requester details expose Delete draft only in Draft, and Retract requisition onl
 The shared Supporting documents component uploads immediately after file selection, with progress, Retry upload and Cancel file after failures. On a new requisition, GET/POST `/staged-attachments` use entity_id, creation_key and (for POST) upload_key/filename; owner-only GET content and DELETE use `/staged-attachments/{id}`. Files can be previewed/removed before any draft exists. Creation passes the exact `staged_upload_ids`; the backend claims those files into permanent private attachments atomically. Existing saved-draft upload endpoints are unchanged.
 
 The form preserves entries during failures, prevents company changes while files are attached, and blocks Save while uploads are pending or unresolved. A documents-changed error refreshes the file list without discarding form values. Files on unsaved forms expire after 24 hours; save the draft to keep them. Deploy migration 0019 before this frontend. No extra Upload document click or scanner setup.
+
+
+## WEB-002 — Consistent wording across screens
+
+All fourteen screens and shared dialogs use Title Case for headings, labels and buttons, while descriptions and messages use sentence case. The requisition details Vendor label is Vendor Name. HOD/MD/Chief of Staff/Board codes display readable office names; Board outcomes use business labels. Accessible names and browser selectors match the visible copy. This is a frontend presentation change; API codes, entered names, filenames and signed data remain unchanged.

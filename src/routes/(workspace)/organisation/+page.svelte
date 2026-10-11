@@ -31,7 +31,7 @@
 		['companies', 'Companies'],
 		['departments', 'Departments'],
 		['offices', 'Officeholders'],
-		['authority', 'Approval matrix']
+		['authority', 'Approval Matrix']
 	];
 	function link(tab: string, entity = data.workspace?.selected_entity ?? '') {
 		return '/organisation?' + new URLSearchParams(entity ? { tab, entity } : { tab });
@@ -131,7 +131,7 @@
 					timeStyle: 'short',
 					timeZone: 'Africa/Lagos'
 				}).format(new Date(value)) + ' WAT'
-			: 'No end date';
+			: 'No End Date';
 	}
 </script>
 
@@ -144,19 +144,19 @@
 {#if notice}<p role="status" class="notice">{notice}</p>{/if}
 {#if data.forbidden}
 	<div class="empty">
-		<h2>Access restricted</h2>
+		<h2>Access Restricted</h2>
 		<p>Organisation management is available only to authorised administrators.</p>
-		<a href="/vendors">Return to workspace</a>
+		<a href="/vendors">Return to Workspace</a>
 	</div>
 {:else if data.error}
 	<div role="alert" class="empty">
-		<h2>Unable to load organisation</h2>
+		<h2>Unable to Load Organisation</h2>
 		<p>{data.error}</p>
 		<button onclick={() => invalidateAll()}>Retry</button>
-		<a href="/organisation">Reset company selection</a>
+		<a href="/organisation">Reset Company Selection</a>
 	</div>
 {:else if data.workspace}
-	<nav class="tabs" aria-label="Organisation sections">
+	<nav class="tabs" aria-label="Organisation Sections">
 		{#each tabs as [key, label] (key)}<a
 				href={link(key)}
 				aria-current={data.tab === key ? 'page' : undefined}>{label}</a
@@ -169,7 +169,7 @@
 				onchange={(e) => goto(link(data.tab, e.currentTarget.value))}
 				disabled={!data.workspace.entities.length}
 			>
-				{#if !data.workspace.entities.length}<option value="">No companies configured</option>{/if}
+				{#if !data.workspace.entities.length}<option value="">No Companies Configured</option>{/if}
 				{#each data.workspace.entities as item (item.id)}<option value={item.id}
 						>{item.name}{item.active ? '' : ' (disabled)'}</option
 					>{/each}
@@ -183,34 +183,34 @@
 	{#if data.tab === 'companies'}
 		<div class="section-header">
 			<h2>Companies</h2>
-			<button onclick={() => open('entities', 'create')}>Add company</button>
+			<button onclick={() => open('entities', 'create')}>Add Company</button>
 		</div>
 		{#if !data.workspace.entities.length}<div class="empty">
-				<h3>No companies yet</h3>
+				<h3>No Companies Yet</h3>
 				<p>Add the first approved company, then configure its departments.</p>
 			</div>{/if}
 		<div class="records">
 			{#each data.workspace.entities as item (item.id)}<article>
 					<div>
 						<h3>{item.name}</h3>
-						<p>{item.code} · {item.kind === 'holding' ? 'Holding company' : 'Subsidiary'}</p>
+						<p>{item.code} · {item.kind === 'holding' ? 'Holding Company' : 'Subsidiary'}</p>
 						<span class="badge">{item.active ? 'Enabled' : 'Disabled'}</span>
 					</div>
 					<div class="actions">
 						<button
 							class="secondary"
-							aria-label={'Bank details for ' + item.name}
-							onclick={() => (bankCompany = item)}>Bank details</button
+							aria-label={'Bank Details for ' + item.name}
+							onclick={() => (bankCompany = item)}>Bank Details</button
 						><a class="button secondary" href={link('departments', item.id)}>Departments</a><a
 							class="button secondary"
 							href={link('offices', item.id)}>Officeholders</a
 						><button
 							class="secondary"
-							aria-label={'Edit company ' + item.name}
+							aria-label={'Edit Company ' + item.name}
 							onclick={() => open('entities', 'edit', item)}>Edit</button
 						><button
 							class="secondary"
-							aria-label={(item.active ? 'Disable company ' : 'Enable company ') + item.name}
+							aria-label={(item.active ? 'Disable Company ' : 'Enable Company ') + item.name}
 							onclick={() => open('entities', 'state', item)}
 							>{item.active ? 'Disable' : 'Enable'}</button
 						>
@@ -221,15 +221,15 @@
 		<div class="section-header">
 			<h2>Departments</h2>
 			<button disabled={!company?.active} onclick={() => open('departments', 'create')}
-				>Add department</button
+				>Add Department</button
 			>
 		</div>
 		{#if !company}<div class="empty">
-				<h3>Add a company first</h3>
-				<a href={link('companies')}>Manage companies</a>
+				<h3>Add a Company First</h3>
+				<a href={link('companies')}>Manage Companies</a>
 			</div>
 		{:else if !data.workspace.departments.length}<div class="empty">
-				<h3>No departments yet</h3>
+				<h3>No Departments Yet</h3>
 				<p>Add the approved departments for {company.name}.</p>
 			</div>{/if}
 		<div class="records">
@@ -245,12 +245,12 @@
 					<div class="actions">
 						<button
 							class="secondary"
-							aria-label={'Edit department ' + item.name}
+							aria-label={'Edit Department ' + item.name}
 							onclick={() => open('departments', 'edit', item)}>Edit</button
 						><button
 							class="secondary"
 							disabled={!item.active && !company?.active}
-							aria-label={(item.active ? 'Disable department ' : 'Enable department ') + item.name}
+							aria-label={(item.active ? 'Disable Department ' : 'Enable Department ') + item.name}
 							onclick={() => open('departments', 'state', item)}
 							>{item.active ? 'Disable' : 'Enable'}</button
 						>
@@ -261,7 +261,7 @@
 		<div class="section-header">
 			<h2>Officeholders</h2>
 			{#if data.user.permissions.includes('staff:manage')}<a class="button secondary" href="/staff"
-					>Manage staff & appointments</a
+					>Manage Staff & Appointments</a
 				>{/if}
 		</div>
 		<p>
@@ -269,18 +269,18 @@
 			determine eligibility; self-approval and request-specific checks still apply.
 		</p>
 		{#if !company}<div class="empty">
-				<h3>Add a company first</h3>
-				<a href={link('companies')}>Manage companies</a>
+				<h3>Add a Company First</h3>
+				<a href={link('companies')}>Manage Companies</a>
 			</div>
 		{:else if !data.workspace.offices.length}<div class="empty">
-				<h3>No appointments recorded</h3>
+				<h3>No Appointments Recorded</h3>
 				<p>
 					An authorised operator must assign officeholders through Staff & Access. Missing
 					appointments block the affected approvals.
 				</p>
 			</div>{/if}
 		{#if data.workspace.authority_gaps.length}<div class="notice">
-				<h3>Appointments to complete</h3>
+				<h3>Appointments to Complete</h3>
 				<p>These gaps block affected approval routes.</p>
 				<ul>
 					{#each data.workspace.authority_gaps as gap (gap)}<li>{gap}</li>{/each}
@@ -311,7 +311,7 @@
 							<dd>{date(item.valid_until)}</dd>
 						</div>
 						<div>
-							<dt>Authorisation reference</dt>
+							<dt>Authorisation Reference</dt>
 							<dd>{item.authorisation_reference}</dd>
 						</div>
 					</dl>
@@ -319,11 +319,11 @@
 		</div>
 	{:else}
 		<div class="section-header">
-			<h2>Approval matrix</h2>
+			<h2>Approval Matrix</h2>
 			<span class="badge">Read-only · NGN</span>
 		</div>
 		<p>The agreed amount thresholds and requester escalation rules are fixed.</p>
-		<div class="matrix-scroll" role="region" aria-label="Approval matrix">
+		<div class="matrix-scroll" role="region" aria-label="Approval Matrix">
 			<!-- svelte-ignore a11y_no_redundant_roles (Explicit table roles preserve semantics when rows become cards.) -->
 			<table class="responsive-table" role="table">
 				<thead
@@ -364,23 +364,23 @@
 			<h2 id="org-drawer-title">
 				{mode === 'create'
 					? category === 'entities'
-						? 'Add company'
-						: 'Add department'
+						? 'Add Company'
+						: 'Add Department'
 					: mode === 'edit'
 						? 'Edit ' + name
 						: (selected?.active ? 'Disable ' : 'Enable ') + selected?.name}
 			</h2>
 		</div>
-		<button class="quiet" aria-label="Close drawer" onclick={close} disabled={busy}>×</button>
+		<button class="quiet" aria-label="Close Drawer" onclick={close} disabled={busy}>×</button>
 	</div>
 	{#if discard}<div role="alert" class="notice">
 			<p>Discard your unsaved entries?</p>
-			<button onclick={close}>Discard changes</button>
-			<button class="secondary" onclick={() => (discard = false)}>Keep editing</button>
+			<button onclick={close}>Discard Changes</button>
+			<button class="secondary" onclick={() => (discard = false)}>Keep Editing</button>
 		</div>{/if}
 	{#if error}<div role="alert" class="notice">
 			<p>{error}</p>
-			{#if conflict}<button class="secondary" onclick={reload}>Discard and reload</button>{/if}
+			{#if conflict}<button class="secondary" onclick={reload}>Discard and Reload</button>{/if}
 		</div>{/if}
 	<form onsubmit={save}>
 		{#if mode === 'state'}
@@ -412,9 +412,9 @@
 					/><small id="org-code-hint">Letters, numbers, underscores and hyphens.</small></label
 				>
 				{#if category === 'entities'}<label
-						>Company type<select bind:value={kind} disabled={busy}
+						>Company Type<select bind:value={kind} disabled={busy}
 							><option value="subsidiary">Subsidiary</option><option value="holding"
-								>Holding company</option
+								>Holding Company</option
 							></select
 						></label
 					>{:else}<p>Company: {company?.name}</p>{/if}
@@ -432,7 +432,7 @@
 						? 'Confirm'
 						: mode === 'create'
 							? 'Create'
-							: 'Save changes'}</button
+							: 'Save Changes'}</button
 			><button type="button" class="secondary" onclick={close} disabled={busy}>Cancel</button>
 		</div>
 	</form>

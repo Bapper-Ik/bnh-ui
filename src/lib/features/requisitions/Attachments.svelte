@@ -156,7 +156,7 @@
 </script>
 
 <section class="card stack">
-	<h2>Supporting documents</h2>
+	<h2>Supporting Documents</h2>
 	{#if !request}<p>
 			Files upload when selected. Save your draft within 24 hours to keep them with this
 			requisition.
@@ -250,7 +250,7 @@
 		{#if editable}
 			{#if files.uploads_enabled}
 				<label
-					>Supporting document<input
+					>Supporting Document<input
 						type="file"
 						accept="application/pdf,image/png,image/jpeg"
 						disabled={busy || disabled || !!selected}
@@ -265,7 +265,7 @@
 				<div class="actions">
 					{#if busy && selected}<p role="status">Uploading {selected.name}…</p>{/if}
 					{#if selected && !busy}<button type="button" class="secondary" {disabled} onclick={upload}
-							>Retry upload</button
+							>Retry Upload</button
 						>{/if}
 					{#if selected}<button
 							type="button"
@@ -275,7 +275,7 @@
 								selected = null;
 								error = '';
 								uploadKey = crypto.randomUUID();
-							}}>Cancel file</button
+							}}>Cancel File</button
 						>{/if}
 				</div>
 			{:else}<p role="status">
@@ -292,10 +292,10 @@
 			onclick={async () => {
 				await onChanged();
 				await load();
-			}}>Reload documents</button
+			}}>Reload Documents</button
 		>{/if}
 </section>
-<dialog bind:this={viewer} onclose={closeViewer} aria-label="Document viewer">
+<dialog bind:this={viewer} onclose={closeViewer} aria-label="Document Viewer">
 	{#if viewed}<h2>{viewed.filename}</h2>
 		{#if viewed.media_type.startsWith('image/')}<img
 				src={url}
@@ -304,7 +304,7 @@
 		<div class="actions">
 			<a href={url} download={viewed.filename} class="button secondary">Download</a><button
 				type="button"
-				onclick={closeViewer}>Close document</button
+				onclick={closeViewer}>Close Document</button
 			>
 		</div>
 	{/if}

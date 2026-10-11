@@ -137,7 +137,7 @@
 <svelte:window onclick={dismissAccount} onkeydown={escapeAccount} />
 
 {#snippet navigationLinks()}
-	<nav aria-label="Main navigation">
+	<nav aria-label="Main Navigation">
 		{#each links.filter((link) => link.visible) as link (link.href)}
 			<a
 				href={link.href}
@@ -151,7 +151,7 @@
 	</nav>
 {/snippet}
 
-<a class="skip-link" href="#main-content">Skip to content</a>
+<a class="skip-link" href="#main-content">Skip to Content</a>
 <div class="workspace">
 	<aside class="desktop-sidebar">
 		<a href="/" class="brand"><BrandMark /><span>Custodian<small>BY BRENDAN</small></span></a>
@@ -166,7 +166,7 @@
 		<header class="workspace-header">
 			<button
 				class="quiet menu-toggle"
-				aria-label="Open navigation"
+				aria-label="Open Navigation"
 				aria-haspopup="dialog"
 				aria-controls="mobile-navigation"
 				aria-expanded={navigationOpen}
@@ -193,7 +193,7 @@
 						aria-controls="account-panel"
 						bind:this={accountTrigger}
 						aria-expanded={accountOpen}
-						aria-label="Account menu"
+						aria-label="Account Menu"
 						title={data.user.name}
 					>
 						<span class="avatar" aria-hidden="true">{initials}</span>
@@ -215,7 +215,7 @@
 							</div>
 							<a href="/account" onclick={() => (accountOpen = false)}>My Account &amp; Security</a>
 							<button class="quiet" onclick={signOut} disabled={signingOut}
-								>{signingOut ? 'Signing out…' : 'Sign out'}</button
+								>{signingOut ? 'Signing Out…' : 'Sign Out'}</button
 							>
 							{#if error}<div class="error" role="alert">{error}</div>{/if}
 						</div>{/if}
@@ -242,7 +242,7 @@
 			<p class="eyebrow">CUSTODIAN BY BRENDAN</p>
 			<h2 id="navigation-title">Workspace</h2>
 		</div>
-		<button class="quiet" aria-label="Close navigation" onclick={() => navigation.close()}>✕</button
+		<button class="quiet" aria-label="Close Navigation" onclick={() => navigation.close()}>✕</button
 		>
 	</div>
 	{@render navigationLinks()}

@@ -2103,6 +2103,8 @@ Deliver the complete self-service browser journey for staff to prepare, sign, su
 
 **Shared branding/login correction (2026-10-11):** Login now has an accessible Show/Hide password button and omits the requested introductory sentence. The supplied LOGO.png is used in public, desktop and mobile branding; the shared footer reads exactly “© 2026 Brendan Nicholas Holdings. All rights reserved.” across public/workspace/error layouts. Ten connected authentication/mobile/responsive browser tests, six unit tests, lint/format/type checks, production build and frontend Docker build pass. Login and 320px workspace branding were visually checked. No backend or API change.
 
+**Interface wording follow-up:** All fourteen screen templates and shared dialogs use Title Case for headings, labels and actions, with sentence-case explanations. Requisition vendor details now label the supplier as Vendor Name; authority codes and Board outcomes have readable display labels. Verification and publication are recorded in task_done.md.
+
 ### Requirement Basis
 
 Confirmed business scope plus the explicitly identified implementation defaults in Section 1.6.

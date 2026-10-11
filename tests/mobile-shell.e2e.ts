@@ -8,10 +8,10 @@ async function login(page: Page, role = 'oversight') {
 	};
 	await page.goto('/login');
 	await page
-		.getByLabel('Work email')
+		.getByLabel('Work Email')
 		.fill(fixture.people.find((person) => person.role === role)!.email);
 	await page.getByLabel('Password', { exact: true }).fill(fixture.password);
-	await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+	await page.getByRole('button', { name: 'Sign In', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
 }
 async function fits(page: Page) {
@@ -25,9 +25,9 @@ test('mobile navigation traps focus, dismisses, follows routes and restores desk
 }) => {
 	await page.setViewportSize({ width: 390, height: 844 });
 	await login(page);
-	const trigger = page.getByRole('button', { name: 'Open navigation', exact: true });
+	const trigger = page.getByRole('button', { name: 'Open Navigation', exact: true });
 	const drawer = page.getByRole('dialog', { name: 'Workspace', exact: true });
-	await expect(page.getByRole('navigation', { name: 'Main navigation' })).toHaveCount(0);
+	await expect(page.getByRole('navigation', { name: 'Main Navigation' })).toHaveCount(0);
 	await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeInViewport();
 	await trigger.click();
 	await expect(trigger).toHaveAttribute('aria-expanded', 'true');
@@ -39,13 +39,13 @@ test('mobile navigation traps focus, dismisses, follows routes and restores desk
 	await expect(drawer.getByRole('link', { name: 'Staff & Access', exact: true })).toBeVisible();
 	await expect(drawer.getByRole('link', { name: 'My Tasks', exact: true })).toHaveCount(0);
 	await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe('hidden');
-	await drawer.getByRole('button', { name: 'Close navigation', exact: true }).focus();
+	await drawer.getByRole('button', { name: 'Close Navigation', exact: true }).focus();
 	await page.keyboard.press('Shift+Tab');
 	await expect(
 		drawer.getByRole('link', { name: 'My Account & Security', exact: true })
 	).toBeFocused();
 	await page.keyboard.press('Tab');
-	await expect(drawer.getByRole('button', { name: 'Close navigation', exact: true })).toBeFocused();
+	await expect(drawer.getByRole('button', { name: 'Close Navigation', exact: true })).toBeFocused();
 	await page.screenshot({ path: 'test-results/mobile-navigation.png', fullPage: true });
 	await page.keyboard.press('Escape');
 	await expect(drawer).not.toBeVisible();
@@ -67,7 +67,7 @@ test('mobile navigation traps focus, dismisses, follows routes and restores desk
 	await page.setViewportSize({ width: 1280, height: 900 });
 	await expect(drawer).not.toBeVisible();
 	await expect(trigger).not.toBeVisible();
-	await expect(page.getByRole('navigation', { name: 'Main navigation' })).toHaveCount(1);
+	await expect(page.getByRole('navigation', { name: 'Main Navigation' })).toHaveCount(1);
 	await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe('');
 	await fits(page);
 	await page.screenshot({ path: 'test-results/workspace-desktop.png', fullPage: true });
@@ -86,10 +86,10 @@ test('shared header keeps mobile screens compact and notifications usable', asyn
 		await expect(page.locator('main h1').first()).toBeInViewport();
 		if (path === '/')
 			await expect(
-				page.getByRole('button', { name: 'Refresh dashboard', exact: true })
+				page.getByRole('button', { name: 'Refresh Dashboard', exact: true })
 			).toBeEnabled();
 		if (path === '/account')
-			await expect(page.getByRole('region', { name: 'Account details' })).toBeVisible();
+			await expect(page.getByRole('region', { name: 'Account Details' })).toBeVisible();
 		await fits(page);
 		expect((await page.locator('main h1').first().boundingBox())!.y).toBeLessThan(180);
 		await page.screenshot({
@@ -107,7 +107,7 @@ test('shared header keeps mobile screens compact and notifications usable', asyn
 			.getByRole('button', { name: 'Notifications', exact: true })
 			.boundingBox();
 		const account = await header
-			.getByRole('button', { name: 'Account menu', exact: true })
+			.getByRole('button', { name: 'Account Menu', exact: true })
 			.boundingBox();
 		expect(bell!.width).toBeGreaterThanOrEqual(44);
 		expect(account!.width).toBeGreaterThanOrEqual(44);
@@ -119,7 +119,7 @@ test('shared header keeps mobile screens compact and notifications usable', asyn
 	const alerts = page.getByRole('dialog', { name: 'Notifications', exact: true });
 	await expect(alerts).toBeVisible();
 	await expect(
-		alerts.getByRole('heading', { name: 'No notifications yet', exact: true })
+		alerts.getByRole('heading', { name: 'No Notifications Yet', exact: true })
 	).toBeVisible();
 	await fits(page);
 	await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe('hidden');
@@ -143,8 +143,8 @@ test('account dropdown handles long identity, keyboard dismissal and failed then
 		await route.fulfill({ response, json: { ...(await response.json()), name, email } });
 	});
 	await page.reload();
-	await expect(page.getByRole('button', { name: 'Refresh dashboard', exact: true })).toBeEnabled();
-	const account = page.getByRole('button', { name: 'Account menu', exact: true });
+	await expect(page.getByRole('button', { name: 'Refresh Dashboard', exact: true })).toBeEnabled();
+	const account = page.getByRole('button', { name: 'Account Menu', exact: true });
 	await account.focus();
 	await page.keyboard.press('Enter');
 	await expect(page.getByText(email, { exact: true })).toBeVisible();
@@ -159,7 +159,7 @@ test('account dropdown handles long identity, keyboard dismissal and failed then
 	await account.click();
 	await page.getByRole('link', { name: 'My Account & Security', exact: true }).click();
 	await expect(page).toHaveURL(/\/account$/);
-	await expect(page.getByRole('button', { name: 'Sign out', exact: true })).not.toBeVisible();
+	await expect(page.getByRole('button', { name: 'Sign Out', exact: true })).not.toBeVisible();
 	await account.click();
 	await page.route('**/api/v1/auth/logout', (route) =>
 		route.fulfill({
@@ -171,16 +171,16 @@ test('account dropdown handles long identity, keyboard dismissal and failed then
 			})
 		})
 	);
-	await page.getByRole('button', { name: 'Sign out', exact: true }).click();
+	await page.getByRole('button', { name: 'Sign Out', exact: true }).click();
 	await expect(page.getByRole('alert')).toContainText('Sign-out temporarily unavailable.');
 	await page.unroute('**/api/v1/auth/logout');
-	await page.getByRole('button', { name: 'Sign out', exact: true }).click();
+	await page.getByRole('button', { name: 'Sign Out', exact: true }).click();
 	await expect(
-		page.getByRole('heading', { name: 'Sign in to Custodian', exact: true })
+		page.getByRole('heading', { name: 'Sign In to Custodian', exact: true })
 	).toBeVisible();
 	await page.goto('/');
 	await expect(
-		page.getByRole('heading', { name: 'Sign in to Custodian', exact: true })
+		page.getByRole('heading', { name: 'Sign In to Custodian', exact: true })
 	).toBeVisible();
 });
 
@@ -191,10 +191,10 @@ test('login password visibility and shared branding work on narrow screens', asy
 	const password = page.getByLabel('Password', { exact: true });
 	await password.fill('Synthetic visibility check');
 	await expect(password).toHaveAttribute('type', 'password');
-	await page.getByRole('button', { name: 'Show password', exact: true }).click();
+	await page.getByRole('button', { name: 'Show Password', exact: true }).click();
 	await expect(password).toHaveAttribute('type', 'text');
 	await expect(password).toHaveValue('Synthetic visibility check');
-	await page.getByRole('button', { name: 'Hide password', exact: true }).click();
+	await page.getByRole('button', { name: 'Hide Password', exact: true }).click();
 	await expect(password).toHaveAttribute('type', 'password');
 	await expect(
 		page.getByText(

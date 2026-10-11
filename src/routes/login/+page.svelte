@@ -25,7 +25,7 @@
 	}
 </script>
 
-<AccessLayout title="Sign in to Custodian">
+<AccessLayout title="Sign In to Custodian">
 	{#if page.url.searchParams.get('reason') === 'password-changed'}<p role="status">
 			Your password was changed. Sign in with your new password.
 		</p>{:else if page.url.searchParams.get('reason') === 'signed-out'}<p role="status">
@@ -33,7 +33,7 @@
 		</p>{/if}
 	<form onsubmit={signIn} class="stack" aria-busy={busy}>
 		<label
-			>Work email<input
+			>Work Email<input
 				type="email"
 				autocomplete="username"
 				bind:value={email}
@@ -56,15 +56,15 @@
 				<button
 					type="button"
 					class="quiet"
-					aria-label={showPassword ? 'Hide password' : 'Show password'}
+					aria-label={showPassword ? 'Hide Password' : 'Show Password'}
 					aria-pressed={showPassword}
 					onclick={() => (showPassword = !showPassword)}>{showPassword ? 'Hide' : 'Show'}</button
 				>
 			</div>
 		</div>
-		<a href="/forgot-password">Forgot password?</a>
+		<a href="/forgot-password">Forgot Password?</a>
 		{#if error}<div class="error" role="alert">{error}</div>{/if}
-		<button type="submit" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button>
+		<button type="submit" disabled={busy}>{busy ? 'Signing in…' : 'Sign In'}</button>
 		<p class="note">Access is by invitation. Contact your administrator if you need an account.</p>
 	</form>
 </AccessLayout>

@@ -34,11 +34,11 @@
 		chairman: 'Board Chairman'
 	};
 	const statusLabel = (status: string) =>
-		({ active: 'Active', invited: 'Invitation pending', disabled: 'Disabled' })[status] ?? status;
+		({ active: 'Active', invited: 'Invitation Pending', disabled: 'Disabled' })[status] ?? status;
 	const companyName = (id: string) =>
 		selected?.memberships.find((m) => m.entity_id === id)?.entity_name ??
 		data.options.entities.find((e) => e.id === id)?.name ??
-		'Company unavailable';
+		'Company Unavailable';
 	const availableDepartments = $derived(
 		data.options.departments.filter((d) => d.entity_id === entity)
 	);
@@ -219,7 +219,7 @@
 					timeStyle: 'short',
 					timeZone: 'Africa/Lagos'
 				}).format(new Date(value)) + ' WAT'
-			: 'No end date';
+			: 'No End Date';
 	}
 </script>
 
@@ -230,13 +230,13 @@
 		<h1>Staff & Access</h1>
 		<p>Manage individual accounts, department membership and authorised appointments.</p>
 	</div>
-	{#if !data.forbidden && !data.error}<button onclick={invite}>Invite staff</button>{/if}
+	{#if !data.forbidden && !data.error}<button onclick={invite}>Invite Staff</button>{/if}
 </div>
 {#if notice}<p role="status">{notice}</p>{/if}
 {#if data.forbidden}<div class="empty">
-		<h2>Access restricted</h2>
+		<h2>Access Restricted</h2>
 		<p>Staff management is available only to authorised administrators.</p>
-		<a href="/vendors">Return to workspace</a>
+		<a href="/vendors">Return to Workspace</a>
 	</div>
 {:else if data.error}<div class="error" role="alert">
 		{data.error} <button class="secondary" onclick={() => invalidateAll()}>Retry</button>
@@ -248,7 +248,7 @@
 		</div>{/if}
 	<form class="filters" method="GET" action="/staff">
 		<label
-			>Search staff<input
+			>Search Staff<input
 				name="search"
 				type="search"
 				maxlength="180"
@@ -256,9 +256,9 @@
 				placeholder="Name or email"
 			/></label
 		><label
-			>Account status<select name="status" value={data.status}
-				><option value="">All accounts</option><option value="active">Active</option><option
-					value="invited">Invitation pending</option
+			>Account Status<select name="status" value={data.status}
+				><option value="">All Accounts</option><option value="active">Active</option><option
+					value="invited">Invitation Pending</option
 				><option value="disabled">Disabled</option></select
 			></label
 		><button type="submit" class="secondary">Search</button>
@@ -268,23 +268,23 @@
 			<table class="responsive-table" role="table">
 				<thead role="rowgroup"
 					><tr role="row"
-						><th scope="col" role="columnheader">Staff member</th><th
+						><th scope="col" role="columnheader">Staff Member</th><th
 							scope="col"
 							role="columnheader">Email</th
-						><th scope="col" role="columnheader">Account status</th><th
+						><th scope="col" role="columnheader">Account Status</th><th
 							scope="col"
 							role="columnheader"><span class="visually-hidden">Manage staff</span></th
 						></tr
 					></thead
 				><tbody role="rowgroup"
 					>{#each data.staff.items as person (person.id)}<tr role="row"
-							><td role="cell" data-label="Staff member"
+							><td role="cell" data-label="Staff Member"
 								><strong>{person.name}</strong>{#if person.id === data.user.id}<small class="sub"
 										>Your account</small
 									>{/if}{#if person.read_only}<small class="sub">Read-only access</small>{/if}</td
 							><td role="cell" data-label="Email" class="email-cell">{person.email}</td><td
 								role="cell"
-								data-label="Account status"
+								data-label="Account Status"
 								><span class="status">{statusLabel(person.status)}</span></td
 							><td role="cell" data-label="Actions"
 								><button
@@ -313,7 +313,7 @@
 			</div>
 		</div>
 	{:else}<div class="empty">
-			<h2>No matching staff</h2>
+			<h2>No Matching Staff</h2>
 			<p>Try another search or invite a colleague to join Custodian.</p>
 		</div>{/if}
 {/if}
@@ -332,21 +332,21 @@
 			<p class="eyebrow">STAFF ACCOUNT</p>
 			<h2 id="staff-drawer-title">
 				{mode === 'invite'
-					? 'Invite staff'
+					? 'Invite Staff'
 					: mode === 'edit'
-						? 'Edit staff name'
+						? 'Edit Staff Name'
 						: mode === 'membership'
-							? 'Department membership'
+							? 'Department Membership'
 							: mode === 'office'
-								? 'Assign office'
+								? 'Assign Office'
 								: mode === 'confirm'
 									? command?.label
-									: (selected?.name ?? 'Staff details')}
+									: (selected?.name ?? 'Staff Details')}
 			</h2>
 		</div>
 		<button
 			class="quiet"
-			aria-label="Close staff drawer"
+			aria-label="Close Staff Drawer"
 			disabled={busy || loading}
 			onclick={() => leave('close')}>✕</button
 		>
@@ -359,13 +359,13 @@
 					onclick={() => {
 						const destination = discard!;
 						leave(destination);
-					}}>Discard changes</button
-				><button onclick={() => (discard = null)}>Keep editing</button>
+					}}>Discard Changes</button
+				><button onclick={() => (discard = null)}>Keep Editing</button>
 			</div>
 		</div>{/if}
 	{#if error}<div class="error" role="alert">
 			{error}{#if conflict}<button class="secondary" onclick={reloadRecord}
-					>Discard entries and reload</button
+					>Discard Entries and Reload</button
 				>{/if}
 		</div>{/if}
 	{#if loading}<p role="status">Loading staff record…</p>
@@ -382,10 +382,10 @@
 					assignments.
 				</p>{/if}
 			<section>
-				<h3>Account controls</h3>
+				<h3>Account Controls</h3>
 				<div class="actions">
 					{#if selected.actions.includes('edit')}<button class="secondary" onclick={edit}
-							>Edit name</button
+							>Edit Name</button
 						>{/if}{#if selected.actions.includes('resend_invitation')}<button
 							class="secondary"
 							disabled={!data.options.email_enabled || busy}
@@ -395,7 +395,7 @@
 									{},
 									'Resend invitation',
 									'Send a new activation link. Previous activation links will stop working.'
-								)}>Resend invitation</button
+								)}>Resend Invitation</button
 						>{/if}{#if selected.actions.includes('disable')}<button
 							class="secondary"
 							onclick={() =>
@@ -404,7 +404,7 @@
 									{ active: false },
 									'Disable account',
 									'This person will be signed out and unable to sign in. Historical records and appointments are retained.'
-								)}>Disable account</button
+								)}>Disable Account</button
 						>{/if}{#if selected.actions.includes('enable')}<button
 							class="secondary"
 							onclick={() =>
@@ -413,7 +413,7 @@
 									{ active: true },
 									'Enable account',
 									'Restore account access. Pending invitees still need to set a password. Retained memberships and appointments may become effective again.'
-								)}>Enable account</button
+								)}>Enable Account</button
 						>{/if}{#if selected.actions.includes('revoke_sessions')}<button
 							class="secondary"
 							onclick={() =>
@@ -422,17 +422,17 @@
 									{},
 									'Sign out all sessions',
 									'End every current session for this person. They can sign in again if their account is enabled.'
-								)}>Sign out all sessions</button
+								)}>Sign Out All Sessions</button
 						>{/if}
 				</div>
 			</section>
 			<section>
 				<div class="section-heading">
-					<h3>Department memberships</h3>
+					<h3>Department Memberships</h3>
 					{#if selected.actions.includes('set_membership')}<button
 							class="secondary"
 							disabled={selected.status === 'disabled'}
-							onclick={membership}>Set membership</button
+							onclick={membership}>Set Membership</button
 						>{/if}
 				</div>
 				{#if selected.memberships.length}<ul class="records">
@@ -454,17 +454,17 @@
 												{ active: !member.active },
 												member.active ? 'Disable membership' : 'Enable membership',
 												'Update this company membership. Historical records are preserved; retained appointments may become effective again when membership is enabled.'
-											)}>{member.active ? 'Disable membership' : 'Enable membership'}</button
+											)}>{member.active ? 'Disable Membership' : 'Enable Membership'}</button
 									>{/if}
 							</li>{/each}
 					</ul>{:else}<p>No company or department membership assigned.</p>{/if}
 			</section>
 			<section>
 				<div class="section-heading">
-					<h3>Office appointments</h3>
+					<h3>Office Appointments</h3>
 					{#if selected.actions.includes('assign_office')}<button
 							class="secondary"
-							onclick={appointment}>Assign office</button
+							onclick={appointment}>Assign Office</button
 						>{/if}
 				</div>
 				<p class="hint">
@@ -489,7 +489,7 @@
 												{},
 												'Revoke appointment',
 												'End this appointment. Its original dates and historical decisions remain recorded.'
-											)}>Revoke appointment</button
+											)}>Revoke Appointment</button
 									>{/if}
 							</li>{/each}
 					</ul>{:else}<p>No office appointments recorded.</p>{/if}
@@ -502,7 +502,7 @@
 					approval authority is granted automatically.
 				</p>
 				<label
-					>Full name<input
+					>Full Name<input
 						bind:value={name}
 						required
 						minlength="2"
@@ -510,7 +510,7 @@
 						autocomplete="name"
 					/></label
 				><label
-					>Work email<input
+					>Work Email<input
 						bind:value={email}
 						required
 						type="email"
@@ -521,7 +521,7 @@
 						Email delivery must be enabled before invitations can be sent.
 					</p>{/if}
 			{:else if mode === 'edit'}<label
-					>Full name<input
+					>Full Name<input
 						bind:value={name}
 						required
 						minlength="2"
@@ -539,14 +539,14 @@
 						membership.
 					</p>{/if}<label
 					>Company<select bind:value={entity} onchange={() => (department = '')} required
-						><option value="" disabled>Select company</option
+						><option value="" disabled>Select Company</option
 						>{#each data.options.entities as option (option.id)}<option value={option.id}
 								>{option.name}</option
 							>{/each}</select
 					></label
 				><label
 					>Department<select bind:value={department} required
-						><option value="" disabled>Select department</option
+						><option value="" disabled>Select Department</option
 						>{#each availableDepartments as option (option.id)}<option value={option.id}
 								>{option.name}</option
 							>{/each}</select
@@ -561,8 +561,8 @@
 				{#if !officeMemberships.length}<p class="error" role="alert">
 						Assign an active company and department membership first.
 					</p>{/if}<label
-					>Appointment company<select bind:value={entity} required
-						><option value="" disabled>Select company</option
+					>Appointment Company<select bind:value={entity} required
+						><option value="" disabled>Select Company</option
 						>{#each officeMemberships as member (member.entity_id)}<option value={member.entity_id}
 								>{member.entity_name}</option
 							>{/each}</select
@@ -578,7 +578,7 @@
 								'Select an eligible company'}</strong
 						>
 					</p>{/if}<label
-					>Authorisation reference<input
+					>Authorisation Reference<input
 						bind:value={reference}
 						required
 						minlength="3"
@@ -588,9 +588,9 @@
 				>
 				<div class="grid">
 					<label
-						>Effective from (Lagos time)<input type="datetime-local" bind:value={starts} /></label
+						>Effective from (Lagos Time)<input type="datetime-local" bind:value={starts} /></label
 					><label
-						>Effective until (Lagos time)<input type="datetime-local" bind:value={ends} /></label
+						>Effective Until (Lagos Time)<input type="datetime-local" bind:value={ends} /></label
 					>
 				</div>
 				<small
@@ -610,16 +610,16 @@
 					>{busy
 						? 'Saving…'
 						: mode === 'invite'
-							? 'Send invitation'
+							? 'Send Invitation'
 							: mode === 'edit'
-								? 'Save name'
+								? 'Save Name'
 								: mode === 'membership'
-									? 'Save membership'
+									? 'Save Membership'
 									: mode === 'office'
-										? 'Record appointment'
+										? 'Record Appointment'
 										: 'Confirm'}</button
 				>{#if selected}<button class="secondary" type="button" onclick={() => leave('detail')}
-						>Back to details</button
+						>Back to Details</button
 					>{/if}
 			</div>
 		</form>

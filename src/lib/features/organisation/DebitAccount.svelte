@@ -24,11 +24,11 @@
 		company_address: ''
 	});
 	const fields = [
-		['bank_name', 'Debit bank', 150],
-		['account_name', 'Company account name', 250],
-		['account_number', 'Company account number', 10],
-		['branch_address', 'Bank branch address', 500],
-		['company_address', 'Company address (optional)', 500]
+		['bank_name', 'Debit Bank', 150],
+		['account_name', 'Company Account Name', 250],
+		['account_number', 'Company Account Number', 10],
+		['branch_address', 'Bank Branch Address', 500],
+		['company_address', 'Company Address (Optional)', 500]
 	] as const;
 	onMount(() => {
 		dialog.showModal();
@@ -92,15 +92,15 @@
 
 <dialog
 	bind:this={dialog}
-	aria-label="Company debit account"
+	aria-label="Company Debit Account"
 	oncancel={(e) => {
 		e.preventDefault();
 		close();
 	}}
 >
 	<div class="heading">
-		<h2>Company debit account</h2>
-		<button class="quiet" disabled={busy} onclick={close} aria-label="Close bank account">×</button>
+		<h2>Company Debit Account</h2>
+		<button class="quiet" disabled={busy} onclick={close} aria-label="Close Bank Account">×</button>
 	</div>
 	<p>{company.name}</p>
 	<p>
@@ -109,7 +109,7 @@
 	</p>
 	{#if error}<p class="error" role="alert">{error}</p>{/if}
 	{#if loading}<p role="status">Loading bank details…</p>
-	{:else if !loaded}<button class="secondary" onclick={load}>Retry loading bank details</button>
+	{:else if !loaded}<button class="secondary" onclick={load}>Retry Loading Bank Details</button>
 	{:else}
 		<form
 			onsubmit={save}
@@ -141,16 +141,16 @@
 			{#if !company.active}<p>Enable the company before changing its debit account.</p>{/if}
 			<div class="actions">
 				<button disabled={busy || conflict || !company.active}
-					>{busy ? 'Saving…' : 'Save bank details'}</button
+					>{busy ? 'Saving…' : 'Save Bank Details'}</button
 				><button type="button" class="secondary" disabled={busy} onclick={close}>Cancel</button>
 			</div>
 			{#if conflict}<p>
 					Your entries are preserved. <button type="button" class="quiet" onclick={load}
-						>Discard and reload</button
+						>Discard and Reload</button
 					>
 				</p>{/if}
 			{#if discard}<p role="status">Discard your unsaved bank details?</p>
-				<button type="button" class="secondary" onclick={close}>Discard changes</button>{/if}
+				<button type="button" class="secondary" onclick={close}>Discard Changes</button>{/if}
 		</form>
 	{/if}
 </dialog>

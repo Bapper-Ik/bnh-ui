@@ -131,7 +131,7 @@
 		<h1>Vendors</h1>
 		<p>Reusable contact and bank details for your requisitions.</p>
 	</div>
-	{#if data.entity?.can_create}<button onclick={create}>+ Add vendor</button>{/if}
+	{#if data.entity?.can_create}<button onclick={create}>+ Add Vendor</button>{/if}
 </div>
 {#if notice}<p role="status">{notice}</p>{/if}
 {#if data.user.is_system_administrator}<p>
@@ -146,8 +146,8 @@
 	<div class="empty">
 		<h2>
 			{data.user.is_system_administrator
-				? 'No companies available'
-				: 'No active company membership'}
+				? 'No Companies Available'
+				: 'No Active Company Membership'}
 		</h2>
 		<p>
 			{#if data.user.is_system_administrator}No company is currently available to your account.{:else}Ask
@@ -164,7 +164,7 @@
 			></label
 		>
 		<label
-			>Search vendors<input
+			>Search Vendors<input
 				name="search"
 				value={data.search}
 				maxlength="250"
@@ -182,9 +182,9 @@
 					><tr role="row"
 						><th scope="col" role="columnheader">Vendor</th><th scope="col" role="columnheader"
 							>Registration / ID</th
-						><th scope="col" role="columnheader">Bank details</th><th
+						><th scope="col" role="columnheader">Bank Details</th><th
 							scope="col"
-							role="columnheader"><span class="visually-hidden">View vendor</span></th
+							role="columnheader"><span class="visually-hidden">View Vendor</span></th
 						></tr
 					></thead
 				><tbody role="rowgroup">
@@ -194,7 +194,7 @@
 									>Version {vendor.version}</small
 								></td
 							><td role="cell" data-label="Registration / ID">{vendor.registration_id || '—'}</td
-							><td role="cell" data-label="Bank details"
+							><td role="cell" data-label="Bank Details"
 								>{vendor.bank_details_state === 'unknown'
 									? 'Not supplied'
 									: vendor.bank_details_state === 'supplied'
@@ -229,7 +229,7 @@
 			</div>
 		</div>
 	{:else}<div class="empty">
-			<h2>{data.search ? 'No matching vendors' : 'No vendors yet'}</h2>
+			<h2>{data.search ? 'No Matching Vendors' : 'No Vendors Yet'}</h2>
 			<p>
 				{data.search
 					? 'Try another name or company.'
@@ -250,16 +250,16 @@
 >
 	<div class="drawer-heading">
 		<h2 id="drawer-title">
-			{mode === 'create' ? 'Add vendor' : mode === 'edit' ? 'Edit vendor' : 'Vendor details'}
+			{mode === 'create' ? 'Add Vendor' : mode === 'edit' ? 'Edit Vendor' : 'Vendor Details'}
 		</h2>
-		<button class="quiet" onclick={close} disabled={busy} aria-label="Close vendor drawer">✕</button
+		<button class="quiet" onclick={close} disabled={busy} aria-label="Close Vendor Drawer">✕</button
 		>
 	</div>
 	{#if discard}<div class="error">
 			<p>Discard your unsaved changes?</p>
 			<div class="actions">
-				<button class="secondary" onclick={() => (discard = false)}>Keep editing</button><button
-					onclick={close}>Discard changes</button
+				<button class="secondary" onclick={() => (discard = false)}>Keep Editing</button><button
+					onclick={close}>Discard Changes</button
 				>
 			</div>
 		</div>{/if}
@@ -269,61 +269,61 @@
 		<h3>{selected.name}</h3>
 		<p>Version {selected.version} · Details are recorded, not independently verified.</p>
 		<dl>
-			<dt>Contact person</dt>
+			<dt>Contact Person</dt>
 			<dd>{selected.data.contact_person || 'Not supplied'}</dd>
-			<dt>Phone numbers</dt>
+			<dt>Phone Numbers</dt>
 			<dd>{selected.data.phones?.join(', ') || 'Not supplied'}</dd>
 			<dt>Email</dt>
 			<dd>{selected.data.email || 'Not supplied'}</dd>
-			<dt>Business address</dt>
+			<dt>Business Address</dt>
 			<dd>{selected.data.address || 'Not supplied'}</dd>
 			<dt>Registration / ID</dt>
 			<dd>{selected.registration_id || 'Not supplied'}</dd>
 		</dl>
 		<section class="bank">
-			<h3>Bank details</h3>
+			<h3>Bank Details</h3>
 			{#if selected.bank_details_state === 'restricted'}<p>
 					You do not have access to these bank details.
 				</p>
 			{:else if selected.data.bank}<dl>
-					<dt>Bank name</dt>
+					<dt>Bank Name</dt>
 					<dd>{selected.data.bank.bank_name}</dd>
-					<dt>Account name</dt>
+					<dt>Account Name</dt>
 					<dd>{selected.data.bank.account_name}</dd>
-					<dt>Account number</dt>
+					<dt>Account Number</dt>
 					<dd>{selected.data.bank.account_number}</dd>
 				</dl>
 			{:else}<p>Bank details have not been supplied.</p>{/if}
 		</section>
-		{#if selected.can_update}<button onclick={edit}>Edit vendor</button>{/if}
+		{#if selected.can_update}<button onclick={edit}>Edit Vendor</button>{/if}
 	{:else if mode !== 'detail'}
 		<form class="stack" onsubmit={save}>
 			<fieldset disabled={busy} class="stack">
 				<label
-					>Vendor name<input bind:value={form.name} required minlength="2" maxlength="250" /></label
+					>Vendor Name<input bind:value={form.name} required minlength="2" maxlength="250" /></label
 				>
-				<label>Contact person<input bind:value={form.contact_person} maxlength="180" /></label>
+				<label>Contact Person<input bind:value={form.contact_person} maxlength="180" /></label>
 				<label
-					>Phone numbers<textarea bind:value={phones} aria-describedby="phone-help"
+					>Phone Numbers<textarea bind:value={phones} aria-describedby="phone-help"
 					></textarea><small id="phone-help">One number per line, up to 10.</small></label
 				>
 				<label>Email<input type="email" bind:value={form.email} maxlength="254" /></label>
 				<label
-					>Business address<textarea bind:value={form.address} maxlength="1000"></textarea></label
+					>Business Address<textarea bind:value={form.address} maxlength="1000"></textarea></label
 				>
 				<label>Registration / ID<input bind:value={form.registration_id} maxlength="150" /></label>
 				<label
-					>Bank details<select bind:value={bankKnown}
-						><option value={false}>Not supplied</option><option value={true}
-							>Supply bank details</option
+					>Bank Details<select bind:value={bankKnown}
+						><option value={false}>Not Supplied</option><option value={true}
+							>Supply Bank Details</option
 						></select
 					></label
 				>
 				{#if bankKnown}<div class="stack bank">
-						<label>Bank name<input bind:value={bankName} required maxlength="150" /></label><label
-							>Account name<input bind:value={accountName} required maxlength="250" /></label
+						<label>Bank Name<input bind:value={bankName} required maxlength="150" /></label><label
+							>Account Name<input bind:value={accountName} required maxlength="250" /></label
 						><label
-							>Account number<input
+							>Account Number<input
 								bind:value={accountNumber}
 								inputmode="numeric"
 								required
@@ -340,7 +340,7 @@
 				</p>
 				<div class="actions">
 					<button type="submit" disabled={busy || conflict}
-						>{busy ? 'Saving…' : 'Save vendor'}</button
+						>{busy ? 'Saving…' : 'Save Vendor'}</button
 					><button type="button" class="secondary" onclick={close}>Cancel</button>
 				</div>
 			</fieldset>

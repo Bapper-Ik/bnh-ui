@@ -6,7 +6,7 @@
 <div class="page-header">
 	<div>
 		<p class="eyebrow">NEW REQUEST</p>
-		<h1>Create a requisition</h1>
+		<h1>Create a Requisition</h1>
 		<p>Start with the details you have. You can return to your draft.</p>
 	</div>
 </div>
@@ -18,10 +18,10 @@
 			window.location.replace('/requisitions/' + req.id);
 		}}
 	/>{:else}<div class="empty">
-		<h2>Your department hasn’t been assigned</h2>
+		<h2>Your Department Hasn’t Been Assigned</h2>
 		<p>
 			Contact your administrator to link your account to a company and department before raising a
 			requisition.
 		</p>
-		<a class="button secondary" href="/requisitions">Back to requisitions</a>
+		<a class="button secondary" href="/requisitions">Back to Requisitions</a>
 	</div>{/if}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { headingLabel } from '#lib/money.js';
 	import { onMount, onDestroy } from 'svelte';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { api, ApiError } from '#lib/api/client.js';
@@ -16,13 +17,13 @@
 		refreshQueued = false,
 		controller: AbortController | undefined;
 	const deliveryLabels: Record<string, string> = {
-		pending: 'Email pending',
-		sending: 'Email being sent',
-		accepted: 'Email accepted by provider',
-		failed: 'Email delivery failed; this alert remains available',
-		cancelled: 'Email cancelled after the work or recipient changed',
-		disabled: 'Email was not enabled for this alert',
-		skipped: 'Historical alert — no email sent'
+		pending: 'Email Pending',
+		sending: 'Email Being Sent',
+		accepted: 'Email Accepted by Provider',
+		failed: 'Email delivery failed; this alert remains available.',
+		cancelled: 'Email cancelled because the request or recipient changed.',
+		disabled: 'Email was not enabled for this alert.',
+		skipped: 'No email was sent for this earlier alert.'
 	};
 	async function refresh() {
 		if (!alive) return;
@@ -150,7 +151,7 @@
 			aria-label={`${result.unread_total} unread`}
 			>{result.unread_total > 99 ? '99+' : result.unread_total}</span
 		>{/if}
-	{#if failure}<span class="unavailable" aria-label="Notifications unavailable">!</span>{/if}
+	{#if failure}<span class="unavailable" aria-label="Notifications Unavailable">!</span>{/if}
 </button>
 <dialog bind:this={dialog} onclose={() => (open = false)} aria-labelledby="notification-title">
 	<div class="heading">
@@ -158,7 +159,7 @@
 			<p class="eyebrow">YOUR UPDATES</p>
 			<h2 id="notification-title">Notifications</h2>
 		</div>
-		<button class="quiet" aria-label="Close notifications" onclick={() => dialog.close()}>✕</button>
+		<button class="quiet" aria-label="Close Notifications" onclick={() => dialog.close()}>✕</button>
 	</div>
 	<p>Review updates and work assigned to you. Reading an alert does not approve a requisition.</p>
 	<div class="controls">
@@ -170,13 +171,13 @@
 					offset = 0;
 					void refresh();
 				}}
-			/> Unread only</label
+			/> Unread Only</label
 		><button class="quiet" disabled={loading || !!acting} onclick={() => refresh()}
-			>Refresh notifications</button
+			>Refresh Notifications</button
 		>
 	</div>
 	{#if failure}<div class="error" role="alert">
-			{failure}<button class="quiet" onclick={() => refresh()}>Retry notifications</button>
+			{failure}<button class="quiet" onclick={() => refresh()}>Retry Notifications</button>
 		</div>{/if}
 	{#if loading && !result}<p role="status">Loading notifications…</p>{/if}
 	{#if result}
@@ -188,23 +189,23 @@
 			{unread ? 'unread alerts' : 'available alerts'}
 		</p>
 		{#if !result.items.length}<div class="empty">
-				<h3>{unread ? 'No unread notifications' : 'No notifications yet'}</h3>
+				<h3>{unread ? 'No Unread Notifications' : 'No Notifications Yet'}</h3>
 				<p>Request updates and eligible assigned work will appear here.</p>
 			</div>{:else}
-			<ol aria-label="Your notifications" aria-busy={loading}>
+			<ol aria-label="Your Notifications" aria-busy={loading}>
 				{#each result.items as row (row.id)}<li class:unread={!row.read_at}>
 						<div class="item-heading">
-							<h3>{row.title}</h3>
+							<h3>{headingLabel(row.title)}</h3>
 							{#if !row.read_at}<span class="unread-label">Unread</span>{/if}
 						</div>
 						<p class="reference">{row.reference} · {dateTime(row.created_at)} WAT</p>
 						<p>{row.message}</p>
 						<div class="actions">
 							<button class="secondary" disabled={!!acting} onclick={() => read(row, true)}
-								>{row.href.endsWith('/board') ? 'Open Board workspace' : 'Open requisition'}</button
+								>{row.href.endsWith('/board') ? 'Open Board Workspace' : 'Open Requisition'}</button
 							>
 							{#if !row.read_at}<button class="quiet" disabled={!!acting} onclick={() => read(row)}
-									>Mark as read</button
+									>Mark as Read</button
 								>{/if}
 						</div>
 						<small>{deliveryLabels[row.email_status] ?? 'Email status unavailable'}</small>
@@ -224,7 +225,7 @@
 							onclick={() => {
 								offset = Math.max(0, offset - result!.limit);
 								void refresh();
-							}}>Newer alerts</button
+							}}>Newer Alerts</button
 						>{/if}
 					{#if result.offset + result.limit < result.total}<button
 							class="secondary"
@@ -232,7 +233,7 @@
 							onclick={() => {
 								offset += result!.limit;
 								void refresh();
-							}}>Older alerts</button
+							}}>Older Alerts</button
 						>{/if}
 				</div>
 			</div>

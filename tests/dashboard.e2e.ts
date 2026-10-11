@@ -7,34 +7,34 @@ async function login(page: Page, role: string) {
 		password: string;
 	};
 	await page.goto('/login');
-	await page.getByLabel('Work email').fill(f.people.find((p) => p.role === role)!.email);
+	await page.getByLabel('Work Email').fill(f.people.find((p) => p.role === role)!.email);
 	await page.getByLabel('Password', { exact: true }).fill(f.password);
-	await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+	await page.getByRole('button', { name: 'Sign In', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
-	await expect(page.getByRole('button', { name: 'Refresh dashboard', exact: true })).toBeEnabled();
+	await expect(page.getByRole('button', { name: 'Refresh Dashboard', exact: true })).toBeEnabled();
 }
 
 test('dashboard shows persisted counts, activity, safe shortcuts and responsive links', async ({
 	page
 }) => {
 	await login(page, 'draft_requester');
-	const statuses = page.getByRole('region', { name: 'Request status counts' });
-	await expect(page.getByRole('region', { name: 'Outstanding tasks' })).toHaveCount(0);
-	await page.getByRole('link', { name: 'Create requisition', exact: true }).click();
+	const statuses = page.getByRole('region', { name: 'Request Status Counts' });
+	await expect(page.getByRole('region', { name: 'Outstanding Tasks' })).toHaveCount(0);
+	await page.getByRole('link', { name: 'Create Requisition', exact: true }).click();
 	const title = 'Dashboard draft ' + randomUUID();
-	await page.getByLabel('Description of work or purchase').fill(title);
-	await page.getByRole('button', { name: 'Save draft', exact: true }).click();
+	await page.getByLabel('Description of Work or Purchase').fill(title);
+	await page.getByRole('button', { name: 'Save Draft', exact: true }).click();
 	await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
 	await page
-		.getByRole('navigation', { name: 'Main navigation' })
+		.getByRole('navigation', { name: 'Main Navigation' })
 		.getByRole('link', { name: 'Dashboard', exact: true })
 		.click();
 	await expect(
-		page.getByRole('region', { name: 'Latest requisitions' }).getByText(title, { exact: true })
+		page.getByRole('region', { name: 'Latest Requisitions' }).getByText(title, { exact: true })
 	).toBeVisible();
 	await expect(
 		page
-			.getByRole('region', { name: 'Recent activity' })
+			.getByRole('region', { name: 'Recent Activity' })
 			.getByText('Draft created', { exact: true })
 	).toBeVisible();
 	await page.reload();
@@ -49,18 +49,18 @@ test('dashboard shows persisted counts, activity, safe shortcuts and responsive 
 	await expect(page).toHaveURL(/state=DRAFT/);
 	await expect(page.getByText(title, { exact: true })).toBeVisible();
 	await login(page, 'readonly');
-	await expect(page.getByRole('link', { name: 'Create requisition', exact: true })).toHaveCount(0);
-	await expect(page.getByRole('region', { name: 'Outstanding tasks' })).toHaveCount(0);
+	await expect(page.getByRole('link', { name: 'Create Requisition', exact: true })).toHaveCount(0);
+	await expect(page.getByRole('region', { name: 'Outstanding Tasks' })).toHaveCount(0);
 	await expect(page.getByText(title, { exact: true })).toHaveCount(0);
 	await login(page, 'hod');
-	await expect(page.getByRole('region', { name: 'Outstanding tasks' })).toBeVisible();
+	await expect(page.getByRole('region', { name: 'Outstanding Tasks' })).toBeVisible();
 });
 
 test('dashboard clears stale data on failed refresh and sends expired sessions to sign-in', async ({
 	page
 }) => {
 	await login(page, 'requester');
-	await expect(page.getByRole('region', { name: 'Request status counts' })).toBeVisible();
+	await expect(page.getByRole('region', { name: 'Request Status Counts' })).toBeVisible();
 	await page.route('**/api/v1/dashboard', (route) =>
 		route.fulfill({
 			status: 503,
@@ -71,15 +71,15 @@ test('dashboard clears stale data on failed refresh and sends expired sessions t
 			})
 		})
 	);
-	await page.getByRole('button', { name: 'Refresh dashboard', exact: true }).click();
+	await page.getByRole('button', { name: 'Refresh Dashboard', exact: true }).click();
 	await expect(page.getByRole('alert')).toContainText('Dashboard temporarily unavailable');
-	await expect(page.getByRole('region', { name: 'Request status counts' })).toHaveCount(0);
+	await expect(page.getByRole('region', { name: 'Request Status Counts' })).toHaveCount(0);
 	await page.unroute('**/api/v1/dashboard');
-	await page.getByRole('button', { name: 'Refresh dashboard', exact: true }).click();
-	await expect(page.getByRole('region', { name: 'Request status counts' })).toBeVisible();
+	await page.getByRole('button', { name: 'Refresh Dashboard', exact: true }).click();
+	await expect(page.getByRole('region', { name: 'Request Status Counts' })).toBeVisible();
 	await page.context().clearCookies();
-	await page.getByRole('button', { name: 'Refresh dashboard', exact: true }).click();
+	await page.getByRole('button', { name: 'Refresh Dashboard', exact: true }).click();
 	await expect(
-		page.getByRole('heading', { name: 'Sign in to Custodian', exact: true })
+		page.getByRole('heading', { name: 'Sign In to Custodian', exact: true })
 	).toBeVisible();
 });

@@ -72,11 +72,11 @@
 <div class="pdf-preview">
 	<div class="pages">
 		<button class="secondary" disabled={busy || page <= 1} onclick={() => change(-1)}
-			>Previous page</button
+			>Previous Page</button
 		>
 		<span aria-live="polite">Page {page} of {pages || '…'}</span>
 		<button class="secondary" disabled={busy || page >= pages} onclick={() => change(1)}
-			>Next page</button
+			>Next Page</button
 		>
 	</div>
 	{#if busy}<p role="status">Rendering PDF page…</p>{/if}
@@ -90,7 +90,7 @@
 		<canvas bind:this={canvas} class:hidden={busy || !!error}></canvas>
 	</div>
 	{#if text}<details>
-			<summary>Page text</summary>
+			<summary>Page Text</summary>
 			<p>{text}</p>
 		</details>{/if}
 </div>

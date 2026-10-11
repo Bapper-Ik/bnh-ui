@@ -152,3 +152,7 @@ Requesters may delete only their own drafts. Retain audit and signed evidence in
 ## Automatic supporting uploads
 
 File selection starts upload immediately. New-form uploads must not require creating a draft first. Temporarily buffer validated files privately by requester, company and creation key; expire them after 24 hours, enforce the configured per-file and per-person pending count limits, and clean expired bytes hourly/startup. Saving claims the exact supplied upload IDs into permanent Cloudinary attachments atomically with the draft and audit. Reject expired, missing, foreign or changed file sets rather than silently dropping documents. Use deterministic private object keys for safe retries. No document scanner is part of this release.
+
+## Interface wording
+
+Use Title Case for screen headings, navigation, field labels and action buttons, preserving acronyms such as HOD, MD, NGN and PDF. Keep articles, conjunctions and short prepositions lowercase within titles (for example, Scope of Work); use Sign In for the action. Use sentence case for instructions, feedback and error messages. Keep plain, consistent business terms: Vendor Name, Requisition and Bank Transfer Request. Present authority codes with readable office names; never change API enum values, stored data, entered names, filenames or signed declarations to apply typography. Keep accessible names aligned with visible labels and update connected browser selectors when wording changes.

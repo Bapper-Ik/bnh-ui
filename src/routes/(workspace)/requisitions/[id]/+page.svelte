@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { authorityLabel } from '#lib/money.js';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
 	import { api, ApiError } from '#lib/api/client.js';
@@ -81,10 +82,10 @@
 	const req = $derived(data.request);
 	const vendor = $derived(req.content.vendor);
 	const actionLabels: Record<string, string> = {
-		submit: 'Review & submit',
+		submit: 'Review & Submit',
 		approve: 'Approve',
 		reject: 'Reject',
-		return: 'Return for revision'
+		return: 'Return for Revision'
 	};
 	async function saved() {
 		editing = false;
@@ -97,7 +98,7 @@
 <div class="page-header">
 	<div>
 		<p class="eyebrow">{req.reference} · REVISION {req.revision_number || 'DRAFT'}</p>
-		<h1>{editing ? 'Edit requisition' : req.content.description || 'Untitled requisition'}</h1>
+		<h1>{editing ? 'Edit Requisition' : req.content.description || 'Untitled Requisition'}</h1>
 		<p>{req.requester_name} · {req.department_name} · {req.entity_name}</p>
 	</div>
 	<span class="status">{stateLabel(req.state)}</span>
@@ -109,7 +110,7 @@
 {#if req.viewing_revision}
 	<p role="status">
 		Viewing signed revision {req.viewing_revision}. This record is read-only.
-		<a href={'/requisitions/' + req.id}>Back to current request</a>
+		<a href={'/requisitions/' + req.id}>Back to Current Request</a>
 	</p>
 {:else if req.state === 'RETURNED_FOR_REVISION' && !req.oversight_only}
 	<p role="status">
@@ -133,14 +134,14 @@
 	<div class="detail-grid">
 		<div class="stack">
 			<section class="card">
-				<div class="section-heading"><h2>Vendor information</h2></div>
+				<div class="section-heading"><h2>Vendor Information</h2></div>
 				<dl class="grid">
 					<div>
-						<dt>Vendor</dt>
+						<dt>Vendor Name</dt>
 						<dd>{vendor?.name || 'Not supplied'}</dd>
 					</div>
 					<div>
-						<dt>Contact person</dt>
+						<dt>Contact Person</dt>
 						<dd>{vendor?.contact_person || 'Not supplied'}</dd>
 					</div>
 					<div>
@@ -152,16 +153,16 @@
 						<dd>{vendor?.email || 'Not supplied'}</dd>
 					</div>
 					<div>
-						<dt>Business address</dt>
+						<dt>Business Address</dt>
 						<dd>{vendor?.address || 'Not supplied'}</dd>
 					</div>
 					<div>
-						<dt>RC number / ID</dt>
+						<dt>RC Number / ID</dt>
 						<dd>{vendor?.registration_id || 'Not supplied'}</dd>
 					</div>
 				</dl>
 				<details>
-					<summary>Bank details</summary>
+					<summary>Bank Details</summary>
 					<dl class="grid">
 						<div>
 							<dt>Bank</dt>
@@ -172,7 +173,7 @@
 							</dd>
 						</div>
 						<div>
-							<dt>Account number</dt>
+							<dt>Account Number</dt>
 							<dd>
 								{req.redacted_fields?.includes('vendor.bank_details')
 									? 'Restricted'
@@ -180,7 +181,7 @@
 							</dd>
 						</div>
 						<div>
-							<dt>Account name</dt>
+							<dt>Account Name</dt>
 							<dd>
 								{req.redacted_fields?.includes('vendor.bank_details')
 									? 'Restricted'
@@ -191,7 +192,7 @@
 				</details>
 			</section>
 			<section class="card">
-				<h2>Scope of work</h2>
+				<h2>Scope of Work</h2>
 				<p>{req.content.description || 'Not supplied'}</p>
 				<dl class="grid">
 					<div>
@@ -199,24 +200,24 @@
 						<dd>{req.content.location || 'Not supplied'}</dd>
 					</div>
 					<div>
-						<dt>Planned dates</dt>
+						<dt>Planned Dates</dt>
 						<dd>
 							{req.content.start_date || 'Not specified'} → {req.content.completion_date ||
 								'Not specified'}
 						</dd>
 					</div>
 					<div>
-						<dt>Payment terms</dt>
+						<dt>Payment Terms</dt>
 						<dd>{req.content.payment_terms || 'Not yet agreed'}</dd>
 					</div>
 					<div>
-						<dt>Warranty / guarantee</dt>
+						<dt>Warranty / Guarantee</dt>
 						<dd>{req.content.warranty || 'Not specified'}</dd>
 					</div>
 				</dl>
 			</section>
 			<section class="card">
-				<h2>Cost breakdown</h2>
+				<h2>Cost Breakdown</h2>
 				<div class="table-wrap">
 					<!-- svelte-ignore a11y_no_redundant_roles (Explicit table roles preserve semantics when rows become cards.) -->
 					<table class="responsive-table" role="table">
@@ -226,7 +227,7 @@
 									scope="col"
 									role="columnheader"
 									class="numeric">Qty</th
-								><th scope="col" role="columnheader" class="numeric">Unit price</th><th
+								><th scope="col" role="columnheader" class="numeric">Unit Price</th><th
 									scope="col"
 									role="columnheader"
 									class="numeric">Total</th
@@ -238,7 +239,7 @@
 										role="cell"
 										data-label="Quantity"
 										class="numeric">{line.quantity}</td
-									><td role="cell" data-label="Unit price" class="numeric"
+									><td role="cell" data-label="Unit Price" class="numeric"
 										>{money(line.unit_price)}</td
 									><td role="cell" data-label="Total" class="numeric"
 										>{formatKobo(lineKobo(line.quantity, line.unit_price))}</td
@@ -247,7 +248,7 @@
 						>
 					</table>
 				</div>
-				<div class="grand-total"><span>Grand total</span><strong>{money(req.total)}</strong></div>
+				<div class="grand-total"><span>Grand Total</span><strong>{money(req.total)}</strong></div>
 			</section>
 			{#key `${req.version}:${req.viewing_revision ?? 'current'}`}<Attachments
 					request={req}
@@ -268,8 +269,8 @@
 			<p class="approval-note">Approval authorises this request. It does not confirm payment.</p>
 			<hr />
 			{#if req.next_action && !req.viewing_revision}
-				<section class="next-action" aria-label="Next action">
-					<h2>Next action</h2>
+				<section class="next-action" aria-label="Next Action">
+					<h2>Next Action</h2>
 					<p>{req.next_action.label}</p>
 					{#if req.next_action.actor_name}<p>
 							With: <strong>{req.next_action.actor_name}</strong>
@@ -286,8 +287,12 @@
 					<dd>{dateTime(req.created_at)}</dd>
 				</div>
 				<div>
-					<dt>Required authority</dt>
-					<dd>{req.required_authority?.replaceAll('_', ' ') || 'Determined at submission'}</dd>
+					<dt>Required Authority</dt>
+					<dd>
+						{req.required_authority
+							? authorityLabel(req.required_authority)
+							: 'Determined at Submission'}
+					</dd>
 				</div>
 			</dl>
 			{#if req.routing_explanation}<p class="route">{req.routing_explanation}</p>{/if}
@@ -297,7 +302,7 @@
 			{#if req.decision_blocker}<p class="error" role="status">{req.decision_blocker}</p>{/if}
 			{#if correctionError}<p class="error" role="alert">
 					{correctionError}
-					<button class="quiet" onclick={() => invalidateAll()}>Reload request</button>
+					<button class="quiet" onclick={() => invalidateAll()}>Reload Request</button>
 				</p>{/if}
 			<div class="stack action-stack">
 				{#each ['delete', 'retract'] as action (action)}
@@ -305,20 +310,20 @@
 							class="secondary"
 							disabled={managing}
 							onclick={() => manage(action as 'delete' | 'retract')}
-							>{action === 'delete' ? 'Delete draft' : 'Retract requisition'}</button
+							>{action === 'delete' ? 'Delete Draft' : 'Retract Requisition'}</button
 						>{/if}
 				{/each}
 				{#if req.available_actions.includes('board_workspace')}<a
 						class="button"
-						href={'/requisitions/' + req.id + '/board'}>Open Board workspace</a
+						href={'/requisitions/' + req.id + '/board'}>Open Board Workspace</a
 					>{/if}
 				{#if req.available_actions.includes('revise')}<button
 						disabled={correctionBusy}
-						onclick={startCorrection}>{correctionBusy ? 'Starting…' : 'Start correction'}</button
+						onclick={startCorrection}>{correctionBusy ? 'Starting…' : 'Start Correction'}</button
 					>{/if}
 				{#if req.available_actions.includes('edit')}<button
 						class="secondary"
-						onclick={() => (editing = true)}>Edit draft</button
+						onclick={() => (editing = true)}>Edit Draft</button
 					>{/if}{#each req.available_actions.filter( (a: string) => ['submit', 'approve', 'reject', 'return'].includes(a) ) as action (action)}<button
 						disabled={!!req.submission_blocker}
 						onclick={() => (signing = action as Intent['action'])}

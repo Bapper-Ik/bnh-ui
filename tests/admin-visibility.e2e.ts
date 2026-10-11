@@ -10,9 +10,9 @@ async function login(page: Page, role: string) {
 		password: string;
 	};
 	await page.goto('/login');
-	await page.getByLabel('Work email').fill(f.people.find((p) => p.role === role)!.email);
+	await page.getByLabel('Work Email').fill(f.people.find((p) => p.role === role)!.email);
 	await page.getByLabel('Password', { exact: true }).fill(f.password);
-	await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+	await page.getByRole('button', { name: 'Sign In', exact: true }).click();
 	await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
 }
 async function fixture(page: Page, role: string) {
@@ -59,11 +59,11 @@ test('administrator without membership can inspect requests and vendors across c
 	const second = await fixture(page, 'requester');
 	await login(page, 'oversight');
 	await expect(page.getByRole('link', { name: 'Open My Tasks', exact: true })).toHaveCount(0);
-	await expect(page.getByRole('link', { name: 'Create requisition', exact: true })).toHaveCount(0);
-	const nav = page.getByRole('navigation', { name: 'Main navigation' });
+	await expect(page.getByRole('link', { name: 'Create Requisition', exact: true })).toHaveCount(0);
+	const nav = page.getByRole('navigation', { name: 'Main Navigation' });
 	await expect(nav.getByRole('link', { name: 'My Tasks', exact: true })).toHaveCount(0);
 	await nav.getByRole('link', { name: 'Requisitions', exact: true }).click();
-	await expect(page.getByRole('link', { name: '+ New requisition', exact: true })).toHaveCount(0);
+	await expect(page.getByRole('link', { name: '+ New Requisition', exact: true })).toHaveCount(0);
 	for (const data of [first, second]) {
 		await page.goto('/requisitions?search=' + data.request.reference);
 		await expect(page.getByText(data.request.content.description, { exact: true })).toBeVisible();
@@ -73,11 +73,11 @@ test('administrator without membership can inspect requests and vendors across c
 		).toBeVisible();
 		await expect(page.getByText(/Administrative oversight ·/)).toBeVisible();
 		await expect(page.getByText(/Document access is restricted/)).toBeVisible();
-		await page.locator('summary').filter({ hasText: 'Bank details' }).click();
+		await page.locator('summary').filter({ hasText: 'Bank Details' }).click();
 		await expect(page.getByText('0000000088', { exact: true })).toBeVisible();
 		await expect(
 			page.getByRole('button', {
-				name: /^(Edit draft|Approve|Review & submit|Reject|Return for revision)$/
+				name: /^(Edit Draft|Approve|Review & Submit|Reject|Return for Revision)$/
 			})
 		).toHaveCount(0);
 	}
@@ -93,13 +93,13 @@ test('administrator without membership can inspect requests and vendors across c
 		await page
 			.getByRole('combobox', { name: 'Company', exact: true })
 			.selectOption(data.entity.entity_id);
-		await page.getByLabel('Search vendors').fill(data.vendor.name);
+		await page.getByLabel('Search Vendors').fill(data.vendor.name);
 		await page.getByRole('button', { name: 'Search', exact: true }).click();
-		await expect(page.getByRole('button', { name: '+ Add vendor', exact: true })).toHaveCount(0);
+		await expect(page.getByRole('button', { name: '+ Add Vendor', exact: true })).toHaveCount(0);
 		await page.getByRole('button', { name: 'View ' + data.vendor.name, exact: true }).click();
-		await expect(page.getByRole('button', { name: 'Edit vendor', exact: true })).toHaveCount(0);
+		await expect(page.getByRole('button', { name: 'Edit Vendor', exact: true })).toHaveCount(0);
 		await expect(page.getByText('0000000088', { exact: true })).toBeVisible();
-		await page.getByRole('button', { name: 'Close vendor drawer' }).click();
+		await page.getByRole('button', { name: 'Close Vendor Drawer' }).click();
 	}
 	await expect
 		.poll(() =>

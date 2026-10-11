@@ -18,7 +18,7 @@
 <div class="page-header">
 	<div>
 		<p class="eyebrow">REQUISITIONS & APPROVALS</p>
-		<h1>{data.inbox ? 'Approval inbox' : 'Requisitions'}</h1>
+		<h1>{data.inbox ? 'Approval Inbox' : 'Requisitions'}</h1>
 		<p>
 			{data.inbox
 				? 'Review requisitions and Board records assigned to your current office.'
@@ -27,13 +27,13 @@
 					: 'Create requests and follow every decision.'}
 		</p>
 	</div>
-	{#if data.canCreate && !data.inbox}<a class="button" href="/requisitions/new">+ New requisition</a
+	{#if data.canCreate && !data.inbox}<a class="button" href="/requisitions/new">+ New Requisition</a
 		>{/if}
 </div>
 <form class="filters" method="GET">
 	{#if data.inbox}<input type="hidden" name="inbox" value="true" />{/if}
 	<label
-		>Search requisitions<input
+		>Search Requisitions<input
 			name="search"
 			value={data.search}
 			placeholder="Reference or description"
@@ -42,15 +42,15 @@
 	>
 	{#if !data.inbox}<label
 			>Status<select name="state" value={data.state}
-				><option value="">All statuses</option
+				><option value="">All Statuses</option
 				>{#each ['DRAFT', 'PENDING_AUTHORITY', 'AWAITING_BOARD_RESOLUTION', 'AWAITING_CHAIRMAN_SIGNOFF', 'DEFERRED', 'CONDITIONALLY_APPROVED', 'APPROVED', 'REJECTED', 'RETURNED_FOR_REVISION'] as state (state)}<option
 						value={state}>{stateLabel(state)}</option
 					>{/each}</select
 			></label
 		>
-	{/if}<button class="secondary">Apply filters</button>
+	{/if}<button class="secondary">Apply Filters</button>
 	<details class="more-filters" open={Object.values(data.filters).some(Boolean)}>
-		<summary>More filters</summary>
+		<summary>More Filters</summary>
 		<div class="filter-grid">
 			{#each [['requester', 'Requester'], ['department', 'Department'], ['company', 'Company'], ['vendor', 'Vendor']] as [name, label] (name)}
 				<label
@@ -69,7 +69,7 @@
 				/></label
 			>
 			<label
-				>Created through (Lagos)<input
+				>Created Through (Lagos)<input
 					type="date"
 					name="date_to"
 					value={data.filters.date_to}
@@ -82,14 +82,14 @@
 				name="my_requests"
 				value="true"
 				checked={data.filters.my_requests === 'true'}
-			/> Only my requests</label
+			/> Only My Requests</label
 		>
 	</details>
-	<a href={data.inbox ? '/requisitions?inbox=true' : '/requisitions'}>Clear filters</a>
+	<a href={data.inbox ? '/requisitions?inbox=true' : '/requisitions'}>Clear Filters</a>
 </form>
 <div class="section-heading">
 	<h2>
-		{data.inbox ? 'Assigned to you' : 'All requests'}
+		{data.inbox ? 'Assigned to You' : 'All Requests'}
 		<span class="count">{data.requests.total}</span>
 	</h2>
 </div>
@@ -97,10 +97,10 @@
 	<div class="empty">
 		<h2>
 			{data.search || data.state || Object.values(data.filters).some(Boolean)
-				? 'No matching requisitions'
+				? 'No Matching Requisitions'
 				: data.inbox
-					? 'You’re all caught up'
-					: 'No requisitions yet'}
+					? 'You’re All Caught Up'
+					: 'No Requisitions Yet'}
 		</h2>
 		<p>
 			{data.inbox
@@ -109,7 +109,7 @@
 		</p>
 		{#if !data.inbox && data.canCreate && !data.search && !data.state && !Object.values(data.filters).some(Boolean)}<a
 				class="button secondary"
-				href="/requisitions/new">Create your first requisition</a
+				href="/requisitions/new">Create Your First Requisition</a
 			>{/if}
 	</div>
 {:else}
@@ -124,7 +124,7 @@
 						scope="col"
 						role="columnheader"
 						class="numeric">Amount</th
-					><th scope="col" role="columnheader"><span class="visually-hidden">Open request</span></th
+					><th scope="col" role="columnheader"><span class="visually-hidden">Open Request</span></th
 					></tr
 				></thead
 			><tbody role="rowgroup">

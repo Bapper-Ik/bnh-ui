@@ -139,10 +139,10 @@
 	};
 </script>
 
-<section class="card" aria-label="PDF exports">
+<section class="card" aria-label="PDF Exports">
 	<div class="section-heading">
 		<h2>Documents</h2>
-		<button class="quiet" onclick={load}>Refresh exports</button>
+		<button class="quiet" onclick={load}>Refresh Exports</button>
 	</div>
 	<p>
 		Generate a private copy of {revision ? `signed revision ${revision}` : 'this saved draft'},
@@ -154,7 +154,7 @@
 		<div class="controls">
 			{#if data.can_include_board}<label
 					><input type="checkbox" bind:checked={includeBoard} disabled={busy || !!command} /> Include
-					private Board records</label
+					Private Board Records</label
 				>{/if}
 			<button class="secondary" disabled={busy || !!data.unavailable_reason} onclick={generate}
 				>{busy ? 'Working…' : 'Generate PDF'}</button
@@ -166,7 +166,7 @@
 				<li>
 					<div class="file">
 						{#if item.document_type === 'bank_transfer'}<span class="document-kind"
-								>Signed bank transfer request · Created on approval</span
+								>Signed Bank Transfer Request · Created on Approval</span
 							>{/if}
 						<strong title={item.filename}>{item.filename}</strong><small
 							>{item.status === 'ready' ? 'Generated' : 'Requested'}
@@ -185,13 +185,13 @@
 					</div>
 					{#if item.status === 'ready'}<button class="secondary" onclick={() => (viewing = item)}
 							>{item.document_type === 'bank_transfer'
-								? 'View transfer letter'
+								? 'View Transfer Letter'
 								: 'View PDF'}</button
 						>
 						{#if item.document_type === 'bank_transfer'}<button
 								class="secondary"
 								disabled={busy}
-								onclick={() => download(item)}>Download transfer letter</button
+								onclick={() => download(item)}>Download Transfer Letter</button
 							>{/if}
 					{:else if item.can_retry}<button
 							class="secondary"
@@ -208,14 +208,14 @@
 					onclick={() => {
 						offset -= 5;
 						void load();
-					}}>Previous exports</button
+					}}>Previous Exports</button
 				><span>{offset + 1}–{Math.min(offset + 5, data.total)} of {data.total}</span><button
 					class="quiet"
 					disabled={offset + 5 >= data.total}
 					onclick={() => {
 						offset += 5;
 						void load();
-					}}>Next exports</button
+					}}>Next Exports</button
 				>
 			</div>{/if}
 	{/if}
